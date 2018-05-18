@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="20dp"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".app.ReporterHome"
+    tools:showIn="@layout/activity_main"
+    android:fillViewport="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:text="@string/press_arrive"
+            android:layout_width="600dp"
+            android:layout_height="100dp"
+            android:textSize="22sp"
+            android:textColor="#fff"
+            android:background ="#42a5f5"
+            android:id="@+id/stopBtn"
+            android:layout_marginTop="29dp"
+            android:layout_below="@+id/recordBtn"
+            android:layout_alignParentStart="true" />
+
+        <Button
+            android:text="Press when the bus halts"
+            android:layout_width="600dp"
+            android:layout_height="100dp"
+            android:textSize="22sp"
+            android:textColor="#fff"
+            android:background ="#0033cc"
+            android:id="@+id/haltBtn"
+            android:layout_marginTop="29dp"
+            android:layout_below="@+id/stopBtn"
+            android:layout_alignParentStart="true" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="22sp"
+            android:id="@+id/divider"
+            android:layout_below="@+id/haltBtn"
+            android:background="@android:color/darker_gray"/>
+
+        <TextView
+            android:id="@+id/tripText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:layout_marginTop="22sp"
+            android:layout_below = "@id/divider"
+            android:textColor="#798ca7"
+            android:text="@string/defual_string" />
+
+        <TextView
+            android:id="@+id/powerLevelText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:layout_marginTop="22sp"
+            android:layout_below = "@id/tripText"
+            android:textColor="#798ca7"
+            android:text="@string/defual_string" />
+
+        <TextView
+            android:id="@+id/externalPower"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/powerLevelText"
+            android:textSize="22sp"
+            android:textColor="#798ca7"
+            android:text="@string/defual_string"
+            android:layout_marginTop="18dp"/>
+
+        <TextView
+            android:id="@+id/gpsLocationText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:text="@string/defual_string"
+            android:textColor="#798ca7"
+            android:layout_below="@+id/externalPower"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="18dp" />
+
+        <TextView
+            android:id="@+id/motionSensorText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:text="@string/defual_string"
+            android:layout_below="@+id/gpsLocationText"
+            android:textColor="#798ca7"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="18dp" />
+
+        <TextView
+            android:id="@+id/beaconText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:text="@string/defual_string"
+            android:layout_below="@+id/motionSensorText"
+            android:textColor="#798ca7"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="18dp" />
+
+        <TextView
+            android:id="@+id/temperatureText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:text="@string/defual_string"
+            android:layout_below="@+id/beaconText"
+            android:textColor="#798ca7"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="18dp" />
+
+        <TextView
+            android:id="@+id/pressureText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:text="@string/defual_string"
+            android:layout_below="@+id/temperatureText"
+            android:textColor="#798ca7"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="18dp" />
+
+        <TextView
+            android:id="@+id/illuminanceText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:text="@string/defual_string"
+            android:layout_below="@+id/pressureText"
+            android:textColor="#798ca7"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="18dp" />
+
+        <TextView
+            android:id="@+id/imeiText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:text="@string/defual_string"
+            android:layout_below="@+id/illuminanceText"
+            android:textColor="#798ca7"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="18dp" />
+
+        <TextView
+            android:id="@+id/androidIDText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:text="@string/defual_string"
+            android:textColor="#798ca7"
+            android:layout_below="@+id/imeiText"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="18dp" />
+
+
+        <TextView
+            android:id="@+id/networkStatusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:text="@string/defual_string"
+            android:textColor="#798ca7"
+            android:layout_below="@+id/androidIDText"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="18dp" />
+
+        <Button
+            android:text="@string/start_recording"
+            android:layout_width="600dp"
+            android:layout_height="100dp"
+            android:textSize="22sp"
+            android:textColor="#fff"
+            android:background="#00cc66"
+            android:id="@+id/recordBtn"
+            android:layout_marginTop="27dp"
+            android:layout_alignParentStart="true" />
+
+
+    </RelativeLayout>
+</ScrollView>

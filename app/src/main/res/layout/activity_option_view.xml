@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:fillViewport="true">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <CheckBox
+            android:text="Power Level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/powerLevelChk"
+            android:layout_marginTop="28dp"
+            android:textColor="#798ca7"
+            android:buttonTint="#42a5f5"
+            android:textSize="22sp"
+            android:layout_marginStart="32dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true" />
+
+        <CheckBox
+            android:text="Location Data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#798ca7"
+            android:buttonTint="#42a5f5"
+            android:id="@+id/locationDataChk"
+            android:layout_marginTop="20dp"
+            android:textSize="22sp"
+            android:layout_below="@+id/powerLevelChk"
+            android:layout_alignStart="@+id/powerLevelChk" />
+
+        <CheckBox
+            android:text="Accelerometer Data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#798ca7"
+            android:buttonTint="#42a5f5"
+            android:id="@+id/accDataChk"
+            android:layout_marginTop="20dp"
+            android:textSize="22sp"
+            android:layout_below="@+id/locationDataChk"
+            android:layout_alignStart="@+id/powerLevelChk" />
+
+        <CheckBox
+            android:text="Beacon Data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#798ca7"
+            android:buttonTint="#42a5f5"
+            android:id="@+id/beaconChk"
+            android:layout_marginTop="20dp"
+            android:textSize="22sp"
+            android:layout_below="@+id/accDataChk"
+            android:layout_alignStart="@+id/powerLevelChk" />
+
+        <CheckBox
+            android:text="Environmental data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#798ca7"
+            android:buttonTint="#42a5f5"
+            android:id="@+id/enviChk"
+            android:layout_marginTop="20dp"
+            android:textSize="22sp"
+            android:layout_below="@+id/beaconChk"
+            android:layout_alignStart="@+id/powerLevelChk" />
+
+        <CheckBox
+            android:text="IMEI"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#798ca7"
+            android:buttonTint="#42a5f5"
+            android:id="@+id/imeiChk"
+            android:layout_marginTop="20dp"
+            android:textSize="22sp"
+            android:layout_below="@+id/enviChk"
+            android:layout_alignStart="@+id/powerLevelChk" />
+
+        <CheckBox
+            android:text="Android ID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#798ca7"
+            android:buttonTint="#42a5f5"
+            android:id="@+id/androidIDChk"
+            android:layout_marginTop="20dp"
+            android:textSize="22sp"
+            android:layout_below="@+id/imeiChk"
+            android:layout_alignStart="@+id/powerLevelChk" />
+
+        <CheckBox
+            android:text="Mac Address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#798ca7"
+            android:buttonTint="#42a5f5"
+            android:id="@+id/macChk"
+            android:layout_marginTop="20dp"
+            android:textSize="22sp"
+            android:layout_below="@+id/androidIDChk"
+            android:layout_alignStart="@+id/powerLevelChk" />
+
+        <CheckBox
+            android:text="Networking Status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#798ca7"
+            android:buttonTint="#42a5f5"
+            android:id="@+id/netStatusCheck"
+            android:layout_marginTop="20dp"
+            android:textSize="22sp"
+            android:layout_below="@+id/macChk"
+            android:layout_alignStart="@+id/powerLevelChk" />
+
+        <CheckBox
+            android:text="Bus status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#798ca7"
+            android:buttonTint="#42a5f5"
+            android:id="@+id/busStatusCheck"
+            android:layout_marginTop="20dp"
+            android:textSize="22sp"
+            android:layout_below="@+id/netStatusCheck"
+            android:layout_alignStart="@+id/powerLevelChk" />
+
+        <TextView
+            android:id="@+id/updateIntervalView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/netStatusCheck"
+            android:layout_below="@+id/busStatusCheck"
+            android:textSize="22sp"
+            android:layout_marginTop="22dp"
+            android:textColor="#798ca7"
+            android:text="@string/defual_string" />
+
+        <TextView
+            android:id="@+id/reportIntervalView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:layout_alignStart="@+id/netStatusCheck"
+            android:layout_below="@+id/updateIntervalView"
+            android:textSize="22sp"
+            android:textColor="#798ca7"
+            android:text="@string/defual_string" />
+
+        <TextView
+            android:id="@+id/serverURLView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:layout_below="@+id/reportIntervalView"
+            android:layout_alignStart="@+id/netStatusCheck"
+            android:textSize="22sp"
+            android:textColor="#798ca7"
+            android:text="@string/defual_string" />
+
+        <Button
+            android:text="Change update interval"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/serverURLView"
+            android:layout_alignStart="@+id/netStatusCheck"
+            android:layout_marginTop="22dp"
+            android:id="@+id/updateInterval" />
+
+        <Button
+            android:text="Change report interval"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_alignStart="@+id/netStatusCheck"
+            android:layout_below="@+id/updateInterval"
+            android:id="@+id/reportInterval" />
+
+        <Button
+            android:text="Change server url"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/reportInterval"
+            android:layout_alignStart="@+id/netStatusCheck"
+            android:layout_marginTop="6dp"
+            android:id="@+id/serverURL" />
+
+    </RelativeLayout>
+</ScrollView>
