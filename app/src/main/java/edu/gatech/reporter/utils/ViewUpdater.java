@@ -29,7 +29,6 @@ public class ViewUpdater {
 
     public static void init(Activity context){
         myContext = context;
-        tripIDText = (TextView) context.findViewById(R.id.tripText);
         powerLevelText = (TextView) context.findViewById(R.id.powerLevelText);
         gpsLocationText = (TextView) context.findViewById(R.id.gpsLocationText);
         motionSensorText = (TextView) context.findViewById(R.id.motionSensorText);
@@ -46,7 +45,6 @@ public class ViewUpdater {
 
     public static void update(){
         if(myContext != null){
-            tripIDText.setText(getTripIDString());
             powerLevelText.setText(getPowerStateString());
             gpsLocationText.setText(getGPSLocationString());
             motionSensorText.setText(getAccelerometerDataString());
@@ -96,8 +94,6 @@ public class ViewUpdater {
     private static String getMacAddressString(){
         return "MAC Address:\n" + Parameters.getInstance().macAddress;
     }
-
-    private static String getTripIDString(){return (Parameters.getInstance().tripID != 0)?"Current Trip ID: " + Parameters.getInstance().tripID:"Current Trip ID: null";}
 
     private static String getIMEIString(){
         return "IMEI: " + Parameters.getInstance().imei;

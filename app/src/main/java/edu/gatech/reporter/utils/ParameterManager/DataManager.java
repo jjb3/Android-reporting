@@ -109,7 +109,6 @@ public class DataManager {
         data.put("networking_state",(ParameterOptions.getInstance().netStatusCheck)? String.valueOf(Parameters.getInstance().internetConnectionState):Const.DISABLE_UPLOAD);
         data.put("at_bus_stop", (ParameterOptions.getInstance().busStatusCheck)? String.valueOf(Parameters.getInstance().atStop):Const.DISABLE_UPLOAD);
         data.put("halt", (ParameterOptions.getInstance().busStatusCheck)? String.valueOf(Parameters.getInstance().isHalted):Const.DISABLE_UPLOAD);
-        data.put("trip_id",(ParameterOptions.getInstance().busStatusCheck)? String.valueOf(Parameters.getInstance().tripID):Const.DISABLE_UPLOAD);
         data.put("timestamp", getCurrentTimestamp());
     }
 

@@ -51,22 +51,12 @@
             android:background="@android:color/darker_gray"/>
 
         <TextView
-            android:id="@+id/tripText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="22sp"
-            android:layout_marginTop="22sp"
-            android:layout_below = "@id/divider"
-            android:textColor="#798ca7"
-            android:text="@string/defual_string" />
-
-        <TextView
             android:id="@+id/powerLevelText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="22sp"
             android:layout_marginTop="22sp"
-            android:layout_below = "@id/tripText"
+            android:layout_below = "@id/divider"
             android:textColor="#798ca7"
             android:text="@string/defual_string" />
 

@@ -86,7 +86,6 @@ public class ReporterHome extends AppCompatActivity {
                 if(Parameters.getInstance().isRecording){
 
                     Parameters.getInstance().isRecording = false;
-                    Parameters.getInstance().tripID = 0;
                     recordButton.setBackgroundColor(Const.GREEN_BUTTON_COLOR);
                     recordButton.setText("Press to start recording");
 
@@ -102,7 +101,6 @@ public class ReporterHome extends AppCompatActivity {
                                     recordButton.setBackgroundColor(Const.RED_BUTTON_COLOR);
                                     recordButton.setText("Stop recording");
 
-                                    Parameters.getInstance().tripID = System.currentTimeMillis();
                                 }})
                             .setNegativeButton(android.R.string.no, null).show();
                 }

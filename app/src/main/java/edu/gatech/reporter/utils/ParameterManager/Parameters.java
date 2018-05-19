@@ -25,7 +25,6 @@ public class Parameters {
     public boolean atStop = false;
     public boolean isHalted = false;
     public boolean isRecording = false;
-    public long tripID =  0;
     public String version = "1.0.1";
     public String lastUpdatedDate = "03/25/2017";
 
