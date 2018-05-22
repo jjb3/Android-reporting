@@ -72,6 +72,7 @@ public class DataManager {
         Parameters.getInstance().internetConnectionState = myNetWorkManager.getNetworkState();;
         Parameters.getInstance().externalPower = myBatteryTracker.getChargeStatus();
         Parameters.getInstance().gpsSpeed = myGPSTracker.getGPSSpeed();
+        Parameters.getInstance().gpsTime = myGPSTracker.getGpsTime();
         Parameters.getInstance().heading = myGPSTracker.getHeading();
         Parameters.getInstance().nearestBeaconID = myBeaconTracker.getNearestBeaconID();
     }
@@ -93,6 +94,9 @@ public class DataManager {
         data.put("gps_speed",(ParameterOptions.getInstance().locationDataChk)?
                 ((Parameters.getInstance().gpsSpeed != null)? String.valueOf(Parameters.getInstance().gpsSpeed)
                         :Const.DISABLE_UPLOAD):Const.DISABLE_UPLOAD);
+        data.put("gps_time",(ParameterOptions.getInstance().locationDataChk)?
+                ((Parameters.getInstance().gpsTime > 0 )? String.valueOf(getCurrentTimestamp(Parameters.getInstance().gpsTime))
+                        :Const.DISABLE_UPLOAD):Const.DISABLE_UPLOAD);
         data.put("acceleration_x",(ParameterOptions.getInstance().accDataChk)? String.valueOf(Parameters.getInstance().sensorData[0]):Const.DISABLE_UPLOAD);
 //        Log.e(TAG, "acceleration_x: " + String.valueOf(Parameters.getInstance().sensorData[0]));
         data.put("acceleration_y",(ParameterOptions.getInstance().accDataChk)? String.valueOf(Parameters.getInstance().sensorData[1]):Const.DISABLE_UPLOAD);
@@ -107,8 +111,6 @@ public class DataManager {
         data.put("device_id",(ParameterOptions.getInstance().androidIDChk)? String.valueOf(Parameters.getInstance().secureID):Const.DISABLE_UPLOAD);
         data.put("mac_address",(ParameterOptions.getInstance().macChk)? String.valueOf(Parameters.getInstance().macAddress):Const.DISABLE_UPLOAD);
         data.put("networking_state",(ParameterOptions.getInstance().netStatusCheck)? String.valueOf(Parameters.getInstance().internetConnectionState):Const.DISABLE_UPLOAD);
-        data.put("at_bus_stop", (ParameterOptions.getInstance().busStatusCheck)? String.valueOf(Parameters.getInstance().atStop):Const.DISABLE_UPLOAD);
-        data.put("halt", (ParameterOptions.getInstance().busStatusCheck)? String.valueOf(Parameters.getInstance().isHalted):Const.DISABLE_UPLOAD);
         data.put("timestamp", getCurrentTimestamp());
     }
 
@@ -123,4 +125,10 @@ public class DataManager {
         String date = (DateFormat.format("dd-MM-yyyy hh:mm:ss", new java.util.Date()).toString());
         return date;
     }
+
+    private String getCurrentTimestamp(long gpsTime){
+        String date = (DateFormat.format("dd-MM-yyyy hh:mm:ss", gpsTime)).toString();
+        return date;
+    }
+
 }

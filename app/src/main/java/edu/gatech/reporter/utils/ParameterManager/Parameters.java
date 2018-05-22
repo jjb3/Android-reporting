@@ -17,13 +17,12 @@ public class Parameters {
     public int internetConnectionState = Const.NO_INTERNET_CONNECTION;
     public int externalPower = Const.NOT_CHARGE;
     public Double gpsSpeed;
+    public long gpsTime;
     public Double heading;
     public String macAddress = "";
     public String imei = "";
     public String secureID = "";
     public String nearestBeaconID = "";
-    public boolean atStop = false;
-    public boolean isHalted = false;
     public boolean isRecording = false;
     public String version = "1.0.1";
     public String lastUpdatedDate = "03/25/2017";

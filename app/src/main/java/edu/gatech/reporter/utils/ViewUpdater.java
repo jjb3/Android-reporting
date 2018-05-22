@@ -2,6 +2,7 @@ package edu.gatech.reporter.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.format.DateFormat;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -18,7 +19,6 @@ public class ViewUpdater {
     private static TextView motionSensorText;
     private static TextView beaconText;
     private static TextView illuminanceText;
-    private static TextView tripIDText;
     private static TextView pressureText;
     private static TextView temperatureText;
     private static TextView imeiText;
@@ -72,7 +72,8 @@ public class ViewUpdater {
         return "Latitude: " + String.valueOf(Parameters.getInstance().location[0])
                 + "\nLongitude: "+ String.valueOf(Parameters.getInstance().location[1])
                 +"\nHeading: "+ String.valueOf(Parameters.getInstance().heading)
-                +"\nGPSSpeed: " + String.valueOf(Parameters.getInstance().gpsSpeed);
+                +"\nGPSSpeed: " + String.valueOf(Parameters.getInstance().gpsSpeed)
+                +"\nGPSTime: " + DateFormat.format("dd-MM-yyyy hh:mm:ss", Parameters.getInstance().gpsTime).toString();
     }
 
     private static String getPowerStateString(){

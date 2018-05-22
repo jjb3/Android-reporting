@@ -24,9 +24,7 @@ import edu.gatech.reporter.utils.ViewUpdater;
 
 public class ReporterHome extends AppCompatActivity {
 
-    private static Button stopButton;
     private static Button recordButton;
-    private static Button haltButton;
     private static AppCompatActivity self;
     int waitForPermissionCount = 0;
 
@@ -49,36 +47,6 @@ public class ReporterHome extends AppCompatActivity {
         if(waitForPermissionCount == 0){
             startService();
         }
-        stopButton = (Button)findViewById(R.id.stopBtn);
-        stopButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if(Parameters.getInstance().atStop){
-                    Parameters.getInstance().atStop = false;
-                    haltButton.setVisibility(View.VISIBLE);
-                    stopButton.setText("Press when you ARRIVE at the bus stop");
-
-                }else{
-                    Parameters.getInstance().atStop = true;
-                    haltButton.setVisibility(View.GONE);
-                    stopButton.setText("Press as you DEPART the bus stop");
-                }
-            }
-        });
-
-        haltButton = (Button)findViewById(R.id.haltBtn);
-        haltButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if(Parameters.getInstance().isHalted){
-                    Parameters.getInstance().isHalted = false;
-                    stopButton.setVisibility(View.VISIBLE);
-                    haltButton.setText("Press when the bus halts");
-                }else{
-                    Parameters.getInstance().isHalted = true;
-                    stopButton.setVisibility(View.GONE);
-                    haltButton.setText("Press when the bus goes");
-                }
-            }
-        });
 
         recordButton = (Button)findViewById(R.id.recordBtn);
         recordButton.setOnClickListener(new View.OnClickListener() {
@@ -112,16 +80,6 @@ public class ReporterHome extends AppCompatActivity {
             Parameters.getInstance().isRecording = true;
             recordButton.setBackgroundColor(Const.RED_BUTTON_COLOR);
             recordButton.setText("Stop recording");
-        }
-        if(Parameters.getInstance().isHalted == true){
-            Parameters.getInstance().isHalted = true;
-            stopButton.setVisibility(View.GONE);
-            haltButton.setText("Press when the bus goes");
-        }
-        if(Parameters.getInstance().atStop == true){
-            Parameters.getInstance().atStop = true;
-            haltButton.setVisibility(View.GONE);
-            stopButton.setText("Press as you DEPART the bus stop");
         }
 
         ParameterOptions.getInstance().setActivity(this);
