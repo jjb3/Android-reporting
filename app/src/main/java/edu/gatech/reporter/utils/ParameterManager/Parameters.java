@@ -8,8 +8,6 @@ import edu.gatech.reporter.utils.Const;
 public class Parameters {
     public  double  batteryPct;
     public double[] sensorData = new double[4];
-    public double jostleIndex = 0.0;
-    public double distanceSumation = 0.0;
     public  Double[] location = new Double[2];
     public Double temperature = Const.NO_TEMPERATURE_SENSOR;
     public Double illuminance = Const.NO_TEMPERATURE_SENSOR;

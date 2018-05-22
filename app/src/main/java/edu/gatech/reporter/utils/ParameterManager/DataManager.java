@@ -63,8 +63,6 @@ public class DataManager {
     private void updateData(){
         Parameters.getInstance().batteryPct = myBatteryTracker.getPowerState();
         Parameters.getInstance().sensorData = myMotionSensor.getMotionSensorData();
-        Parameters.getInstance().jostleIndex = (Const.THRESHOLD < myMotionSensor.getJostleIndex())?myMotionSensor.getJostleIndex():0;
-        Parameters.getInstance().distanceSumation = myMotionSensor.getDistanceSummation();
         Parameters.getInstance().location = myGPSTracker.getLocation();
         Parameters.getInstance().illuminance = myLightSensor.getIlluminance();
         Parameters.getInstance().temperature = myTemperatureSensor.getTemperature();
@@ -101,8 +99,6 @@ public class DataManager {
 //        Log.e(TAG, "acceleration_x: " + String.valueOf(Parameters.getInstance().sensorData[0]));
         data.put("acceleration_y",(ParameterOptions.getInstance().accDataChk)? String.valueOf(Parameters.getInstance().sensorData[1]):Const.DISABLE_UPLOAD);
         data.put("acceleration_z",(ParameterOptions.getInstance().accDataChk)? String.valueOf(Parameters.getInstance().sensorData[2]):Const.DISABLE_UPLOAD);
-        data.put("jostle_index",(ParameterOptions.getInstance().accDataChk)? String.valueOf(Parameters.getInstance().jostleIndex):Const.DISABLE_UPLOAD);
-        data.put("distance_summation",(ParameterOptions.getInstance().accDataChk)? String.valueOf(Parameters.getInstance().distanceSumation):Const.DISABLE_UPLOAD);
         data.put("nearest_beacon_id",(ParameterOptions.getInstance().beaconChk)? String.valueOf(Parameters.getInstance().nearestBeaconID):Const.DISABLE_UPLOAD);
         data.put("temperature",(ParameterOptions.getInstance().enviChk)? String.valueOf(Parameters.getInstance().temperature):Const.DISABLE_UPLOAD);
         data.put("pressure",(ParameterOptions.getInstance().enviChk)? String.valueOf(Parameters.getInstance().pressure):Const.DISABLE_UPLOAD);

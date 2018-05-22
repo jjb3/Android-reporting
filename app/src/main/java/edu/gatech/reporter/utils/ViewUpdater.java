@@ -63,9 +63,7 @@ public class ViewUpdater {
     private static String getAccelerometerDataString(){
         return "X: "+ String.valueOf(Parameters.getInstance().sensorData[0])
                 + " \nY: " + String.valueOf(Parameters.getInstance().sensorData[1])
-                + " \nZ: " + String.valueOf(Parameters.getInstance().sensorData[2])
-                +" \nJostle Index: " + String.valueOf(Parameters.getInstance().jostleIndex)
-                +" \nDistance Summation: " + String.valueOf(Parameters.getInstance().distanceSumation);
+                + " \nZ: " + String.valueOf(Parameters.getInstance().sensorData[2]);
     }
 
     private static String getGPSLocationString(){
