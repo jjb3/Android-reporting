@@ -11,7 +11,7 @@ import java.util.Timer;
 import edu.gatech.reporter.utils.ParameterManager.DataManager;
 import edu.gatech.reporter.utils.ParameterManager.ParameterOptions;
 
-public class ReporterService extends Service
+public class    ReporterService extends Service
 {
     private static Context mContext;
     private static final String TAG = "Tests";

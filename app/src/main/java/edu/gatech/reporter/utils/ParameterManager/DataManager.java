@@ -53,7 +53,7 @@ public class DataManager {
         Parameters.getInstance().imei = myIDManager.getIMEI();
         Parameters.getInstance().secureID = myIDManager.getSecureID();
         Parameters.getInstance().macAddress = myIDManager.getMACAddress();
-        //data.put("data","1");
+        data.put("data","1");
     }
 
     public void sendData(){
@@ -72,7 +72,7 @@ public class DataManager {
         Parameters.getInstance().gpsSpeed = myGPSTracker.getGPSSpeed();
         Parameters.getInstance().gpsTime = myGPSTracker.getGpsTime();
         Parameters.getInstance().heading = myGPSTracker.getHeading();
-        Parameters.getInstance().nearestBeaconID = myBeaconTracker.getNearestBeaconID();
+        Parameters.getInstance().nearestBeaconID = myBeaconTracker.getNearestBeaconsID();
     }
 
     private void updateMapData(){
