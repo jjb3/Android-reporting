@@ -29,7 +29,6 @@ public class OptionView extends AppCompatActivity {
     private static CheckBox androidIDChk;
     private static CheckBox macChk;
     private static CheckBox netStatusCheck;
-    private static CheckBox busStatusCheck;
     private Button changeDataUpdateIntervalButton;
     private Button changeReportIntervalButton;
     private Button changeServerURLButton;
@@ -56,7 +55,6 @@ public class OptionView extends AppCompatActivity {
         androidIDChk = (CheckBox)this.findViewById(R.id.androidIDChk);
         macChk = (CheckBox)this.findViewById(R.id.macChk);
         netStatusCheck = (CheckBox)this.findViewById(R.id.netStatusCheck);
-        busStatusCheck = (CheckBox)this.findViewById(R.id.busStatusCheck);
         updateIntervalView = (TextView)this.findViewById(R.id.updateIntervalView);
         reportIntervalView = (TextView)this.findViewById(R.id.reportIntervalView);
         serverURLView = (TextView)this.findViewById(R.id.serverURLView);
@@ -71,7 +69,6 @@ public class OptionView extends AppCompatActivity {
         androidIDChk.setChecked(ParameterOptions.getInstance().androidIDChk);
         macChk.setChecked(ParameterOptions.getInstance().macChk);
         netStatusCheck.setChecked(ParameterOptions.getInstance().netStatusCheck);
-        busStatusCheck.setChecked(ParameterOptions.getInstance().busStatusCheck);
         updateIntervalView.setText("Data update interval: "+String.valueOf(ParameterOptions.getInstance().dataUpdateInterval) + " ms");
         reportIntervalView.setText(String.valueOf("Report interval: "+ParameterOptions.getInstance().reportInterval) + "ms");
         serverURLView.setText(String.valueOf("Server URL: \n"+ParameterOptions.getInstance().serverURL));
@@ -138,14 +135,6 @@ public class OptionView extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 ParameterOptions.getInstance().netStatusCheck = isChecked;
-                writePreferenceToFile();
-            }
-        });
-
-        busStatusCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                ParameterOptions.getInstance().busStatusCheck = isChecked;
                 writePreferenceToFile();
             }
         });

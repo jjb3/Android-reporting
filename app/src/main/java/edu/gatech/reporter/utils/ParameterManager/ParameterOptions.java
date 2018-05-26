@@ -21,7 +21,6 @@ public class ParameterOptions {
     public boolean androidIDChk = true;
     public boolean macChk = true;
     public boolean netStatusCheck = true;
-    public boolean busStatusCheck = true;
     public int dataUpdateInterval = 500;
     public int reportInterval = 5000;
     public int minUpdateDistance = 0;
