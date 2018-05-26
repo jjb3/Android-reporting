@@ -26,8 +26,12 @@ import com.estimote.proximity_sdk.proximity.ProximityObserverBuilder;
 import com.estimote.proximity_sdk.proximity.ProximityZone;
 
 
+import java.util.HashMap;
+import java.util.List;
 
 import edu.gatech.reporter.R;
+import edu.gatech.reporter.beacons.ProximityBeaconImplementation;
+import edu.gatech.reporter.beacons.ProximityBeaconInterface;
 import edu.gatech.reporter.utils.Const;
 import edu.gatech.reporter.utils.ParameterManager.ParameterOptions;
 import edu.gatech.reporter.utils.ParameterManager.Parameters;
@@ -35,13 +39,14 @@ import edu.gatech.reporter.utils.ViewUpdater;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 
-public class ReporterHome extends AppCompatActivity {
+public class ReporterHome extends AppCompatActivity implements ProximityBeaconInterface{
 
     private static Button recordButton;
     private static AppCompatActivity self;
     int waitForPermissionCount = 0;
 
-    private ProximityObserver beaconObserver;
+    private ProximityBeaconImplementation beaconObserver;
+    private HashMap<String, ProximityAttachment> beaconsInRange;
 
     public static AppCompatActivity getActivity(){
         return self;
@@ -52,6 +57,9 @@ public class ReporterHome extends AppCompatActivity {
         System.out.println("On Create");
         self = this;
         super.onCreate(savedInstanceState);
+        beaconObserver = new ProximityBeaconImplementation(this);
+        beaconObserver.startBeaconObserver();
+
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -62,42 +70,6 @@ public class ReporterHome extends AppCompatActivity {
         if(waitForPermissionCount == 0){
             startService();
         }
-
-        beaconObserver = new ProximityObserverBuilder(getApplicationContext(),
-                new EstimoteCloudCredentials("androidreporter-lk7", "41674213f80c533d22ce5aed52865253"))
-                .withOnErrorAction(new Function1<Throwable, Unit>() {
-            @Override
-            public Unit invoke(Throwable throwable) {
-                Log.e("app", "proximity observer error: " + throwable);
-                return null;
-            }
-        })
-                .withBalancedPowerMode()
-                .build();
-
-
-        ProximityZone zone1 = beaconObserver.zoneBuilder()
-                .forAttachmentKeyAndValue("Location", "Home Location - Panama")
-                .inFarRange()
-                .withOnEnterAction(new Function1<ProximityAttachment, Unit>() {
-                    @Override
-                    public Unit invoke(ProximityAttachment attachment) {
-                        Log.d("app", "Welcome to my first try");
-                        Toast.makeText(ReporterHome.this, "Welcome to my first try using beacon", Toast.LENGTH_SHORT).show();
-                        return null;
-                    }
-                })
-                .withOnExitAction(new Function1<ProximityAttachment, Unit>() {
-                    @Override
-                    public Unit invoke(ProximityAttachment attachment) {
-                        Log.d("app", "Bye bye, come visit us again on from the first try");
-                        Toast.makeText(ReporterHome.this, "Bye bye, come visit us again on from the first try", Toast.LENGTH_SHORT).show();
-                        return null;
-                    }
-                })
-                .create();
-        beaconObserver.addProximityZone(zone1);
-        beaconObserver.start();
 
         recordButton = (Button)findViewById(R.id.recordBtn);
         recordButton.setOnClickListener(new View.OnClickListener() {
@@ -142,6 +114,13 @@ public class ReporterHome extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         ViewUpdater.init(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        beaconObserver.stopBeaconObserver();
+        beaconObserver = null;
     }
 
 
@@ -221,4 +200,15 @@ public class ReporterHome extends AppCompatActivity {
         };
         updateView.start();
     }
+
+    @Override
+    public void onEnterBeaconRegion(ProximityAttachment attachments) {
+        Toast.makeText(ReporterHome.this, "Welcome to my first try using beacon", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onExitBeaconRegion(ProximityAttachment attachments) {
+        Toast.makeText(ReporterHome.this, "Bye Bye to try using beacon", Toast.LENGTH_SHORT).show();
+    }
+
 }

@@ -118,12 +118,12 @@ public class DataManager {
     }
 
     private String getCurrentTimestamp(){
-        String date = (DateFormat.format("dd-MM-yyyy hh:mm:ss", new java.util.Date()).toString());
+        String date = (DateFormat.format("yyyy-MM-dd'T'HH:mm:ssZ", new java.util.Date()).toString());
         return date;
     }
 
     private String getCurrentTimestamp(long gpsTime){
-        String date = (DateFormat.format("dd-MM-yyyy hh:mm:ss", gpsTime)).toString();
+        String date = (DateFormat.format("yyyy-MM-dd'T'HH:mm:ssZ", gpsTime)).toString();
         return date;
     }
 

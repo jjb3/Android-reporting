@@ -71,7 +71,7 @@ public class ViewUpdater {
                 + "\nLongitude: "+ String.valueOf(Parameters.getInstance().location[1])
                 +"\nHeading: "+ String.valueOf(Parameters.getInstance().heading)
                 +"\nGPSSpeed: " + String.valueOf(Parameters.getInstance().gpsSpeed)
-                +"\nGPSTime: " + DateFormat.format("dd-MM-yyyy hh:mm:ss", Parameters.getInstance().gpsTime).toString();
+                +"\nGPSTime: " + DateFormat.format("yyyy-MM-dd'T'HH:mm:ssZ", Parameters.getInstance().gpsTime).toString();
     }
 
     private static String getPowerStateString(){
