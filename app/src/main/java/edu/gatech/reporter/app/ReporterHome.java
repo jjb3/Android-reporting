@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import edu.gatech.reporter.R;
+import edu.gatech.reporter.ServiceRequests.BeaconServiceRequests;
 import edu.gatech.reporter.beacons.ProximityBeaconImplementation;
 import edu.gatech.reporter.beacons.ProximityBeaconInterface;
 import edu.gatech.reporter.utils.Const;
@@ -47,6 +48,7 @@ public class ReporterHome extends AppCompatActivity implements ProximityBeaconIn
 
     private ProximityBeaconImplementation beaconObserver;
     private HashMap<String, ProximityAttachment> beaconsInRange;
+    BeaconServiceRequests beaconServiceRequests;
 
     public static AppCompatActivity getActivity(){
         return self;
@@ -59,6 +61,9 @@ public class ReporterHome extends AppCompatActivity implements ProximityBeaconIn
         super.onCreate(savedInstanceState);
         beaconObserver = new ProximityBeaconImplementation(this);
         beaconObserver.startBeaconObserver();
+//        beaconServiceRequests = BeaconServiceRequests.getInstance(this);
+//        beaconServiceRequests.sendPostRequest("1001", "41.0389", "111.6808",
+//                "10", "87", "2", "2018-05-20T01:47:26Z");
 
 
         setContentView(R.layout.activity_main);
