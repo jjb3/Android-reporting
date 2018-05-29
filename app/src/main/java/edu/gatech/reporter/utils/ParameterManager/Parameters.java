@@ -15,6 +15,7 @@ public class Parameters {
     public int internetConnectionState = Const.NO_INTERNET_CONNECTION;
     public int externalPower = Const.NOT_CHARGE;
     public Double gpsSpeed;
+    public float gpsAccuracy;
     public long gpsTime;
     public Double heading;
     public String macAddress = "";

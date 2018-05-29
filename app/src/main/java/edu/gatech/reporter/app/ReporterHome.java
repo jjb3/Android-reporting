@@ -66,9 +66,6 @@ public class ReporterHome extends AppCompatActivity implements ProximityBeaconIn
         beaconObserver = new ProximityBeaconImplementation(this);
         beaconObserver.startBeaconObserver();
         beaconsInRange = new HashMap<>();
-//        beaconServiceRequests = BeaconServiceRequests.getInstance(this);
-//        beaconServiceRequests.sendPostRequest("1001", "41.0389", "111.6808",
-//                "10", "87", "2", "2018-05-20T01:47:26Z");
 
 
         setContentView(R.layout.activity_main);

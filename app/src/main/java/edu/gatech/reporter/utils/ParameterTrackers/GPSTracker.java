@@ -165,6 +165,13 @@ public class GPSTracker extends Service implements LocationListener {
         return null;
     }
 
+    public float getGPSAccuracy(){
+        if(isGPSValid()) {
+            return location.getAccuracy();
+        } else
+            return 0;
+    }
+
     public long getGpsTime(){
         return gpsTime;
     }

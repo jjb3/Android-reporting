@@ -9,7 +9,6 @@ import edu.gatech.reporter.BuildConfig;
 import edu.gatech.reporter.utils.Connection;
 import edu.gatech.reporter.utils.Const;
 import edu.gatech.reporter.utils.ParameterTrackers.BatteryTracker;
-import edu.gatech.reporter.utils.ParameterTrackers.BeaconTracker;
 import edu.gatech.reporter.utils.ParameterTrackers.DeviceIDManager;
 import edu.gatech.reporter.utils.ParameterTrackers.GPSTracker;
 import edu.gatech.reporter.utils.ParameterTrackers.LightSensor;
@@ -32,7 +31,6 @@ public class DataManager {
     private LightSensor myLightSensor;
     private PressureSensor myPressureSensor;
     private TemperatureSensor myTemperatureSensor;
-    private BeaconTracker myBeaconTracker;
 
     private static final String TAG = "DataManager";
     String versionName = BuildConfig.VERSION_NAME;
@@ -47,8 +45,6 @@ public class DataManager {
         myTemperatureSensor = new TemperatureSensor();
         myLightSensor = new LightSensor();
         myPressureSensor = new PressureSensor();
-        myBeaconTracker = new BeaconTracker();
-
 
         Parameters.getInstance().imei = myIDManager.getIMEI();
         Parameters.getInstance().secureID = myIDManager.getSecureID();
@@ -70,9 +66,9 @@ public class DataManager {
         Parameters.getInstance().internetConnectionState = myNetWorkManager.getNetworkState();;
         Parameters.getInstance().externalPower = myBatteryTracker.getChargeStatus();
         Parameters.getInstance().gpsSpeed = myGPSTracker.getGPSSpeed();
+        Parameters.getInstance().gpsAccuracy = myGPSTracker.getGPSAccuracy();
         Parameters.getInstance().gpsTime = myGPSTracker.getGpsTime();
         Parameters.getInstance().heading = myGPSTracker.getHeading();
-        Parameters.getInstance().nearestBeaconID = myBeaconTracker.getNearestBeaconsID();
     }
 
     private void updateMapData(){
@@ -80,17 +76,20 @@ public class DataManager {
 //        Log.d(TAG, versionName);
         data.put("power_level", (ParameterOptions.getInstance().powerLevelChk) ? String.valueOf(Parameters.getInstance().batteryPct):Const.DISABLE_UPLOAD);
         data.put("external_power",(ParameterOptions.getInstance().powerLevelChk)? String.valueOf(Parameters.getInstance().externalPower):Const.DISABLE_UPLOAD);
-        data.put("latitude",(ParameterOptions.getInstance().locationDataChk)?
+        data.put("lat",(ParameterOptions.getInstance().locationDataChk)?
                 ((Parameters.getInstance().location[0] != null)? String.valueOf(Parameters.getInstance().location[0])
                         :Const.DISABLE_UPLOAD):Const.DISABLE_UPLOAD);
-        data.put("longitude",(ParameterOptions.getInstance().locationDataChk)?
+        data.put("lng",(ParameterOptions.getInstance().locationDataChk)?
                 ((Parameters.getInstance().location[1] != null)? String.valueOf(Parameters.getInstance().location[1])
                         :Const.DISABLE_UPLOAD):Const.DISABLE_UPLOAD);
         data.put("heading",(ParameterOptions.getInstance().locationDataChk)?
                 ((Parameters.getInstance().heading != null)? String.valueOf(Parameters.getInstance().heading)
                         :Const.DISABLE_UPLOAD):Const.DISABLE_UPLOAD);
-        data.put("gps_speed",(ParameterOptions.getInstance().locationDataChk)?
+        data.put("speed",(ParameterOptions.getInstance().locationDataChk)?
                 ((Parameters.getInstance().gpsSpeed != null)? String.valueOf(Parameters.getInstance().gpsSpeed)
+                        :Const.DISABLE_UPLOAD):Const.DISABLE_UPLOAD);
+        data.put("accuracy",(ParameterOptions.getInstance().locationDataChk)?
+                ((Parameters.getInstance().gpsSpeed != null)? String.valueOf(Parameters.getInstance().gpsAccuracy)
                         :Const.DISABLE_UPLOAD):Const.DISABLE_UPLOAD);
         data.put("gps_time",(ParameterOptions.getInstance().locationDataChk)?
                 ((Parameters.getInstance().gpsTime > 0 )? String.valueOf(getCurrentTimestamp(Parameters.getInstance().gpsTime))
@@ -99,7 +98,6 @@ public class DataManager {
 //        Log.e(TAG, "acceleration_x: " + String.valueOf(Parameters.getInstance().sensorData[0]));
         data.put("acceleration_y",(ParameterOptions.getInstance().accDataChk)? String.valueOf(Parameters.getInstance().sensorData[1]):Const.DISABLE_UPLOAD);
         data.put("acceleration_z",(ParameterOptions.getInstance().accDataChk)? String.valueOf(Parameters.getInstance().sensorData[2]):Const.DISABLE_UPLOAD);
-        data.put("nearest_beacon_id",(ParameterOptions.getInstance().beaconChk)? String.valueOf(Parameters.getInstance().nearestBeaconID):Const.DISABLE_UPLOAD);
         data.put("temperature",(ParameterOptions.getInstance().enviChk)? String.valueOf(Parameters.getInstance().temperature):Const.DISABLE_UPLOAD);
         data.put("pressure",(ParameterOptions.getInstance().enviChk)? String.valueOf(Parameters.getInstance().pressure):Const.DISABLE_UPLOAD);
         data.put("illuminance",(ParameterOptions.getInstance().enviChk)? String.valueOf(Parameters.getInstance().illuminance):Const.DISABLE_UPLOAD);

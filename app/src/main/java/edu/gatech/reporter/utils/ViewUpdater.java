@@ -17,7 +17,6 @@ public class ViewUpdater {
     private static TextView powerLevelText;
     private static TextView gpsLocationText;
     private static TextView motionSensorText;
-    private static TextView beaconText;
     private static TextView illuminanceText;
     private static TextView pressureText;
     private static TextView temperatureText;
@@ -39,7 +38,6 @@ public class ViewUpdater {
         androidIDText = (TextView) context.findViewById(R.id.androidIDText);
         networkStateText = (TextView) context.findViewById(R.id.networkStatusText);
         externalPowerText = (TextView) context.findViewById(R.id.externalPower);
-        beaconText = (TextView)context.findViewById(R.id.beaconText);
 
     }
 
@@ -55,7 +53,6 @@ public class ViewUpdater {
             androidIDText.setText(getAndroidIDString());
             imeiText.setText(getIMEIString());
             externalPowerText.setText(getExternalPowerString());
-            beaconText.setText(getNearestBeaconIDString());
         }
 
     }
@@ -131,9 +128,4 @@ public class ViewUpdater {
             return "Pressure:\nNo pressure sensor";
         return "Pressure:\n" + Parameters.getInstance().pressure;
     }
-
-    private static String getNearestBeaconIDString(){
-        return "Nearest beacon ID:\n" + Parameters.getInstance().nearestBeaconID;
-    }
-
 }
