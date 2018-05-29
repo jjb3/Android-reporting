@@ -92,7 +92,7 @@ public class Connection {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put("auth_token","Private");
+                params.put("auth_token",ReporterService.getContext().getString(R.string.auth_token));
                 params.put("Content-Type", "application/json");
                 params.put("Accept", "application/json");
                 params.put("Accept-Encoding", "utf-8");

@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.gatech.reporter.R;
 
 
 public class BeaconServiceRequests {
@@ -86,7 +87,7 @@ public class BeaconServiceRequests {
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> params = new HashMap<>();
-                    params.put("auth_token","Private");
+                    params.put("auth_token",context.getString(R.string.auth_token));
                     params.put("Content-Type", "application/json");
                     params.put("Accept", "application/json");
                     params.put("Accept-Encoding", "utf-8");
