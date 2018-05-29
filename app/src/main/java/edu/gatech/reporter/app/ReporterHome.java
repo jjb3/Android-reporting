@@ -9,12 +9,14 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -28,6 +30,7 @@ import com.estimote.proximity_sdk.proximity.ProximityZone;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import edu.gatech.reporter.R;
 import edu.gatech.reporter.ServiceRequests.BeaconServiceRequests;
@@ -43,6 +46,7 @@ import kotlin.jvm.functions.Function1;
 public class ReporterHome extends AppCompatActivity implements ProximityBeaconInterface{
 
     private static Button recordButton;
+    public TextView beaconTextView;
     private static AppCompatActivity self;
     int waitForPermissionCount = 0;
 
@@ -61,6 +65,7 @@ public class ReporterHome extends AppCompatActivity implements ProximityBeaconIn
         super.onCreate(savedInstanceState);
         beaconObserver = new ProximityBeaconImplementation(this);
         beaconObserver.startBeaconObserver();
+        beaconsInRange = new HashMap<>();
 //        beaconServiceRequests = BeaconServiceRequests.getInstance(this);
 //        beaconServiceRequests.sendPostRequest("1001", "41.0389", "111.6808",
 //                "10", "87", "2", "2018-05-20T01:47:26Z");
@@ -70,6 +75,8 @@ public class ReporterHome extends AppCompatActivity implements ProximityBeaconIn
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        beaconTextView = (TextView) findViewById(R.id.beaconText);
 
         checkPermission();
         if(waitForPermissionCount == 0){
@@ -206,14 +213,49 @@ public class ReporterHome extends AppCompatActivity implements ProximityBeaconIn
         updateView.start();
     }
 
+    private void updateBeaconsInRange(){
+
+        String beaconsText = "";
+
+        if (!beaconsInRange.isEmpty()) {
+            for (Map.Entry<String, ProximityAttachment> entry : beaconsInRange.entrySet()) {
+                String key = entry.getKey();
+                ProximityAttachment attachment = entry.getValue();
+                beaconsText = "Beacon Id: " + key;
+
+                for (Map.Entry<String, String> attch : attachment.getPayload().entrySet()) {
+                    String key1 = attch.getKey();
+                    String key1Value = attch.getValue();
+
+                    beaconsText = beaconsText + "\n\t" + key1 + ": " + key1Value;
+                }
+            }
+        } else {
+            beaconsText = "No beacons nearby";
+        }
+        beaconTextView.setText(beaconsText);
+    }
+
     @Override
     public void onEnterBeaconRegion(ProximityAttachment attachments) {
-        Toast.makeText(ReporterHome.this, "Welcome to my first try using beacon", Toast.LENGTH_SHORT).show();
+        String tempDeviceId = attachments.getDeviceId();
+
+        if(!beaconsInRange.containsKey(tempDeviceId)) {
+            beaconsInRange.put(tempDeviceId, attachments);
+            updateBeaconsInRange();
+        }
+
+        //Toast.makeText(ReporterHome.this, "Welcome to my first try using beacon", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onExitBeaconRegion(ProximityAttachment attachments) {
-        Toast.makeText(ReporterHome.this, "Bye Bye to try using beacon", Toast.LENGTH_SHORT).show();
+        String tempDeviceId = attachments.getDeviceId();
+
+        beaconsInRange.remove(tempDeviceId);
+        updateBeaconsInRange();
+
+       // Toast.makeText(ReporterHome.this, "Bye Bye to try using beacon", Toast.LENGTH_SHORT).show();
     }
 
 }
