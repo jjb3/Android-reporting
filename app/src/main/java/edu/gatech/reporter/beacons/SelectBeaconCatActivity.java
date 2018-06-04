@@ -1,5 +1,6 @@
 package edu.gatech.reporter.beacons;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.SparseBooleanArray;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -16,15 +18,12 @@ import edu.gatech.reporter.R;
 
 public class SelectBeaconCatActivity extends AppCompatActivity {
 
-    @BindView(R.id.toolbar) Toolbar toolbar;
+//    @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.beacon_recycler_view) RecyclerView recyclerview;
 
     private BeaconAdapter beaconAdapter;
     private ArrayList<String> institutionList;
     private SparseBooleanArray chkStatus;
-
-
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,4 +63,21 @@ public class SelectBeaconCatActivity extends AppCompatActivity {
         recyclerview.setAdapter(beaconAdapter);
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        ArrayList<String> tempArryalist = new ArrayList<String>();
+
+        for(int i = 0 ; i < chkStatus.size() ; i++){
+            if (chkStatus.get(i) == true){
+                tempArryalist.add(institutionList.get(i));
+            }
+        }
+        String [] tempList = tempArryalist.toArray(new String[0]);
+        intent.putExtra("Institutions", tempArryalist );
+        setResult(RESULT_OK, intent);
+        super.onBackPressed();
+        finish();
+
+    }
 }

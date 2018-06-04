@@ -44,7 +44,7 @@ public class BeaconAdapter extends RecyclerView.Adapter<BeaconAdapter.MyViewHold
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                boolean newStatus = !holder.checkBox.isChecked();
+                boolean newStatus = holder.checkBox.isChecked();
                 holder.checkBox.setChecked(newStatus);
                 checkboxStatus.append(position, newStatus);
             }

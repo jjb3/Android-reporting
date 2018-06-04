@@ -23,7 +23,7 @@
             android:layout_height="1dp"
             android:layout_marginTop="22sp"
             android:id="@+id/divider"
-            android:layout_below="@+id/recordBtn"
+            android:layout_below="@+id/beacon_btn"
             android:background="@android:color/darker_gray"/>
 
         <TextView
@@ -156,6 +156,13 @@
             android:id="@+id/recordBtn"
             android:layout_marginTop="27dp"
             android:layout_alignParentStart="true" />
+
+        <Button
+            android:id="@+id/beacon_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Click to select institutions"
+            android:layout_below="@id/recordBtn"/>
 
 
     </RelativeLayout>

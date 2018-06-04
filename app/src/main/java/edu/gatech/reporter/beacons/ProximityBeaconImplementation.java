@@ -10,6 +10,7 @@ import com.estimote.proximity_sdk.proximity.ProximityObserver;
 import com.estimote.proximity_sdk.proximity.ProximityObserverBuilder;
 import com.estimote.proximity_sdk.proximity.ProximityZone;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.gatech.reporter.app.ReporterHome;
@@ -22,31 +23,37 @@ public class ProximityBeaconImplementation {
     ProximityObserver.Handler beaconObserverHandler;
     ProximityBeaconInterface proximityBeaconImplementor;
 
-    public ProximityBeaconImplementation(ProximityBeaconInterface activity) {
+    public ProximityBeaconImplementation(ProximityBeaconInterface activity,
+                                         ArrayList<String> institutionsTracked) {
         proximityBeaconImplementor = activity;
         initProximityObserver(activity);
 
-        ProximityZone zone1 = beaconObserver.zoneBuilder()
-                .forAttachmentKeyAndValue("Location", "Home Location - Panama")
-                .inFarRange()
-                .withOnEnterAction(new Function1<ProximityAttachment, Unit>() {
-                    @Override
-                    public Unit invoke(ProximityAttachment attachment) {
-                        Log.d("app", "Welcome to my first try");
-                        proximityBeaconImplementor.onEnterBeaconRegion(attachment);
-                        return null;
-                    }
-                })
-                .withOnExitAction(new Function1<ProximityAttachment, Unit>() {
-                    @Override
-                    public Unit invoke(ProximityAttachment attachment) {
-                        Log.d("app", "Bye bye, come visit us again on from the first try");
-                        proximityBeaconImplementor.onExitBeaconRegion(attachment);
-                        return null;
-                    }
-                })
-                .create();
-        beaconObserver.addProximityZones(zone1);
+        for(int i = 0 ; i < institutionsTracked.size() ; i++){
+            addProximityZone("Institution", institutionsTracked.get(i));
+        }
+
+
+//        ProximityZone zone1 = beaconObserver.zoneBuilder()
+//                .forAttachmentKeyAndValue("Institution", "Home Location - Panama")
+//                .inFarRange()
+//                .withOnEnterAction(new Function1<ProximityAttachment, Unit>() {
+//                    @Override
+//                    public Unit invoke(ProximityAttachment attachment) {
+//                        Log.d("app", "Welcome to my first try");
+//                        proximityBeaconImplementor.onEnterBeaconRegion(attachment);
+//                        return null;
+//                    }
+//                })
+//                .withOnExitAction(new Function1<ProximityAttachment, Unit>() {
+//                    @Override
+//                    public Unit invoke(ProximityAttachment attachment) {
+//                        Log.d("app", "Bye bye, come visit us again on from the first try");
+//                        proximityBeaconImplementor.onExitBeaconRegion(attachment);
+//                        return null;
+//                    }
+//                })
+//                .create();
+//        beaconObserver.addProximityZones(zone1);
     }
 
     private void initProximityObserver(ProximityBeaconInterface activity) {
@@ -79,7 +86,8 @@ public class ProximityBeaconImplementation {
                 .withOnEnterAction(new Function1<ProximityAttachment, Unit>() {
                     @Override
                     public Unit invoke(ProximityAttachment attachment) {
-                        Log.d("app", "Welcome to my first try");
+                        Log.d("app", "Institution");
+                        proximityBeaconImplementor.onEnterBeaconRegion(attachment);
                         return null;
                     }
                 })
@@ -87,11 +95,24 @@ public class ProximityBeaconImplementation {
                     @Override
                     public Unit invoke(ProximityAttachment attachment) {
                         Log.d("app", "Bye bye, come visit us again on from the first try");
+                        proximityBeaconImplementor.onExitBeaconRegion(attachment);
                         return null;
                     }
                 })
-                .create();
+                .withOnChangeAction(new Function1<List<? extends ProximityAttachment>, Unit>() {
+                    @Override
+                    public Unit invoke(List<? extends ProximityAttachment> attachments) {
+                        List<String> busStops = new ArrayList<>();
+                        for (ProximityAttachment attachment : attachments) {
+                            busStops.add(attachment.getPayload().get("Bus Stop"));
+                            proximityBeaconImplementor.onChangeActionInRegion(attachment);
+                        }
+                        Log.d("app", "Nearby desks: " + busStops);
+                        return null;
+                    }
+                }).create();
         beaconObserver.addProximityZones(tempProxZone);
+
     }
 
     public void startBeaconObserver(){

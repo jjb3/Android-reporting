@@ -36,6 +36,10 @@
             </intent-filter>
         </receiver>
 
+
+        <activity
+            android:name=".beacons.SelectBeaconCatActivity"/>
+
         <activity
             android:name=".app.OptionView"
             android:label="@string/title_activity_option_view" />
