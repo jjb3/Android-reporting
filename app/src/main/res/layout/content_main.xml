@@ -23,30 +23,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/beacon_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/recordBtn"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Click to select institutions"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recordBtn" />
-
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="22sp"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:id="@+id/divider"
-        app:layout_constraintTop_toBottomOf="@id/beacon_btn"
+        app:layout_constraintTop_toBottomOf="@id/recordBtn"
         android:background="@android:color/darker_gray"/>
 
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
         android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -62,15 +52,15 @@
             android:layout_marginTop="8dp">
 
             <TextView
-                style="@style/InformationHeaders"
                 android:id="@+id/power_info_header"
+                style="@style/InformationHeaders"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/device_power"
                 tools:text="@string/device_power" />
 
             <LinearLayout
-                android:id="@+id/power_header"
+                android:id="@+id/power_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -81,15 +71,15 @@
                 app:layout_constraintTop_toBottomOf="@id/power_info_header">
 
                 <TextView
-                    style="@style/Information"
                     android:id="@+id/powerLevelText"
+                    style="@style/Information"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/defual_string" />
 
                 <TextView
-                    style="@style/Information"
                     android:id="@+id/externalPower"
+                    style="@style/Information"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/powerLevelText"
@@ -97,117 +87,175 @@
                     app:layout_constraintTop_toBottomOf="@id/powerLevelText" />
             </LinearLayout>
 
-
-
-
             <TextView
-                android:id="@+id/gpsLocationText"
+                android:id="@+id/gps_info_header"
+                style="@style/InformationHeaders"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="22sp"
-                android:text="@string/defual_string"
-                android:textColor="#798ca7"
-                android:layout_alignParentStart="true"
-                app:layout_constraintTop_toBottomOf="@id/power_header"
-                android:layout_marginTop="18dp" />
+                android:text="@string/gps_header_text"
+                app:layout_constraintTop_toBottomOf="@id/power_info" />
+
+            <LinearLayout
+                android:id="@+id/gps_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="@+id/power_info_header"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/gps_info_header">
+
+                <TextView
+                    android:id="@+id/gpsLocationText"
+                    style="@style/Information"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:text="@string/defual_string" />
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/motionSensorText"
+                android:id="@+id/motion_info_header"
+                style="@style/InformationHeaders"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="22sp"
-                android:text="@string/defual_string"
-                android:layout_below="@+id/gpsLocationText"
-                android:textColor="#798ca7"
-                android:layout_alignParentStart="true"
-                app:layout_constraintTop_toBottomOf="@id/gpsLocationText"
-                android:layout_marginTop="18dp" />
+                android:text="@string/motion_sensor_information_text"
+                app:layout_constraintTop_toBottomOf="@id/gps_info" />
 
+
+            <LinearLayout
+                android:id="@+id/motion_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="@+id/power_info_header"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/motion_info_header">
+
+
+                <TextView
+                    android:id="@+id/motionSensorText"
+                    style="@style/Information"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:text="@string/defual_string" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/beacon_info_header"
+                style="@style/InformationHeaders"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/nearby_beacon_header_text"
+                app:layout_constraintTop_toBottomOf="@id/motion_info" />
+
+            <!--this will be a recyclerview later-->
             <TextView
                 android:id="@+id/beaconText"
+                style="@style/Information"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="22sp"
+                android:layout_marginStart="8dp"
                 android:text="@string/defual_string"
-                android:layout_below="@+id/motionSensorText"
-                android:textColor="#798ca7"
-                android:layout_alignParentStart="true"
-                app:layout_constraintTop_toBottomOf="@id/motionSensorText"
-                android:layout_marginTop="18dp" />
-
-            <TextView
-                android:id="@+id/temperatureText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="22sp"
-                android:text="@string/defual_string"
-                android:layout_below="@+id/beaconText"
-                android:textColor="#798ca7"
-                android:layout_alignParentStart="true"
-                app:layout_constraintTop_toBottomOf="@id/beaconText"
-                android:layout_marginTop="18dp" />
-
-            <TextView
-                android:id="@+id/pressureText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="22sp"
-                android:text="@string/defual_string"
-                android:layout_below="@+id/temperatureText"
-                android:textColor="#798ca7"
-                android:layout_alignParentStart="true"
-                app:layout_constraintTop_toBottomOf="@id/temperatureText"
-                android:layout_marginTop="18dp" />
-
-            <TextView
-                android:id="@+id/illuminanceText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="22sp"
-                android:text="@string/defual_string"
-                android:layout_below="@+id/pressureText"
-                android:textColor="#798ca7"
-                android:layout_alignParentStart="true"
-                app:layout_constraintTop_toBottomOf="@id/pressureText"
-                android:layout_marginTop="18dp" />
-
-            <TextView
-                android:id="@+id/imeiText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="22sp"
-                android:text="@string/defual_string"
-                android:layout_below="@+id/illuminanceText"
-                android:textColor="#798ca7"
-                android:layout_alignParentStart="true"
-                app:layout_constraintTop_toBottomOf="@id/illuminanceText"
-                android:layout_marginTop="18dp" />
-
-            <TextView
-                android:id="@+id/androidIDText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="22sp"
-                android:text="@string/defual_string"
-                android:textColor="#798ca7"
-                android:layout_below="@+id/imeiText"
-                android:layout_alignParentStart="true"
-                app:layout_constraintTop_toBottomOf="@id/imeiText"
-                android:layout_marginTop="18dp" />
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/beacon_info_header" />
 
 
             <TextView
-                android:id="@+id/networkStatusText"
+                android:id="@+id/outdoor_info_header"
+                style="@style/InformationHeaders"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="22sp"
-                android:text="@string/defual_string"
-                android:textColor="#798ca7"
-                android:layout_below="@+id/androidIDText"
-                android:layout_alignParentStart="true"
-                app:layout_constraintTop_toBottomOf="@id/androidIDText"
-                android:layout_marginTop="18dp" />
+                android:text="@string/outdoor_condition_information_text"
+                app:layout_constraintTop_toBottomOf="@id/beaconText" />
 
+            <LinearLayout
+                android:id="@+id/outdoor_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="@+id/power_info_header"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/outdoor_info_header">
+
+                <TextView
+                    android:id="@+id/temperatureText"
+                    style="@style/Information"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/defual_string" />
+
+                <TextView
+                    android:id="@+id/pressureText"
+                    style="@style/Information"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/temperatureText"
+                    android:text="@string/defual_string"
+                    app:layout_constraintTop_toBottomOf="@id/temperatureText" />
+
+                <TextView
+                    android:id="@+id/illuminanceText"
+                    style="@style/Information"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/pressureText"
+                    android:text="@string/defual_string"
+                    app:layout_constraintTop_toBottomOf="@id/pressureText" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/device_info_header"
+                style="@style/InformationHeaders"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/device_information_text"
+                app:layout_constraintTop_toBottomOf="@id/outdoor_info" />
+
+            <LinearLayout
+                android:id="@+id/device_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/power_info_header"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/device_info_header">
+
+                <TextView
+                    android:id="@+id/imeiText"
+                    style="@style/Information"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/defual_string" />
+
+                <TextView
+                    android:id="@+id/androidIDText"
+                    style="@style/Information"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/defual_string" />
+
+
+                <TextView
+                    android:id="@+id/networkStatusText"
+                    style="@style/Information"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/defual_string" />
+            </LinearLayout>
         </android.support.constraint.ConstraintLayout>
 
     </ScrollView>

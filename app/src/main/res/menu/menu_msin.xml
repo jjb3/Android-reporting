@@ -4,12 +4,21 @@
     tools:context=".app.ReporterHome">
     <item
         android:id="@+id/action_settings"
-        android:orderInCategory="100"
+        android:orderInCategory="300"
         android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:icon="@drawable/ic_baseline_settings_20px"
+        app:showAsAction="always" />
     <item
         android:id="@+id/action_about"
-        android:orderInCategory="100"
+        android:orderInCategory="200"
         android:title="@string/action_about"
-        app:showAsAction="never" />
+        android:icon="@drawable/ic_baseline_info_24px"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_beacons"
+        android:orderInCategory="100"
+        android:title="@string/action_select_beacons"
+        android:icon="@drawable/ic_baseline_beacon_24px"
+        app:showAsAction="always" />
+
 </menu>

@@ -3,11 +3,13 @@ package edu.gatech.reporter.beacons;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseBooleanArray;
+import android.view.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,12 +20,14 @@ import edu.gatech.reporter.R;
 
 public class SelectBeaconCatActivity extends AppCompatActivity {
 
-//    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.beacon_recycler_view) RecyclerView recyclerview;
 
     private BeaconAdapter beaconAdapter;
     private ArrayList<String> institutionList;
     private SparseBooleanArray chkStatus;
+
+    private ActionBar actionBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,10 +38,20 @@ public class SelectBeaconCatActivity extends AppCompatActivity {
 
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if(item.getItemId() == android.R.id.home){
+            onBackPressed();
+        }
+        return false;
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         initData();
         initRecyclerview();
+        initToolbar();
     }
 
     private void initData(){
@@ -61,6 +75,13 @@ public class SelectBeaconCatActivity extends AppCompatActivity {
         beaconAdapter = new BeaconAdapter(institutionList, chkStatus);
         recyclerview.setLayoutManager(new LinearLayoutManager(this));
         recyclerview.setAdapter(beaconAdapter);
+    }
+
+    private void initToolbar(){
+        setSupportActionBar(toolbar);
+        actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("Beacons");
     }
 
     @Override

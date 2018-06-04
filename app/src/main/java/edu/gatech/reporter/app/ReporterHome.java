@@ -52,7 +52,6 @@ public class ReporterHome extends AppCompatActivity implements ProximityBeaconIn
 
     private static Button recordButton;
     public TextView beaconTextView;
-    @BindView(R.id.beacon_btn) Button beaconButton;
 
     private static AppCompatActivity self;
     int waitForPermissionCount = 0;
@@ -160,6 +159,13 @@ public class ReporterHome extends AppCompatActivity implements ProximityBeaconIn
             startActivity(intent);
             return true;
         }
+        if(id == R.id.action_beacons){
+            Intent intent = new Intent(this, SelectBeaconCatActivity.class);
+            intent.putExtra("selectedbeacons",2);
+            this.startActivityForResult(intent,1);
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -246,25 +252,9 @@ public class ReporterHome extends AppCompatActivity implements ProximityBeaconIn
         beaconObserver.startBeaconObserver();
     }
 
-    @OnClick(R.id.beacon_btn)
-    public void onSelectBeaconClick(){
-        Intent intent = new Intent(this, SelectBeaconCatActivity.class);
-        intent.putExtra("selectedbeacons",2);
-        this.startActivityForResult(intent,1);
-    }
-
-
     @Override
     public void onEnterBeaconRegion(ProximityAttachment attachments) {
-        String tempDeviceId = attachments.getDeviceId();
-
-//        if(!beaconsInRange.containsKey(tempDeviceId)) {
-//            beaconsInRange.put(tempDeviceId, attachments);
-//            updateBeaconsInRange();
-//        }
-
-        if(attachments.getPayload().get("Institution").equals("Georgia Tech"))
-            Toast.makeText(ReporterHome.this, "Welcome to Candy Region Zone.", Toast.LENGTH_SHORT).show();
+        // intentionally left in blank
     }
 
     @Override

@@ -5,5 +5,5 @@
     <dimen name="fab_margin">16dp</dimen>
 
     <dimen name="text_header_size">24sp</dimen>
-    <dimen name="text_info_size">20sp</dimen>
+    <dimen name="text_info_size">22sp</dimen>
 </resources>
