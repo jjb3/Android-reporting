@@ -169,7 +169,7 @@ public class ReporterHome extends AppCompatActivity implements ProximityBeaconIn
             intent.putExtra("selectedbeacons",2);
             beaconObserver.stopBeaconObserver();
             beaconObserver = null;
-            beaconTextView.setText("");
+            beaconTextView.setText("No beacons nearby");
             beaconsInRange = new HashMap<>();
             this.startActivityForResult(intent,1);
             return true;
@@ -301,7 +301,7 @@ public class ReporterHome extends AppCompatActivity implements ProximityBeaconIn
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == 1){
-            initBeaconProximityObserver();
+            //intentionally left in blank
         }
     }
 }

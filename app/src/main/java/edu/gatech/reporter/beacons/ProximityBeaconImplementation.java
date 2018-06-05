@@ -31,29 +31,6 @@ public class ProximityBeaconImplementation {
         for(int i = 0 ; i < institutionsTracked.size() ; i++){
             addProximityZone("Institution", institutionsTracked.get(i));
         }
-
-
-//        ProximityZone zone1 = beaconObserver.zoneBuilder()
-//                .forAttachmentKeyAndValue("Institution", "Home Location - Panama")
-//                .inFarRange()
-//                .withOnEnterAction(new Function1<ProximityAttachment, Unit>() {
-//                    @Override
-//                    public Unit invoke(ProximityAttachment attachment) {
-//                        Log.d("app", "Welcome to my first try");
-//                        proximityBeaconImplementor.onEnterBeaconRegion(attachment);
-//                        return null;
-//                    }
-//                })
-//                .withOnExitAction(new Function1<ProximityAttachment, Unit>() {
-//                    @Override
-//                    public Unit invoke(ProximityAttachment attachment) {
-//                        Log.d("app", "Bye bye, come visit us again on from the first try");
-//                        proximityBeaconImplementor.onExitBeaconRegion(attachment);
-//                        return null;
-//                    }
-//                })
-//                .create();
-//        beaconObserver.addProximityZones(zone1);
     }
 
     private void initProximityObserver(ProximityBeaconInterface activity) {
@@ -121,6 +98,7 @@ public class ProximityBeaconImplementation {
 
     public void stopBeaconObserver(){
         beaconObserverHandler.stop();
+        beaconObserver = null;
         proximityBeaconImplementor = null;
     }
 
