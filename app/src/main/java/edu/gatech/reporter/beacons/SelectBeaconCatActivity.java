@@ -1,5 +1,6 @@
 package edu.gatech.reporter.beacons;
 
+import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,11 +13,14 @@ import android.util.SparseBooleanArray;
 import android.view.MenuItem;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import edu.gatech.reporter.R;
+import edu.gatech.reporter.app.ReporterHome;
 
 public class SelectBeaconCatActivity extends AppCompatActivity {
 
@@ -24,8 +28,7 @@ public class SelectBeaconCatActivity extends AppCompatActivity {
     @BindView(R.id.beacon_recycler_view) RecyclerView recyclerview;
 
     private BeaconAdapter beaconAdapter;
-    private ArrayList<String> institutionList;
-    private SparseBooleanArray chkStatus;
+    private ArrayList<BeaconZone> institutionList;
 
     private ActionBar actionBar;
 
@@ -58,21 +61,28 @@ public class SelectBeaconCatActivity extends AppCompatActivity {
 
         // in the future this will load a list of instituition after a service call has been made
         institutionList = new ArrayList<>();
-        institutionList.add("Georgia Tech");
-        institutionList.add("University of Georgia");
-        institutionList.add("Georgia State University");
+        institutionList.add(new BeaconZone(0,"Georgia Tech", false));
+        institutionList.add(new BeaconZone(1,"University of Georgia", false));
+        institutionList.add(new BeaconZone(2,"Georgia State University",false));
 
         // this in the future will handle screen rotation, wll have to be refined to also understand
         // when a new list is downloaded but keep the ones checked checked.
-        chkStatus = new SparseBooleanArray();
+
+        List<BeaconZone> tempBeaconZone;
+
         for(int i = 0 ; i < institutionList.size() ; i++){
-            chkStatus.append(i, false);
+            ReporterHome.beaconDatabase.myBeaconZones().addZone(institutionList.get(i));
+        }
+        institutionList = new ArrayList<>();        //delete later this is just for testing purposes.
+        tempBeaconZone = ReporterHome.beaconDatabase.myBeaconZones().getBeaconZones();
+        for (BeaconZone beaconZone : tempBeaconZone) {
+            institutionList.add(beaconZone);
         }
 
     }
 
     private void initRecyclerview(){
-        beaconAdapter = new BeaconAdapter(institutionList, chkStatus);
+        beaconAdapter = new BeaconAdapter(institutionList);
         recyclerview.setLayoutManager(new LinearLayoutManager(this));
         recyclerview.setAdapter(beaconAdapter);
     }
@@ -86,19 +96,11 @@ public class SelectBeaconCatActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent();
-        ArrayList<String> tempArryalist = new ArrayList<String>();
-
-        for(int i = 0 ; i < chkStatus.size() ; i++){
-            if (chkStatus.get(i) == true){
-                tempArryalist.add(institutionList.get(i));
-            }
+        for(int i = 0 ; i < institutionList.size() ; i++){
+            BeaconZone tempBeaconZone = institutionList.get(i);
+            ReporterHome.beaconDatabase.myBeaconZones().updateZone(tempBeaconZone);
         }
-        String [] tempList = tempArryalist.toArray(new String[0]);
-        intent.putExtra("Institutions", tempArryalist );
-        setResult(RESULT_OK, intent);
         super.onBackPressed();
         finish();
-
     }
 }

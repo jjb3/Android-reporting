@@ -2,6 +2,7 @@ package edu.gatech.reporter.app;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.arch.persistence.room.Room;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -38,6 +39,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import edu.gatech.reporter.R;
 import edu.gatech.reporter.ServiceRequests.BeaconServiceRequests;
+import edu.gatech.reporter.beacons.BeaconDatabase;
+import edu.gatech.reporter.beacons.BeaconZone;
 import edu.gatech.reporter.beacons.ProximityBeaconImplementation;
 import edu.gatech.reporter.beacons.ProximityBeaconInterface;
 import edu.gatech.reporter.beacons.SelectBeaconCatActivity;
@@ -59,6 +62,7 @@ public class ReporterHome extends AppCompatActivity implements ProximityBeaconIn
     private ProximityBeaconImplementation beaconObserver;
     private HashMap<String, ProximityAttachment> beaconsInRange;
     BeaconServiceRequests beaconServiceRequests;
+    public static BeaconDatabase beaconDatabase;
 
     private ArrayList<String> trackedBeacons;
 
@@ -68,9 +72,9 @@ public class ReporterHome extends AppCompatActivity implements ProximityBeaconIn
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        System.out.println("On Create");
         self = this;
         super.onCreate(savedInstanceState);
+        beaconDatabase = Room.databaseBuilder(this, BeaconDatabase.class, getString(R.string.beacon_zone_db_name)).allowMainThreadQueries().build();
 
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
@@ -128,6 +132,7 @@ public class ReporterHome extends AppCompatActivity implements ProximityBeaconIn
     protected void onResume() {
         super.onResume();
         ViewUpdater.init(this);
+        initBeaconProximityObserver();
     }
 
     @Override
@@ -162,6 +167,10 @@ public class ReporterHome extends AppCompatActivity implements ProximityBeaconIn
         if(id == R.id.action_beacons){
             Intent intent = new Intent(this, SelectBeaconCatActivity.class);
             intent.putExtra("selectedbeacons",2);
+            beaconObserver.stopBeaconObserver();
+            beaconObserver = null;
+            beaconTextView.setText("");
+            beaconsInRange = new HashMap<>();
             this.startActivityForResult(intent,1);
             return true;
         }
@@ -247,9 +256,19 @@ public class ReporterHome extends AppCompatActivity implements ProximityBeaconIn
     }
 
     private void initBeaconProximityObserver(){
+        updateBeaconZonesToTrack();
         beaconsInRange = new HashMap<>();
         beaconObserver = new ProximityBeaconImplementation(this, trackedBeacons);
         beaconObserver.startBeaconObserver();
+    }
+
+    private void updateBeaconZonesToTrack(){
+        List<BeaconZone> tempBeaconZones = beaconDatabase.myBeaconZones().getBeaconZones();
+        trackedBeacons = new ArrayList<>();
+        for(BeaconZone beacon : tempBeaconZones){
+            if(beacon.isSelected())
+                trackedBeacons.add(beacon.getZoneName());
+        }
     }
 
     @Override
@@ -282,7 +301,6 @@ public class ReporterHome extends AppCompatActivity implements ProximityBeaconIn
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == 1){
-            trackedBeacons = data.getStringArrayListExtra("Institutions");
             initBeaconProximityObserver();
         }
     }

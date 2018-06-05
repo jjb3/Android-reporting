@@ -38,6 +38,10 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
 
+    //Room Persistence SQLite DB
+    implementation 'android.arch.persistence.room:runtime:1.1.0'
+    annotationProcessor 'android.arch.persistence.room:compiler:1.1.0'
+
     //estimote sdk
     implementation 'com.estimote:proximity-sdk:0.4.1'
     implementation 'com.estimote:sdk:1.4.1'

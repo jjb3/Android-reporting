@@ -106,5 +106,10 @@
     <string name="outdoor_condition_information_text">Outdoor Condition Information</string>
     <string name="device_information_text">Device Information</string>
 
+    <!--Beacon Database-->
+    <string name="beacon_zone_db_name">beaconzone_db</string>
+    <string name="select_beacons_you_would_like_to_recognize">Select beacons you would like to recognize.</string>
+    <string name="no_beacons_nearby_text">No Beacons Nearby</string>
+
 
 </resources>

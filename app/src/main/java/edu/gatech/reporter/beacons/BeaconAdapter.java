@@ -11,6 +11,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -18,13 +19,10 @@ import edu.gatech.reporter.R;
 
 public class BeaconAdapter extends RecyclerView.Adapter<BeaconAdapter.MyViewHolder> {
 
-    private ArrayList<String> institutions;
-    private SparseBooleanArray checkboxStatus;
+    private ArrayList<BeaconZone> institutions;
 
-    public BeaconAdapter( ArrayList<String> listOfInstitutions, SparseBooleanArray chkboxStatus) {
+    public BeaconAdapter( ArrayList<BeaconZone> listOfInstitutions) {
         this.institutions = listOfInstitutions;
-        this.checkboxStatus = chkboxStatus;
-
     }
 
     @NonNull
@@ -38,15 +36,15 @@ public class BeaconAdapter extends RecyclerView.Adapter<BeaconAdapter.MyViewHold
 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
-
-        holder.checkBox.setText(institutions.get(position));
-        holder.checkBox.setSelected(checkboxStatus.get(position));
+        final String zoneName = institutions.get(position).getZoneName();
+        holder.checkBox.setText(zoneName);
+        holder.checkBox.setChecked(institutions.get(position).isSelected());
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 boolean newStatus = holder.checkBox.isChecked();
                 holder.checkBox.setChecked(newStatus);
-                checkboxStatus.append(position, newStatus);
+                institutions.get(position).setSelected(newStatus);
             }
         });
 
