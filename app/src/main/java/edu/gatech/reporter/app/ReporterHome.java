@@ -64,7 +64,7 @@ public class ReporterHome extends AppCompatActivity implements ProximityBeaconIn
         self = this;
         super.onCreate(savedInstanceState);
         beaconDatabase = BeaconDatabaseManager.getInstance(this.getApplicationContext()).getBeaconDatabase();
-        //beaconObserver = ProximityBeaconImplementation.getInstance(this, beaconDatabase.myBeaconZones().getBeaconZones());
+        beaconObserver = ProximityBeaconImplementation.getInstance(this);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -153,9 +153,7 @@ public class ReporterHome extends AppCompatActivity implements ProximityBeaconIn
         if(id == R.id.action_beacons){
             Intent intent = new Intent(this, SelectBeaconCatActivity.class);
             intent.putExtra("selectedbeacons",2);
-            beaconObserver = ProximityBeaconImplementation.getInstance(this, beaconDatabase.myBeaconZones().getBeaconZones());
             beaconObserver.stopBeaconObserver();
-//            beaconObserver = null;
             beaconTextView.setText("No beacons nearby");
             beaconsInRange = new HashMap<>();
             this.startActivityForResult(intent,1);
@@ -245,7 +243,7 @@ public class ReporterHome extends AppCompatActivity implements ProximityBeaconIn
     private void initBeaconProximityObserver(){
         updateBeaconZonesToTrack();
         beaconsInRange = new HashMap<>();
-        beaconObserver.initProximityObserver(this);
+        beaconObserver.initProximityObserver();
         beaconObserver.addProximityZone(trackedBeacons);
         beaconObserver.startBeaconObserver();
     }

@@ -1,7 +1,9 @@
 package edu.gatech.reporter.beacons;
 
 import android.app.Activity;
+import android.app.Notification;
 import android.content.Context;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -14,6 +16,7 @@ import com.estimote.proximity_sdk.proximity.ProximityZone;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.gatech.reporter.R;
 import edu.gatech.reporter.app.ReporterHome;
 import edu.gatech.reporter.utils.Const;
 import kotlin.Unit;
@@ -23,46 +26,39 @@ public class ProximityBeaconImplementation {
 
     private static ProximityObserver beaconObserver;
     private static ProximityObserver.Handler beaconObserverHandler;
-    private static ProximityBeaconInterface proximityBeaconImplementor;
+    private static Context mContext;
 
     private static ProximityBeaconImplementation instance;
 
-    private ProximityBeaconImplementation(ProximityBeaconInterface activity,
-                                         List<BeaconZone> institutionsTracked) {
-        proximityBeaconImplementor = activity;
-        initProximityObserver(proximityBeaconImplementor);
 
-        for(int i = 0 ; i < institutionsTracked.size() ; i++){
-            addProximityZone(institutionsTracked.get(i));
-        }
-    }
 
-    private ProximityBeaconImplementation(ProximityBeaconInterface activity) {
-        proximityBeaconImplementor = activity;
-        initProximityObserver(proximityBeaconImplementor);
+    private ProximityBeaconImplementation(Context context) {
+        mContext = context;
+        initProximityObserver();
 
     }
 
-    public static ProximityBeaconImplementation getInstance(ProximityBeaconInterface proximityBeaconInterface){
+    private Notification createNotification(){
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext, "1")
+                .setSmallIcon(R.drawable.ic_notifications_black_24dp)
+                .setContentTitle("beacon Scanning")
+                .setContentText("LEt you know that bluetooth scanning is running.")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
+        return mBuilder.build();
+    }
+
+
+    public static ProximityBeaconImplementation getInstance(Context context){
         if (instance == null){
-            instance = new ProximityBeaconImplementation(proximityBeaconInterface);
+            instance = new ProximityBeaconImplementation(context);
         }
         return instance;
     }
 
-    public static ProximityBeaconImplementation getInstance(ProximityBeaconInterface proximityBeaconInterface,
-                                                     List<BeaconZone> institutionsTracked){
-        if (instance == null){
-            instance = new ProximityBeaconImplementation(proximityBeaconInterface, institutionsTracked);
-        }
-        return instance;
-    }
+    public void initProximityObserver() {
 
-
-    public void initProximityObserver(ProximityBeaconInterface applicationContext) {
-
-        beaconObserver = new ProximityObserverBuilder(((Context) applicationContext).getApplicationContext(),
+        beaconObserver = new ProximityObserverBuilder(mContext.getApplicationContext(),
                 new EstimoteCloudCredentials("androidreporter-lk7", "41674213f80c533d22ce5aed52865253"))
                 .withOnErrorAction(new Function1<Throwable, Unit>() {
                     @Override
@@ -72,6 +68,7 @@ public class ProximityBeaconImplementation {
                     }
                 })
                 .withBalancedPowerMode()
+                .withScannerInForegroundService(createNotification())
                 .build();
     }
 
@@ -93,16 +90,16 @@ public class ProximityBeaconImplementation {
                 .withOnEnterAction(new Function1<ProximityAttachment, Unit>() {
                     @Override
                     public Unit invoke(ProximityAttachment attachment) {
-                        Log.d("app", "Institution " + attachment.getPayload().get("Institution") + " - Bus Stop:  "+attachment.getPayload().get("Bus Stop"));
-                        proximityBeaconImplementor.onEnterBeaconRegion(attachment);
+                        Log.e("DataManager", "Institution " + attachment.getPayload().get("Institution") + " - Bus Stop:  "+attachment.getPayload().get("Bus Stop") + "A rrived");
+
                         return null;
                     }
                 })
                 .withOnExitAction(new Function1<ProximityAttachment, Unit>() {
                     @Override
                     public Unit invoke(ProximityAttachment attachment) {
-                        Log.d("app", "Bye bye, come visit us again on from the first try");
-                        proximityBeaconImplementor.onExitBeaconRegion(attachment);
+                        Log.e("DataManager", "Bye bye," + attachment.getPayload().get("Institution") + " - Bus Stop:  "+attachment.getPayload().get("Bus Stop") + " left");
+
                         return null;
                     }
                 })
@@ -112,9 +109,9 @@ public class ProximityBeaconImplementation {
                         List<String> busStops = new ArrayList<>();
                         for (ProximityAttachment attachment : attachments) {
                             busStops.add(attachment.getPayload().get("Bus Stop"));
-                            proximityBeaconImplementor.onChangeActionInRegion(attachment);
+
                         }
-                        Log.d("app", "Nearby desks: " + busStops);
+                        Log.e("DataManager", "On Change Called: " + busStops);
                         return null;
                     }
                 }).create();
@@ -127,7 +124,7 @@ public class ProximityBeaconImplementation {
     }
 
     public void stopBeaconObserver(){
-        beaconObserverHandler.stop();
+        //beaconObserverHandler.stop();
         beaconObserver = null;
     }
 

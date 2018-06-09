@@ -49,7 +49,9 @@ public class ReporterService extends Service implements ProximityBeaconInterface
         myDataManager = new DataManager();
         beaconDatabaseManager = BeaconDatabaseManager.getInstance(mContext);
         List<BeaconZone> tempList = beaconDatabaseManager.getBeaconDatabase().myBeaconZones().getBeaconZones();
-        beaconObserver = ProximityBeaconImplementation.getInstance(this, tempList );
+        beaconObserver = ProximityBeaconImplementation.getInstance(this);
+        beaconObserver.initProximityObserver();
+        beaconObserver.addProximityZone(tempList);
         beaconObserver.startBeaconObserver();
 
         timer = new Timer();
