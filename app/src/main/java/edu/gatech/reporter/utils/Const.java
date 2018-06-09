@@ -32,4 +32,8 @@ public class Const {
     public static final int BLUE_BUTTON_COLOR = Color.parseColor("#42a5f5");
     public static final int GRAY_TEXT_COLOR = Color.parseColor("#798ca7");
     public static final int DARK_BLUE = Color.parseColor("#0033cc");
+
+//   Database for Beacons Constants
+    public static final String BEACON_DB_NAME = "beaconzone_db";
+    public static final String KEY_INSTITUTION = "Institution";
 }

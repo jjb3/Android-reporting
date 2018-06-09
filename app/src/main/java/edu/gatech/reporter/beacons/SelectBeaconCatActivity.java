@@ -29,6 +29,7 @@ public class SelectBeaconCatActivity extends AppCompatActivity {
 
     private BeaconAdapter beaconAdapter;
     private ArrayList<BeaconZone> institutionList;
+    private BeaconDatabase beaconDatabase;
 
     private ActionBar actionBar;
 
@@ -37,6 +38,7 @@ public class SelectBeaconCatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.select_beacon_activity);
         ButterKnife.bind(this);
+        beaconDatabase = BeaconDatabaseManager.getInstance(this).getBeaconDatabase();
     }
 
 
@@ -71,10 +73,10 @@ public class SelectBeaconCatActivity extends AppCompatActivity {
         List<BeaconZone> tempBeaconZone;
 
         for(int i = 0 ; i < institutionList.size() ; i++){
-            ReporterHome.beaconDatabase.myBeaconZones().addZone(institutionList.get(i));
+            beaconDatabase.myBeaconZones().addZone(institutionList.get(i));
         }
         institutionList = new ArrayList<>();        //delete later this is just for testing purposes.
-        tempBeaconZone = ReporterHome.beaconDatabase.myBeaconZones().getBeaconZones();
+        tempBeaconZone = beaconDatabase.myBeaconZones().getBeaconZones();
         for (BeaconZone beaconZone : tempBeaconZone) {
             institutionList.add(beaconZone);
         }
@@ -98,7 +100,7 @@ public class SelectBeaconCatActivity extends AppCompatActivity {
     public void onBackPressed() {
         for(int i = 0 ; i < institutionList.size() ; i++){
             BeaconZone tempBeaconZone = institutionList.get(i);
-            ReporterHome.beaconDatabase.myBeaconZones().updateZone(tempBeaconZone);
+            beaconDatabase.myBeaconZones().updateZone(tempBeaconZone);
         }
         super.onBackPressed();
         finish();

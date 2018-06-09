@@ -1,6 +1,7 @@
 package edu.gatech.reporter.beacons;
 
 import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -14,28 +15,54 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.gatech.reporter.app.ReporterHome;
+import edu.gatech.reporter.utils.Const;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 
 public class ProximityBeaconImplementation {
 
-    ProximityObserver beaconObserver;
-    ProximityObserver.Handler beaconObserverHandler;
-    ProximityBeaconInterface proximityBeaconImplementor;
+    private static ProximityObserver beaconObserver;
+    private static ProximityObserver.Handler beaconObserverHandler;
+    private static ProximityBeaconInterface proximityBeaconImplementor;
 
-    public ProximityBeaconImplementation(ProximityBeaconInterface activity,
-                                         ArrayList<String> institutionsTracked) {
+    private static ProximityBeaconImplementation instance;
+
+    private ProximityBeaconImplementation(ProximityBeaconInterface activity,
+                                         List<BeaconZone> institutionsTracked) {
         proximityBeaconImplementor = activity;
-        initProximityObserver(activity);
+        initProximityObserver(proximityBeaconImplementor);
 
         for(int i = 0 ; i < institutionsTracked.size() ; i++){
-            addProximityZone("Institution", institutionsTracked.get(i));
+            addProximityZone(institutionsTracked.get(i));
         }
     }
 
-    private void initProximityObserver(ProximityBeaconInterface activity) {
+    private ProximityBeaconImplementation(ProximityBeaconInterface activity) {
+        proximityBeaconImplementor = activity;
+        initProximityObserver(proximityBeaconImplementor);
 
-        beaconObserver = new ProximityObserverBuilder((Activity) activity,
+    }
+
+    public static ProximityBeaconImplementation getInstance(ProximityBeaconInterface proximityBeaconInterface){
+
+        if (instance == null){
+            instance = new ProximityBeaconImplementation(proximityBeaconInterface);
+        }
+        return instance;
+    }
+
+    public static ProximityBeaconImplementation getInstance(ProximityBeaconInterface proximityBeaconInterface,
+                                                     List<BeaconZone> institutionsTracked){
+        if (instance == null){
+            instance = new ProximityBeaconImplementation(proximityBeaconInterface, institutionsTracked);
+        }
+        return instance;
+    }
+
+
+    public void initProximityObserver(ProximityBeaconInterface applicationContext) {
+
+        beaconObserver = new ProximityObserverBuilder(((Context) applicationContext).getApplicationContext(),
                 new EstimoteCloudCredentials("androidreporter-lk7", "41674213f80c533d22ce5aed52865253"))
                 .withOnErrorAction(new Function1<Throwable, Unit>() {
                     @Override
@@ -52,18 +79,21 @@ public class ProximityBeaconImplementation {
         beaconObserver.addProximityZone(zone);
     }
 
-    public void addProximityZone(List<ProximityZone> zones) {
-        beaconObserver.addProximityZones(zones);
+    public void addProximityZone(List<BeaconZone> zones) {
+
+        for(int i = 0 ; i < zones.size() ; i++){
+            addProximityZone(zones.get(i));
+        }
     }
 
-    public void addProximityZone(String attachmentKey, String attachmentValue) {
+    public void addProximityZone(BeaconZone beaconZone) {
         ProximityZone tempProxZone = beaconObserver.zoneBuilder()
-                .forAttachmentKeyAndValue(attachmentKey, attachmentValue)
+                .forAttachmentKeyAndValue(Const.KEY_INSTITUTION, beaconZone.getZoneName())
                 .inFarRange()
                 .withOnEnterAction(new Function1<ProximityAttachment, Unit>() {
                     @Override
                     public Unit invoke(ProximityAttachment attachment) {
-                        Log.d("app", "Institution");
+                        Log.d("app", "Institution " + attachment.getPayload().get("Institution") + " - Bus Stop:  "+attachment.getPayload().get("Bus Stop"));
                         proximityBeaconImplementor.onEnterBeaconRegion(attachment);
                         return null;
                     }
@@ -99,7 +129,6 @@ public class ProximityBeaconImplementation {
     public void stopBeaconObserver(){
         beaconObserverHandler.stop();
         beaconObserver = null;
-        proximityBeaconImplementor = null;
     }
 
 }
