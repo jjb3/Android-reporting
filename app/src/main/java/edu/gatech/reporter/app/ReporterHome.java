@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.EventLog;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,17 +23,24 @@ import android.widget.Toast;
 import com.estimote.proximity_sdk.proximity.ProximityAttachment;
 
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import butterknife.ButterKnife;
 import edu.gatech.reporter.R;
 import edu.gatech.reporter.ServiceRequests.BeaconServiceRequests;
-import edu.gatech.reporter.beacons.BeaconDatabase;
-import edu.gatech.reporter.beacons.BeaconDatabaseManager;
-import edu.gatech.reporter.beacons.BeaconZone;
+import edu.gatech.reporter.beacons.Database.BeaconDatabase;
+import edu.gatech.reporter.beacons.Database.BeaconDatabaseManager;
+import edu.gatech.reporter.beacons.Database.BeaconZone;
+import edu.gatech.reporter.beacons.Database.BeaconZonesEvent;
 import edu.gatech.reporter.beacons.ProximityBeaconImplementation;
 import edu.gatech.reporter.beacons.ProximityBeaconInterface;
 import edu.gatech.reporter.beacons.SelectBeaconCatActivity;
@@ -52,6 +61,7 @@ public class ReporterHome extends AppCompatActivity implements ProximityBeaconIn
     private HashMap<String, ProximityAttachment> beaconsInRange;
     BeaconServiceRequests beaconServiceRequests;
     public BeaconDatabase beaconDatabase;
+    private Executor executor = Executors.newSingleThreadExecutor();
 
     private ArrayList<BeaconZone> trackedBeacons;
 
@@ -114,7 +124,7 @@ public class ReporterHome extends AppCompatActivity implements ProximityBeaconIn
 
         ParameterOptions.getInstance().setActivity(this);
         ParameterOptions.getInstance().loadPreference();
-
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -153,6 +163,7 @@ public class ReporterHome extends AppCompatActivity implements ProximityBeaconIn
         if(id == R.id.action_beacons){
             Intent intent = new Intent(this, SelectBeaconCatActivity.class);
             intent.putExtra("selectedbeacons",2);
+            EventBus.getDefault().unregister(this);
             beaconObserver.stopBeaconObserver();
             beaconTextView.setText("No beacons nearby");
             beaconsInRange = new HashMap<>();
@@ -241,17 +252,15 @@ public class ReporterHome extends AppCompatActivity implements ProximityBeaconIn
     }
 
     private void initBeaconProximityObserver(){
-        updateBeaconZonesToTrack();
         beaconsInRange = new HashMap<>();
         beaconObserver.initProximityObserver();
         beaconObserver.addProximityZone(trackedBeacons);
         beaconObserver.startBeaconObserver();
     }
 
-    private void updateBeaconZonesToTrack(){
-        List<BeaconZone> tempBeaconZones = beaconDatabase.myBeaconZones().getBeaconZones();
+    private void updateBeaconZonesToTrack(List<BeaconZone> beaconZones){
         trackedBeacons = new ArrayList<>();
-        for(BeaconZone beacon : tempBeaconZones){
+        for(BeaconZone beacon : beaconZones){
             if(beacon.isSelected())
                 trackedBeacons.add(beacon);
         }
@@ -282,13 +291,27 @@ public class ReporterHome extends AppCompatActivity implements ProximityBeaconIn
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventHandleTest(BeaconZonesEvent event){
+        updateBeaconZonesToTrack(event.getBeaconZonesList());
+        initBeaconProximityObserver();
+    }
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == 1){
             //intentionally left in blank
-            initBeaconProximityObserver();
+            EventBus.getDefault().register(this);
+            executor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    List<BeaconZone> tempBeaconZones = beaconDatabase.myBeaconZones().getBeaconZones();
+                    EventBus.getDefault().post(new BeaconZonesEvent(tempBeaconZones));
+                }
+            });
         }
     }
 }

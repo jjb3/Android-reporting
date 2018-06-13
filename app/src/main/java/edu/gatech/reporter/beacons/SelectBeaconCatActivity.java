@@ -1,7 +1,5 @@
 package edu.gatech.reporter.beacons;
 
-import android.arch.persistence.room.Room;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -9,18 +7,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.SparseBooleanArray;
 import android.view.MenuItem;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import edu.gatech.reporter.R;
-import edu.gatech.reporter.app.ReporterHome;
+import edu.gatech.reporter.beacons.Database.AddBeaconZonesEvent;
+import edu.gatech.reporter.beacons.Database.BeaconDatabase;
+import edu.gatech.reporter.beacons.Database.BeaconDatabaseManager;
+import edu.gatech.reporter.beacons.Database.BeaconZone;
+import edu.gatech.reporter.beacons.Database.BeaconZonesEvent;
 
 public class SelectBeaconCatActivity extends AppCompatActivity {
 
@@ -30,6 +35,7 @@ public class SelectBeaconCatActivity extends AppCompatActivity {
     private BeaconAdapter beaconAdapter;
     private ArrayList<BeaconZone> institutionList;
     private BeaconDatabase beaconDatabase;
+    private Executor executor = Executors.newSingleThreadExecutor();
 
     private ActionBar actionBar;
 
@@ -39,6 +45,7 @@ public class SelectBeaconCatActivity extends AppCompatActivity {
         setContentView(R.layout.select_beacon_activity);
         ButterKnife.bind(this);
         beaconDatabase = BeaconDatabaseManager.getInstance(this).getBeaconDatabase();
+        EventBus.getDefault().register(this);
     }
 
 
@@ -55,7 +62,7 @@ public class SelectBeaconCatActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         initData();
-        initRecyclerview();
+       // initRecyclerview();
         initToolbar();
     }
 
@@ -70,17 +77,36 @@ public class SelectBeaconCatActivity extends AppCompatActivity {
         // this in the future will handle screen rotation, wll have to be refined to also understand
         // when a new list is downloaded but keep the ones checked checked.
 
-        List<BeaconZone> tempBeaconZone;
 
-        for(int i = 0 ; i < institutionList.size() ; i++){
-            beaconDatabase.myBeaconZones().addZone(institutionList.get(i));
-        }
-        institutionList = new ArrayList<>();        //delete later this is just for testing purposes.
-        tempBeaconZone = beaconDatabase.myBeaconZones().getBeaconZones();
-        for (BeaconZone beaconZone : tempBeaconZone) {
-            institutionList.add(beaconZone);
-        }
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                List<BeaconZone> tempBeaconZone;
 
+                for(int i = 0 ; i < institutionList.size() ; i++){
+                    beaconDatabase.myBeaconZones().addZone(institutionList.get(i));
+                }
+                institutionList = new ArrayList<>();        //delete later this is just for testing purposes.
+                tempBeaconZone = beaconDatabase.myBeaconZones().getBeaconZones();
+                for (BeaconZone beaconZone : tempBeaconZone) {
+                    institutionList.add(beaconZone);
+                }
+                EventBus.getDefault().post( new BeaconZonesEvent(tempBeaconZone));
+            }
+        });
+
+    }
+
+    @Subscribe
+    public void onHandleDatabaseEvent(BeaconZonesEvent event){
+        initRecyclerview();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onHandleAddedBeaconZones(AddBeaconZonesEvent event){
+        EventBus.getDefault().unregister(this);
+        super.onBackPressed();
+        finish();
     }
 
     private void initRecyclerview(){
@@ -98,11 +124,21 @@ public class SelectBeaconCatActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        for(int i = 0 ; i < institutionList.size() ; i++){
-            BeaconZone tempBeaconZone = institutionList.get(i);
-            beaconDatabase.myBeaconZones().updateZone(tempBeaconZone);
-        }
-        super.onBackPressed();
-        finish();
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                for(int i = 0 ; i < institutionList.size() ; i++){
+                    BeaconZone tempBeaconZone = institutionList.get(i);
+                    beaconDatabase.myBeaconZones().updateZone(tempBeaconZone);
+                    EventBus.getDefault().post(new AddBeaconZonesEvent(null));
+                }
+            }
+        });
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

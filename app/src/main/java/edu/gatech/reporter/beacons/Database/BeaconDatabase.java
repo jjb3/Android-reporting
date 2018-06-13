@@ -1,4 +1,4 @@
-package edu.gatech.reporter.beacons;
+package edu.gatech.reporter.beacons.Database;
 
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.RoomDatabase;

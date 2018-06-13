@@ -1,11 +1,9 @@
 package edu.gatech.reporter.beacons;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.content.Context;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.estimote.proximity_sdk.proximity.EstimoteCloudCredentials;
 import com.estimote.proximity_sdk.proximity.ProximityAttachment;
@@ -17,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.gatech.reporter.R;
-import edu.gatech.reporter.app.ReporterHome;
+import edu.gatech.reporter.beacons.Database.BeaconZone;
 import edu.gatech.reporter.utils.Const;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
@@ -79,7 +77,8 @@ public class ProximityBeaconImplementation {
     public void addProximityZone(List<BeaconZone> zones) {
 
         for(int i = 0 ; i < zones.size() ; i++){
-            addProximityZone(zones.get(i));
+            if(zones.get(i).isSelected())
+                addProximityZone(zones.get(i));
         }
     }
 
@@ -120,11 +119,13 @@ public class ProximityBeaconImplementation {
     }
 
     public void startBeaconObserver(){
-        beaconObserverHandler = beaconObserver.start();
+        if(beaconObserverHandler == null)
+            beaconObserverHandler = beaconObserver.start();
     }
 
     public void stopBeaconObserver(){
-        //beaconObserverHandler.stop();
+        beaconObserverHandler.stop();
+        beaconObserverHandler = null;
         beaconObserver = null;
     }
 

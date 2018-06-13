@@ -2,20 +2,18 @@ package edu.gatech.reporter.beacons;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import edu.gatech.reporter.R;
+import edu.gatech.reporter.beacons.Database.BeaconZone;
 
 public class BeaconAdapter extends RecyclerView.Adapter<BeaconAdapter.MyViewHolder> {
 

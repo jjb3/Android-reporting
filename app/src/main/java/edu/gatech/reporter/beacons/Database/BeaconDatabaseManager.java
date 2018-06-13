@@ -1,9 +1,8 @@
-package edu.gatech.reporter.beacons;
+package edu.gatech.reporter.beacons.Database;
 
 import android.arch.persistence.room.Room;
 import android.content.Context;
 
-import edu.gatech.reporter.R;
 import edu.gatech.reporter.utils.Const;
 
 public class BeaconDatabaseManager {
@@ -14,7 +13,7 @@ public class BeaconDatabaseManager {
 
     private BeaconDatabaseManager(Context context) {
         //TODO change this to not allow main thread queries.
-        beaconDatabase = Room.databaseBuilder(context.getApplicationContext(), BeaconDatabase.class, Const.BEACON_DB_NAME).allowMainThreadQueries().build();
+        beaconDatabase = Room.databaseBuilder(context.getApplicationContext(), BeaconDatabase.class, Const.BEACON_DB_NAME).build();
     }
 
     public static BeaconDatabaseManager getInstance(Context context){
