@@ -26,6 +26,7 @@ import edu.gatech.reporter.beacons.ProximityBeaconImplementation;
 import edu.gatech.reporter.beacons.ProximityBeaconInterface;
 import edu.gatech.reporter.utils.ParameterManager.DataManager;
 import edu.gatech.reporter.utils.ParameterManager.ParameterOptions;
+import edu.gatech.reporter.utils.ParameterManager.Parameters;
 
 public class ReporterService extends Service implements ProximityBeaconInterface
 {
@@ -37,6 +38,7 @@ public class ReporterService extends Service implements ProximityBeaconInterface
     public static ProximityBeaconImplementation beaconObserver;
 
     private List<BeaconZone> initialTrackedBeacons;
+    private static List<? extends ProximityAttachment> nearbyBeaconList;
 
     private Executor executor = Executors.newSingleThreadExecutor();
 
@@ -66,9 +68,9 @@ public class ReporterService extends Service implements ProximityBeaconInterface
         timer = new Timer();
         timer.schedule(new DataUpdateTask(myDataManager), 0, ParameterOptions.getInstance().dataUpdateInterval);
         timer.schedule(new SendDataTask(myDataManager), 0, ParameterOptions.getInstance().reportInterval);
+        timer.schedule(new UpdateNearBeaconsTask(nearbyBeaconList), 0, ParameterOptions.getInstance().beaconUpdateViewInterval);
 
         EventBus.getDefault().register(this);
-
     }
 
 
@@ -78,6 +80,7 @@ public class ReporterService extends Service implements ProximityBeaconInterface
         beaconDatabaseManager = BeaconDatabaseManager.getInstance(mContext);
         beaconObserver = ProximityBeaconImplementation.getInstance(this);
         beaconObserver.initProximityObserver();
+        beaconObserver.setServiceListener(this);
 
         executor.execute(new Runnable() {
             @Override
@@ -115,21 +118,24 @@ public class ReporterService extends Service implements ProximityBeaconInterface
         timer = new Timer();
         timer.schedule(new DataUpdateTask(myDataManager), 0, ParameterOptions.getInstance().dataUpdateInterval);
         timer.schedule(new SendDataTask(myDataManager), 0, ParameterOptions.getInstance().reportInterval);
+        timer.schedule(new UpdateNearBeaconsTask(nearbyBeaconList), 0, ParameterOptions.getInstance().beaconUpdateViewInterval);
     }
 
 
     @Override
     public void onEnterBeaconRegion(ProximityAttachment attachments) {
-
+        Log.e(TAG, "onEnterBeaconRegion: Inside ReporterService onEnterBeaconRegion");
     }
 
     @Override
     public void onExitBeaconRegion(ProximityAttachment attachments) {
-
+        Log.e(TAG, "onEnterBeaconRegion: Inside ReporterService EXIT REGION");
     }
 
     @Override
-    public void onChangeActionInRegion(ProximityAttachment attachments) {
-
+    public void onChangeActionInRegion(List<? extends ProximityAttachment> attachments) {
+        Log.e(TAG, "onEnterBeaconRegion: Inside ReporterService ON CHANGE REGION");
+        nearbyBeaconList = attachments;
     }
+
 }

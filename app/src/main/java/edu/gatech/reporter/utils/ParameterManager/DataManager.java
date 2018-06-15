@@ -3,7 +3,10 @@ package edu.gatech.reporter.utils.ParameterManager;
 import android.text.format.DateFormat;
 import android.util.Log;
 
+import com.estimote.proximity_sdk.proximity.ProximityAttachment;
+
 import java.util.HashMap;
+import java.util.List;
 
 import edu.gatech.reporter.BuildConfig;
 import edu.gatech.reporter.utils.Connection;
@@ -31,6 +34,7 @@ public class DataManager {
     private LightSensor myLightSensor;
     private PressureSensor myPressureSensor;
     private TemperatureSensor myTemperatureSensor;
+    private HashMap<String, ProximityAttachment> beaconsInRange = new HashMap<>();
 
     private static final String TAG = "DataManager";
     String versionName = BuildConfig.VERSION_NAME;
@@ -69,6 +73,11 @@ public class DataManager {
         Parameters.getInstance().gpsAccuracy = myGPSTracker.getGPSAccuracy();
         Parameters.getInstance().gpsTime = myGPSTracker.getGpsTime();
         Parameters.getInstance().heading = myGPSTracker.getHeading();
+    }
+
+    private void updateNearbyBeacons(List<? extends ProximityAttachment> attachments){
+
+
     }
 
     private void updateMapData(){

@@ -41,6 +41,7 @@ import edu.gatech.reporter.beacons.Database.BeaconDatabase;
 import edu.gatech.reporter.beacons.Database.BeaconDatabaseManager;
 import edu.gatech.reporter.beacons.Database.BeaconZone;
 import edu.gatech.reporter.beacons.Database.BeaconZonesEvent;
+import edu.gatech.reporter.beacons.Database.UpdateBeaconZonesEvent;
 import edu.gatech.reporter.beacons.ProximityBeaconImplementation;
 import edu.gatech.reporter.beacons.ProximityBeaconInterface;
 import edu.gatech.reporter.beacons.SelectBeaconCatActivity;
@@ -49,7 +50,7 @@ import edu.gatech.reporter.utils.ParameterManager.ParameterOptions;
 import edu.gatech.reporter.utils.ParameterManager.Parameters;
 import edu.gatech.reporter.utils.ViewUpdater;
 
-public class ReporterHome extends AppCompatActivity implements ProximityBeaconInterface{
+public class ReporterHome extends AppCompatActivity {
 
     private static Button recordButton;
     public TextView beaconTextView;
@@ -266,37 +267,19 @@ public class ReporterHome extends AppCompatActivity implements ProximityBeaconIn
         }
     }
 
-    @Override
-    public void onEnterBeaconRegion(ProximityAttachment attachments) {
-        // intentionally left in blank
-    }
-
-    @Override
-    public void onExitBeaconRegion(ProximityAttachment attachments) {
-        String tempDeviceId = attachments.getDeviceId();
-
-        beaconsInRange.remove(tempDeviceId);
-        updateBeaconsInRange();
-
-        if(attachments.getPayload().get("Institution").equals("Georgia Tech"))
-            Toast.makeText(ReporterHome.this, "Bye Bye, see you soon.", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onChangeActionInRegion(ProximityAttachment attachments) {
-        String tempDeviceId = attachments.getDeviceId();
-        if(!beaconsInRange.containsKey(tempDeviceId)) {
-            beaconsInRange.put(tempDeviceId, attachments);
-            updateBeaconsInRange();
-        }
-    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventHandleTest(BeaconZonesEvent event){
         updateBeaconZonesToTrack(event.getBeaconZonesList());
         initBeaconProximityObserver();
+
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onHandleUpdateRecyclerviewEvent(UpdateBeaconZonesEvent beaconZonesEvent){
+        // put recyclerview that will update the view of the beacons
+
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

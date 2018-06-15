@@ -13,6 +13,6 @@ public interface ProximityBeaconInterface {
 
     void onExitBeaconRegion(ProximityAttachment attachments);
 
-    void onChangeActionInRegion(ProximityAttachment attachments);
+    void onChangeActionInRegion(List<? extends ProximityAttachment> attachments);
 
 }

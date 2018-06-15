@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.gatech.reporter.R;
+import edu.gatech.reporter.app.ReporterHome;
+import edu.gatech.reporter.app.ReporterService;
 import edu.gatech.reporter.beacons.Database.BeaconZone;
 import edu.gatech.reporter.utils.Const;
 import kotlin.Unit;
@@ -27,6 +29,7 @@ public class ProximityBeaconImplementation {
     private static Context mContext;
 
     private static ProximityBeaconImplementation instance;
+    private static ProximityBeaconInterface proximityBeaconInterface;
 
 
 
@@ -65,7 +68,7 @@ public class ProximityBeaconImplementation {
                         return null;
                     }
                 })
-                .withBalancedPowerMode()
+                .withLowLatencyPowerMode()
                 .withScannerInForegroundService(createNotification())
                 .build();
     }
@@ -90,7 +93,8 @@ public class ProximityBeaconImplementation {
                     @Override
                     public Unit invoke(ProximityAttachment attachment) {
                         Log.e("DataManager", "Institution " + attachment.getPayload().get("Institution") + " - Bus Stop:  "+attachment.getPayload().get("Bus Stop") + "A rrived");
-
+                        if(proximityBeaconInterface instanceof ProximityBeaconInterface)
+                            proximityBeaconInterface.onEnterBeaconRegion(attachment);
                         return null;
                     }
                 })
@@ -98,7 +102,8 @@ public class ProximityBeaconImplementation {
                     @Override
                     public Unit invoke(ProximityAttachment attachment) {
                         Log.e("DataManager", "Bye bye," + attachment.getPayload().get("Institution") + " - Bus Stop:  "+attachment.getPayload().get("Bus Stop") + " left");
-
+                        if(proximityBeaconInterface instanceof ProximityBeaconInterface)
+                            proximityBeaconInterface.onExitBeaconRegion(attachment);
                         return null;
                     }
                 })
@@ -108,7 +113,8 @@ public class ProximityBeaconImplementation {
                         List<String> busStops = new ArrayList<>();
                         for (ProximityAttachment attachment : attachments) {
                             busStops.add(attachment.getPayload().get("Bus Stop"));
-
+                            if(proximityBeaconInterface instanceof ProximityBeaconInterface)
+                                proximityBeaconInterface.onChangeActionInRegion(attachments);
                         }
                         Log.e("DataManager", "On Change Called: " + busStops);
                         return null;
@@ -116,6 +122,10 @@ public class ProximityBeaconImplementation {
                 }).create();
         beaconObserver.addProximityZones(tempProxZone);
 
+    }
+
+    public void setServiceListener(ProximityBeaconInterface beaconListener){
+        proximityBeaconInterface = beaconListener;
     }
 
     public void startBeaconObserver(){
