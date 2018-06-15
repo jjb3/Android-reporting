@@ -110,6 +110,9 @@
     <string name="beacon_zone_db_name">beaconzone_db</string>
     <string name="select_beacons_you_would_like_to_recognize">Select beacons you would like to recognize.</string>
     <string name="no_beacons_nearby_text">No Beacons Nearby</string>
+    <string name="beacon_device_id_text">Device ID: </string>
+    <string name="beacon_institution_text">Institution: </string>
+    <string name="beacon_bus_stop_text">Bus Stop: </string>
 
 
 </resources>

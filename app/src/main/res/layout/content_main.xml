@@ -33,7 +33,7 @@
         app:layout_constraintTop_toBottomOf="@id/recordBtn"
         android:background="@android:color/darker_gray"/>
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
@@ -155,17 +155,17 @@
                 app:layout_constraintTop_toBottomOf="@id/motion_info" />
 
             <!--this will be a recyclerview later-->
-            <TextView
-                android:id="@+id/beaconText"
-                style="@style/Information"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="@string/no_beacons_nearby_text"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/beacon_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginEnd="8dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/beacon_info_header" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/beacon_info_header">
 
+            </android.support.v7.widget.RecyclerView>
 
             <TextView
                 android:id="@+id/outdoor_info_header"
@@ -173,7 +173,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/outdoor_condition_information_text"
-                app:layout_constraintTop_toBottomOf="@id/beaconText" />
+                app:layout_constraintTop_toBottomOf="@id/beacon_recyclerview" />
 
             <LinearLayout
                 android:id="@+id/outdoor_info"
@@ -258,7 +258,7 @@
             </LinearLayout>
         </android.support.constraint.ConstraintLayout>
 
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 </android.support.constraint.ConstraintLayout>
 
 

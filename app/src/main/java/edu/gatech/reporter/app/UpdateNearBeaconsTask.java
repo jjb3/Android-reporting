@@ -22,4 +22,8 @@ public class UpdateNearBeaconsTask extends TimerTask {
     public void run() {
         EventBus.getDefault().post(new UpdateBeaconZonesEvent(nearbyBeacons));
     }
+
+    public void updateNearbyBeaconList(List<? extends ProximityAttachment> nearbyBeaconsList){
+        this.nearbyBeacons = nearbyBeaconsList;
+    }
 }

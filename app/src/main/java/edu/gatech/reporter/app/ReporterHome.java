@@ -8,6 +8,8 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.EventLog;
 import android.util.Log;
@@ -34,6 +36,7 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import edu.gatech.reporter.R;
 import edu.gatech.reporter.ServiceRequests.BeaconServiceRequests;
@@ -53,7 +56,7 @@ import edu.gatech.reporter.utils.ViewUpdater;
 public class ReporterHome extends AppCompatActivity {
 
     private static Button recordButton;
-    public TextView beaconTextView;
+    @BindView(R.id.beacon_recyclerview) RecyclerView beaconRecyclerview;
 
     private static AppCompatActivity self;
     int waitForPermissionCount = 0;
@@ -62,6 +65,8 @@ public class ReporterHome extends AppCompatActivity {
     private HashMap<String, ProximityAttachment> beaconsInRange;
     BeaconServiceRequests beaconServiceRequests;
     public BeaconDatabase beaconDatabase;
+    private BeaconHomeAdapter beaconHomeAdapter;
+
     private Executor executor = Executors.newSingleThreadExecutor();
 
     private ArrayList<BeaconZone> trackedBeacons;
@@ -82,7 +87,6 @@ public class ReporterHome extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        beaconTextView = (TextView) findViewById(R.id.beaconText);
 
         checkPermission();
         if(waitForPermissionCount == 0){
@@ -166,7 +170,6 @@ public class ReporterHome extends AppCompatActivity {
             intent.putExtra("selectedbeacons",2);
             EventBus.getDefault().unregister(this);
             beaconObserver.stopBeaconObserver();
-            beaconTextView.setText("No beacons nearby");
             beaconsInRange = new HashMap<>();
             this.startActivityForResult(intent,1);
             return true;
@@ -228,30 +231,6 @@ public class ReporterHome extends AppCompatActivity {
         updateView.start();
     }
 
-    private void updateBeaconsInRange(){
-
-        String beaconsText = "";
-
-        if (!beaconsInRange.isEmpty()) {
-            for (Map.Entry<String, ProximityAttachment> entry : beaconsInRange.entrySet()) {
-                String key = entry.getKey();
-                ProximityAttachment attachment = entry.getValue();
-                beaconsText = beaconsText + "Beacon Id: " + key;
-
-                for (Map.Entry<String, String> attch : attachment.getPayload().entrySet()) {
-                    String key1 = attch.getKey();
-                    String key1Value = attch.getValue();
-
-                    beaconsText = beaconsText + "\n\t" + key1 + ": " + key1Value;
-                }
-            }
-            beaconsText = beaconsText + "\n";
-        } else {
-            beaconsText = "No beacons nearby";
-        }
-        beaconTextView.setText(beaconsText);
-    }
-
     private void initBeaconProximityObserver(){
         beaconsInRange = new HashMap<>();
         beaconObserver.initProximityObserver();
@@ -278,7 +257,16 @@ public class ReporterHome extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onHandleUpdateRecyclerviewEvent(UpdateBeaconZonesEvent beaconZonesEvent){
         // put recyclerview that will update the view of the beacons
+        if(beaconZonesEvent.getNearbyBeaconsList() != null)
+            initRecyclerview(beaconZonesEvent.getNearbyBeaconsList());
 
+    }
+
+    public void initRecyclerview(List<? extends ProximityAttachment> nearbyBeacons){
+        beaconHomeAdapter = new BeaconHomeAdapter(nearbyBeacons);
+        beaconRecyclerview.setLayoutManager(new LinearLayoutManager(this));
+        beaconRecyclerview.setAdapter(beaconHomeAdapter);
+        beaconHomeAdapter.notifyDataSetChanged();
     }
 
     @Override
