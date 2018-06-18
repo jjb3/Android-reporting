@@ -5,17 +5,20 @@ import com.estimote.proximity_sdk.proximity.ProximityAttachment;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.TimerTask;
 
-import edu.gatech.reporter.beacons.Database.BeaconZonesEvent;
+
 import edu.gatech.reporter.beacons.Database.UpdateBeaconZonesEvent;
+import edu.gatech.reporter.utils.Const;
 
 public class UpdateNearBeaconsTask extends TimerTask {
 
-    List<? extends ProximityAttachment> nearbyBeacons;
+    HashMap<String, ProximityAttachment> nearbyBeacons;
+    HashMap<String, String> nearbyBeaconZones;
 
-    public UpdateNearBeaconsTask(List<? extends ProximityAttachment> nearbyBeacons) {
+    public UpdateNearBeaconsTask(HashMap<String, ProximityAttachment> nearbyBeacons) {
         this.nearbyBeacons = nearbyBeacons;
     }
 
@@ -23,7 +26,16 @@ public class UpdateNearBeaconsTask extends TimerTask {
         EventBus.getDefault().post(new UpdateBeaconZonesEvent(nearbyBeacons));
     }
 
-    public void updateNearbyBeaconList(List<? extends ProximityAttachment> nearbyBeaconsList){
+    public void updateNearbyBeaconList(HashMap<String, ProximityAttachment> nearbyBeaconsList, HashMap<String, String> zones, List<? extends  ProximityAttachment> attachments){
+        nearbyBeaconZones = zones;
+
+        for(ProximityAttachment beaconAttch : attachments) {
+            if (nearbyBeaconZones.containsKey(beaconAttch.getPayload().get(Const.BEACON_INSTITUTION_KEY))){
+                nearbyBeacons.put(beaconAttch.getDeviceId(), beaconAttch);
+            } else
+                nearbyBeacons.remove(beaconAttch.getDeviceId());
+        }
+
         this.nearbyBeacons = nearbyBeaconsList;
     }
 }

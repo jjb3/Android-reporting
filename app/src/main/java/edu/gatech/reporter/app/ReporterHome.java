@@ -11,15 +11,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.EventLog;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.estimote.proximity_sdk.proximity.ProximityAttachment;
@@ -32,7 +28,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -46,7 +41,6 @@ import edu.gatech.reporter.beacons.Database.BeaconZone;
 import edu.gatech.reporter.beacons.Database.BeaconZonesEvent;
 import edu.gatech.reporter.beacons.Database.UpdateBeaconZonesEvent;
 import edu.gatech.reporter.beacons.ProximityBeaconImplementation;
-import edu.gatech.reporter.beacons.ProximityBeaconInterface;
 import edu.gatech.reporter.beacons.SelectBeaconCatActivity;
 import edu.gatech.reporter.utils.Const;
 import edu.gatech.reporter.utils.ParameterManager.ParameterOptions;
@@ -136,6 +130,8 @@ public class ReporterHome extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         ViewUpdater.init(this);
+        if (beaconObserver.getBeaconObserver() == null && beaconObserver.isNetworkAvailable())
+            getBeaconsToTrack();
     }
 
     @Override
@@ -168,7 +164,7 @@ public class ReporterHome extends AppCompatActivity {
         if(id == R.id.action_beacons){
             Intent intent = new Intent(this, SelectBeaconCatActivity.class);
             intent.putExtra("selectedbeacons",2);
-            EventBus.getDefault().unregister(this);
+//            EventBus.getDefault().unregister(this);
             beaconObserver.stopBeaconObserver();
             beaconsInRange = new HashMap<>();
             this.startActivityForResult(intent,1);
@@ -257,16 +253,27 @@ public class ReporterHome extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onHandleUpdateRecyclerviewEvent(UpdateBeaconZonesEvent beaconZonesEvent){
         // put recyclerview that will update the view of the beacons
-        if(beaconZonesEvent.getNearbyBeaconsList() != null)
-            initRecyclerview(beaconZonesEvent.getNearbyBeaconsList());
+        if(beaconZonesEvent.getNearbyBeaconsMap() != null)
+            initRecyclerview(beaconZonesEvent.getNearbyBeaconsMap());
 
     }
 
-    public void initRecyclerview(List<? extends ProximityAttachment> nearbyBeacons){
-        beaconHomeAdapter = new BeaconHomeAdapter(nearbyBeacons);
+    public void initRecyclerview(HashMap<String, ProximityAttachment> nearbyBeacons){
+        beaconHomeAdapter = new BeaconHomeAdapter(new ArrayList<>(nearbyBeacons.values()));
         beaconRecyclerview.setLayoutManager(new LinearLayoutManager(this));
         beaconRecyclerview.setAdapter(beaconHomeAdapter);
         beaconHomeAdapter.notifyDataSetChanged();
+    }
+
+    public void getBeaconsToTrack(){
+//        EventBus.getDefault().register(this);
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                List<BeaconZone> tempBeaconZones = beaconDatabase.myBeaconZones().getBeaconZones();
+                EventBus.getDefault().post(new BeaconZonesEvent(tempBeaconZones));
+            }
+        });
     }
 
     @Override
@@ -275,14 +282,7 @@ public class ReporterHome extends AppCompatActivity {
 
         if(requestCode == 1){
             //intentionally left in blank
-            EventBus.getDefault().register(this);
-            executor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    List<BeaconZone> tempBeaconZones = beaconDatabase.myBeaconZones().getBeaconZones();
-                    EventBus.getDefault().post(new BeaconZonesEvent(tempBeaconZones));
-                }
-            });
+            getBeaconsToTrack();
         }
     }
 }

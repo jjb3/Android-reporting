@@ -2,21 +2,22 @@ package edu.gatech.reporter.beacons.Database;
 
 import com.estimote.proximity_sdk.proximity.ProximityAttachment;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class UpdateBeaconZonesEvent {
 
-    List<? extends ProximityAttachment> nearbyBeaconsList;
+    HashMap<String, ProximityAttachment> nearbyBeaconsList;
 
-    public UpdateBeaconZonesEvent(List<? extends ProximityAttachment> nearbyBeaconsList) {
+    public UpdateBeaconZonesEvent(HashMap<String, ProximityAttachment> nearbyBeaconsList) {
         this.nearbyBeaconsList = nearbyBeaconsList;
     }
 
-    public List<? extends ProximityAttachment> getNearbyBeaconsList() {
+    public HashMap<String, ProximityAttachment> getNearbyBeaconsMap() {
         return nearbyBeaconsList;
     }
 
-    public void setNearbyBeaconsList(List<? extends ProximityAttachment> nearbyBeaconsList) {
+    public void setNearbyBeaconsList(HashMap<String, ProximityAttachment> nearbyBeaconsList) {
         this.nearbyBeaconsList = nearbyBeaconsList;
     }
 }

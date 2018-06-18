@@ -14,6 +14,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.concurrent.Executor;
@@ -24,6 +26,7 @@ import edu.gatech.reporter.beacons.Database.BeaconZone;
 import edu.gatech.reporter.beacons.Database.BeaconZonesEvent;
 import edu.gatech.reporter.beacons.ProximityBeaconImplementation;
 import edu.gatech.reporter.beacons.ProximityBeaconInterface;
+import edu.gatech.reporter.utils.Const;
 import edu.gatech.reporter.utils.ParameterManager.DataManager;
 import edu.gatech.reporter.utils.ParameterManager.ParameterOptions;
 import edu.gatech.reporter.utils.ParameterManager.Parameters;
@@ -38,7 +41,8 @@ public class ReporterService extends Service implements ProximityBeaconInterface
     public static ProximityBeaconImplementation beaconObserver;
 
     private List<BeaconZone> initialTrackedBeacons;
-    private static List<? extends ProximityAttachment> nearbyBeaconList;
+    private static HashMap<String, ProximityAttachment> nearbyBeaconList = new HashMap<>();
+    private static HashMap<String, String> currentBeaconZones = new HashMap<>();
     private static UpdateNearBeaconsTask nearBeaconsTask;
 
     private Executor executor = Executors.newSingleThreadExecutor();
@@ -124,22 +128,32 @@ public class ReporterService extends Service implements ProximityBeaconInterface
     }
 
 
-
     @Override
     public void onEnterBeaconRegion(ProximityAttachment attachments) {
-        Log.e(TAG, "onEnterBeaconRegion: Inside ReporterService onEnterBeaconRegion");
+        Log.e(TAG, "onEnterBeaconRegion: " + "Beacon Institution Region Entered is:" + attachments.getPayload().get(Const.BEACON_INSTITUTION_KEY));
+        String zone = attachments.getPayload().get(Const.BEACON_INSTITUTION_KEY);
+        currentBeaconZones.put(zone, zone);
+        nearbyBeaconList.put(attachments.getDeviceId(), attachments);
     }
 
     @Override
     public void onExitBeaconRegion(ProximityAttachment attachments) {
-        Log.e(TAG, "onEnterBeaconRegion: Inside ReporterService EXIT REGION");
+        Log.e(TAG, "onExitBeaconRegion: " + "Beacon Institution Region Entered is:" + attachments.getPayload().get(Const.BEACON_INSTITUTION_KEY));
+        String zone = attachments.getPayload().get(Const.BEACON_INSTITUTION_KEY);
+        nearbyBeaconList.remove(attachments.getDeviceId());
+        currentBeaconZones.remove(zone);
+
     }
 
     @Override
     public void onChangeActionInRegion(List<? extends ProximityAttachment> attachments) {
-        Log.e(TAG, "onEnterBeaconRegion: Inside ReporterService ON CHANGE REGION");
-        nearbyBeaconList = attachments;
-        nearBeaconsTask.updateNearbyBeaconList(nearbyBeaconList);
+        List<String> busStops = new ArrayList<>();
+        for (ProximityAttachment attachment : attachments) {
+            busStops.add(attachment.getPayload().get(Const.BEACON_BUS_STOP_KEY));
+        }
+        Log.e(TAG, "onChangeBeaconRegion: " + "Beacons Nearby: " +  busStops);
+
+        nearBeaconsTask.updateNearbyBeaconList(nearbyBeaconList, currentBeaconZones, attachments);
     }
 
 }

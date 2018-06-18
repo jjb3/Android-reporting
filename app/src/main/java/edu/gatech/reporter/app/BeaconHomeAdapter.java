@@ -22,7 +22,7 @@ public class BeaconHomeAdapter extends RecyclerView.Adapter<BeaconHomeAdapter.My
 
     private List<? extends ProximityAttachment> nearbyBeacons;
 
-    public BeaconHomeAdapter( List<? extends ProximityAttachment> listOfNearbyBeacons) {
+    public BeaconHomeAdapter( List<ProximityAttachment> listOfNearbyBeacons) {
         this.nearbyBeacons = listOfNearbyBeacons;
     }
 

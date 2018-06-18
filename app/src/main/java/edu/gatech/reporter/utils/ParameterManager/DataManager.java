@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import edu.gatech.reporter.BuildConfig;
+import edu.gatech.reporter.ServiceRequests.BeaconServiceRequests;
+import edu.gatech.reporter.app.ReporterService;
 import edu.gatech.reporter.utils.Connection;
 import edu.gatech.reporter.utils.Const;
 import edu.gatech.reporter.utils.ParameterTrackers.BatteryTracker;
@@ -26,6 +28,7 @@ import edu.gatech.reporter.utils.ParameterTrackers.TemperatureSensor;
 public class DataManager {
     private BatteryTracker myBatteryTracker;
     private Connection myConnection;
+    private BeaconServiceRequests myBeaconConnection;
     private HashMap<String, String> data = new HashMap();
     private NetworkManager myNetWorkManager;
     private GPSTracker myGPSTracker;
@@ -45,6 +48,7 @@ public class DataManager {
         myIDManager = new DeviceIDManager();
         myBatteryTracker = new BatteryTracker();
         myConnection = new Connection();
+        myBeaconConnection = BeaconServiceRequests.getInstance(ReporterService.getContext());
         myNetWorkManager = new NetworkManager();
         myTemperatureSensor = new TemperatureSensor();
         myLightSensor = new LightSensor();

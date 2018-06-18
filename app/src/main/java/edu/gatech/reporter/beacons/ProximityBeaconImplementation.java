@@ -2,8 +2,12 @@ package edu.gatech.reporter.beacons;
 
 import android.app.Notification;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.estimote.proximity_sdk.proximity.EstimoteCloudCredentials;
 import com.estimote.proximity_sdk.proximity.ProximityAttachment;
@@ -58,19 +62,22 @@ public class ProximityBeaconImplementation {
     }
 
     public void initProximityObserver() {
-
-        beaconObserver = new ProximityObserverBuilder(mContext.getApplicationContext(),
-                new EstimoteCloudCredentials("androidreporter-lk7", "41674213f80c533d22ce5aed52865253"))
-                .withOnErrorAction(new Function1<Throwable, Unit>() {
-                    @Override
-                    public Unit invoke(Throwable throwable) {
-                        Log.e("app", "proximity observer error: " + throwable);
-                        return null;
-                    }
-                })
-                .withLowLatencyPowerMode()
-                .withScannerInForegroundService(createNotification())
-                .build();
+        if(isNetworkAvailable()) {
+            beaconObserver = new ProximityObserverBuilder(mContext.getApplicationContext(),
+                    new EstimoteCloudCredentials("androidreporter-lk7", "41674213f80c533d22ce5aed52865253"))
+                    .withOnErrorAction(new Function1<Throwable, Unit>() {
+                        @Override
+                        public Unit invoke(Throwable throwable) {
+                            Log.e("app", "proximity observer error: " + throwable);
+                            return null;
+                        }
+                    })
+                    .withLowLatencyPowerMode()
+                    .withScannerInForegroundService(createNotification())
+                    .build();
+        } else {
+            Toast.makeText(mContext, "NO Internet Connection, Restart app once internet connection has been established", Toast.LENGTH_LONG).show();
+        }
     }
 
     public void addProximityZone(ProximityZone zone) {
@@ -124,6 +131,10 @@ public class ProximityBeaconImplementation {
 
     }
 
+    public ProximityObserver getBeaconObserver() {
+        return beaconObserver;
+    }
+
     public void setServiceListener(ProximityBeaconInterface beaconListener){
         proximityBeaconInterface = beaconListener;
     }
@@ -134,9 +145,17 @@ public class ProximityBeaconImplementation {
     }
 
     public void stopBeaconObserver(){
-        beaconObserverHandler.stop();
-        beaconObserverHandler = null;
-        beaconObserver = null;
+        if (beaconObserverHandler != null ) {
+            beaconObserverHandler.stop();
+            beaconObserverHandler = null;
+            beaconObserver = null;
+        }
     }
 
+    public boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 }
