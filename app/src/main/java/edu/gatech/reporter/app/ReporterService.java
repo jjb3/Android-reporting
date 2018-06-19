@@ -41,7 +41,7 @@ public class ReporterService extends Service implements ProximityBeaconInterface
     public static ProximityBeaconImplementation beaconObserver;
 
     private List<BeaconZone> initialTrackedBeacons;
-    private static HashMap<String, ProximityAttachment> nearbyBeaconList = new HashMap<>();
+    private static HashMap<String, List<ProximityAttachment>> nearbyBeaconList = new HashMap<>();
     private static HashMap<String, String> currentBeaconZones = new HashMap<>();
     private static UpdateNearBeaconsTask nearBeaconsTask;
 
@@ -133,14 +133,16 @@ public class ReporterService extends Service implements ProximityBeaconInterface
         Log.e(TAG, "onEnterBeaconRegion: " + "Beacon Institution Region Entered is:" + attachments.getPayload().get(Const.BEACON_INSTITUTION_KEY));
         String zone = attachments.getPayload().get(Const.BEACON_INSTITUTION_KEY);
         currentBeaconZones.put(zone, zone);
-        nearbyBeaconList.put(attachments.getDeviceId(), attachments);
+        List<ProximityAttachment> tempList = new ArrayList<>();
+        tempList.add(attachments);
+        nearbyBeaconList.put(attachments.getPayload().get(Const.BEACON_INSTITUTION_KEY), tempList);
     }
 
     @Override
     public void onExitBeaconRegion(ProximityAttachment attachments) {
         Log.e(TAG, "onExitBeaconRegion: " + "Beacon Institution Region Entered is:" + attachments.getPayload().get(Const.BEACON_INSTITUTION_KEY));
         String zone = attachments.getPayload().get(Const.BEACON_INSTITUTION_KEY);
-        nearbyBeaconList.remove(attachments.getDeviceId());
+        nearbyBeaconList.remove(attachments.getPayload().get(Const.BEACON_INSTITUTION_KEY));
         currentBeaconZones.remove(zone);
 
     }

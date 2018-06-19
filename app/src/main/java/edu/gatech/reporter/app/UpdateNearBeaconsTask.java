@@ -5,8 +5,10 @@ import com.estimote.proximity_sdk.proximity.ProximityAttachment;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TimerTask;
 
 
@@ -15,10 +17,10 @@ import edu.gatech.reporter.utils.Const;
 
 public class UpdateNearBeaconsTask extends TimerTask {
 
-    HashMap<String, ProximityAttachment> nearbyBeacons;
+    HashMap<String, List<ProximityAttachment>> nearbyBeacons;
     HashMap<String, String> nearbyBeaconZones;
 
-    public UpdateNearBeaconsTask(HashMap<String, ProximityAttachment> nearbyBeacons) {
+    public UpdateNearBeaconsTask(HashMap<String, List<ProximityAttachment>> nearbyBeacons) {
         this.nearbyBeacons = nearbyBeacons;
     }
 
@@ -26,16 +28,11 @@ public class UpdateNearBeaconsTask extends TimerTask {
         EventBus.getDefault().post(new UpdateBeaconZonesEvent(nearbyBeacons));
     }
 
-    public void updateNearbyBeaconList(HashMap<String, ProximityAttachment> nearbyBeaconsList, HashMap<String, String> zones, List<? extends  ProximityAttachment> attachments){
+    public void updateNearbyBeaconList(HashMap<String, List<ProximityAttachment>> nearbyBeaconsList, HashMap<String, String> zones, List<? extends  ProximityAttachment> attachments) {
         nearbyBeaconZones = zones;
 
-        for(ProximityAttachment beaconAttch : attachments) {
-            if (nearbyBeaconZones.containsKey(beaconAttch.getPayload().get(Const.BEACON_INSTITUTION_KEY))){
-                nearbyBeacons.put(beaconAttch.getDeviceId(), beaconAttch);
-            } else
-                nearbyBeacons.remove(beaconAttch.getDeviceId());
-        }
-
-        this.nearbyBeacons = nearbyBeaconsList;
+        // remove to start fresh the zone.
+        String zoneToUpdate = attachments.get(0).getPayload().get(Const.BEACON_INSTITUTION_KEY);
+        nearbyBeaconsList.put(zoneToUpdate, (List<ProximityAttachment>) attachments);
     }
 }

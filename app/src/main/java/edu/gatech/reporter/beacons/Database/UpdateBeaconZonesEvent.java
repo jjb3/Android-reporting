@@ -7,17 +7,17 @@ import java.util.List;
 
 public class UpdateBeaconZonesEvent {
 
-    HashMap<String, ProximityAttachment> nearbyBeaconsList;
+    HashMap<String, List<ProximityAttachment>> nearbyBeaconsList;
 
-    public UpdateBeaconZonesEvent(HashMap<String, ProximityAttachment> nearbyBeaconsList) {
+    public UpdateBeaconZonesEvent(HashMap<String, List<ProximityAttachment>> nearbyBeaconsList) {
         this.nearbyBeaconsList = nearbyBeaconsList;
     }
 
-    public HashMap<String, ProximityAttachment> getNearbyBeaconsMap() {
+    public HashMap<String, List<ProximityAttachment>> getNearbyBeaconsMap() {
         return nearbyBeaconsList;
     }
 
-    public void setNearbyBeaconsList(HashMap<String, ProximityAttachment> nearbyBeaconsList) {
+    public void setNearbyBeaconsList(HashMap<String, List<ProximityAttachment>> nearbyBeaconsList) {
         this.nearbyBeaconsList = nearbyBeaconsList;
     }
 }

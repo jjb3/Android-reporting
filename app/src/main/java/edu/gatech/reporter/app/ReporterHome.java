@@ -28,6 +28,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -258,8 +259,16 @@ public class ReporterHome extends AppCompatActivity {
 
     }
 
-    public void initRecyclerview(HashMap<String, ProximityAttachment> nearbyBeacons){
-        beaconHomeAdapter = new BeaconHomeAdapter(new ArrayList<>(nearbyBeacons.values()));
+    public void initRecyclerview(HashMap<String, List<ProximityAttachment>> nearbyBeacons){
+
+        List<ProximityAttachment> listOfAllBeaconZones = new ArrayList<>();
+
+        for (Map.Entry<String, List<ProximityAttachment>> entry : nearbyBeacons.entrySet()) {
+            for (ProximityAttachment attachment : entry.getValue()){
+                listOfAllBeaconZones.add(attachment);
+            }
+        }
+        beaconHomeAdapter = new BeaconHomeAdapter(listOfAllBeaconZones);
         beaconRecyclerview.setLayoutManager(new LinearLayoutManager(this));
         beaconRecyclerview.setAdapter(beaconHomeAdapter);
         beaconHomeAdapter.notifyDataSetChanged();
