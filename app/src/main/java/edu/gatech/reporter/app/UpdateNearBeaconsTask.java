@@ -13,6 +13,7 @@ import java.util.TimerTask;
 
 
 import edu.gatech.reporter.beacons.Database.UpdateBeaconZonesEvent;
+import edu.gatech.reporter.beacons.NearbyBeaconManager;
 import edu.gatech.reporter.utils.Const;
 
 public class UpdateNearBeaconsTask extends TimerTask {
@@ -20,12 +21,18 @@ public class UpdateNearBeaconsTask extends TimerTask {
     HashMap<String, List<ProximityAttachment>> nearbyBeacons;
     HashMap<String, String> nearbyBeaconZones;
 
+    private NearbyBeaconManager myNearbyBeaconManager;
+
+    public UpdateNearBeaconsTask(NearbyBeaconManager nearbyBeaconsManager) {
+        myNearbyBeaconManager = nearbyBeaconsManager;
+    }
+
     public UpdateNearBeaconsTask(HashMap<String, List<ProximityAttachment>> nearbyBeacons) {
         this.nearbyBeacons = nearbyBeacons;
     }
 
     public void run() {
-        EventBus.getDefault().post(new UpdateBeaconZonesEvent(nearbyBeacons));
+        EventBus.getDefault().post(new UpdateBeaconZonesEvent(myNearbyBeaconManager.getNearbyBeacons()));
     }
 
     public void updateNearbyBeaconList(HashMap<String, List<ProximityAttachment>> nearbyBeaconsList, HashMap<String, String> zones, List<? extends  ProximityAttachment> attachments) {
@@ -33,6 +40,6 @@ public class UpdateNearBeaconsTask extends TimerTask {
 
         // remove to start fresh the zone.
         String zoneToUpdate = attachments.get(0).getPayload().get(Const.BEACON_INSTITUTION_KEY);
-        nearbyBeaconsList.put(zoneToUpdate, (List<ProximityAttachment>) attachments);
+        myNearbyBeaconManager.getNearbyBeacons().put(zoneToUpdate, (List<ProximityAttachment>) attachments);
     }
 }

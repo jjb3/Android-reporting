@@ -24,6 +24,7 @@ import java.util.concurrent.Executors;
 import edu.gatech.reporter.beacons.Database.BeaconDatabaseManager;
 import edu.gatech.reporter.beacons.Database.BeaconZone;
 import edu.gatech.reporter.beacons.Database.BeaconZonesEvent;
+import edu.gatech.reporter.beacons.NearbyBeaconManager;
 import edu.gatech.reporter.beacons.ProximityBeaconImplementation;
 import edu.gatech.reporter.beacons.ProximityBeaconInterface;
 import edu.gatech.reporter.utils.Const;
@@ -40,9 +41,9 @@ public class ReporterService extends Service implements ProximityBeaconInterface
     private static BeaconDatabaseManager beaconDatabaseManager;
     public static ProximityBeaconImplementation beaconObserver;
 
+
+    private static NearbyBeaconManager myNearbyBeaconManager;
     private List<BeaconZone> initialTrackedBeacons;
-    private static HashMap<String, List<ProximityAttachment>> nearbyBeaconList = new HashMap<>();
-    private static HashMap<String, String> currentBeaconZones = new HashMap<>();
     private static UpdateNearBeaconsTask nearBeaconsTask;
 
     private Executor executor = Executors.newSingleThreadExecutor();
@@ -68,12 +69,13 @@ public class ReporterService extends Service implements ProximityBeaconInterface
         Log.e(TAG, "onCreate");
         mContext = getApplicationContext();
         myDataManager = new DataManager();
-        nearBeaconsTask = new UpdateNearBeaconsTask(nearbyBeaconList);
+        myNearbyBeaconManager = new NearbyBeaconManager();
+        nearBeaconsTask = new UpdateNearBeaconsTask(myNearbyBeaconManager);
         initBeaconDetection();
 
         timer = new Timer();
         timer.schedule(new DataUpdateTask(myDataManager), 0, ParameterOptions.getInstance().dataUpdateInterval);
-        timer.schedule(new SendDataTask(myDataManager), 0, ParameterOptions.getInstance().reportInterval);
+        timer.schedule(new SendDataTask(myDataManager, myNearbyBeaconManager), 0, ParameterOptions.getInstance().reportInterval);
         timer.schedule(nearBeaconsTask, 0, ParameterOptions.getInstance().beaconUpdateViewInterval);
 
         EventBus.getDefault().register(this);
@@ -123,7 +125,7 @@ public class ReporterService extends Service implements ProximityBeaconInterface
         timer.purge();
         timer = new Timer();
         timer.schedule(new DataUpdateTask(myDataManager), 0, ParameterOptions.getInstance().dataUpdateInterval);
-        timer.schedule(new SendDataTask(myDataManager), 0, ParameterOptions.getInstance().reportInterval);
+        timer.schedule(new SendDataTask(myDataManager, myNearbyBeaconManager), 0, ParameterOptions.getInstance().reportInterval);
         timer.schedule(nearBeaconsTask, 0, ParameterOptions.getInstance().beaconUpdateViewInterval);
     }
 
@@ -132,18 +134,18 @@ public class ReporterService extends Service implements ProximityBeaconInterface
     public void onEnterBeaconRegion(ProximityAttachment attachments) {
         Log.e(TAG, "onEnterBeaconRegion: " + "Beacon Institution Region Entered is:" + attachments.getPayload().get(Const.BEACON_INSTITUTION_KEY));
         String zone = attachments.getPayload().get(Const.BEACON_INSTITUTION_KEY);
-        currentBeaconZones.put(zone, zone);
+        myNearbyBeaconManager.getNearbyBeaconZones().put(zone, zone);
         List<ProximityAttachment> tempList = new ArrayList<>();
         tempList.add(attachments);
-        nearbyBeaconList.put(attachments.getPayload().get(Const.BEACON_INSTITUTION_KEY), tempList);
+        myNearbyBeaconManager.getNearbyBeacons().put(attachments.getPayload().get(Const.BEACON_INSTITUTION_KEY), tempList);
     }
 
     @Override
     public void onExitBeaconRegion(ProximityAttachment attachments) {
         Log.e(TAG, "onExitBeaconRegion: " + "Beacon Institution Region Entered is:" + attachments.getPayload().get(Const.BEACON_INSTITUTION_KEY));
         String zone = attachments.getPayload().get(Const.BEACON_INSTITUTION_KEY);
-        nearbyBeaconList.remove(attachments.getPayload().get(Const.BEACON_INSTITUTION_KEY));
-        currentBeaconZones.remove(zone);
+        myNearbyBeaconManager.getNearbyBeacons().remove(attachments.getPayload().get(Const.BEACON_INSTITUTION_KEY));
+        myNearbyBeaconManager.getNearbyBeaconZones().remove(zone);
 
     }
 
@@ -154,8 +156,7 @@ public class ReporterService extends Service implements ProximityBeaconInterface
             busStops.add(attachment.getPayload().get(Const.BEACON_BUS_STOP_KEY));
         }
         Log.e(TAG, "onChangeBeaconRegion: " + "Beacons Nearby: " +  busStops);
-
-        nearBeaconsTask.updateNearbyBeaconList(nearbyBeaconList, currentBeaconZones, attachments);
+        myNearbyBeaconManager.updateNearbyBeaconList(attachments);
     }
 
 }
