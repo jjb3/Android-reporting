@@ -69,7 +69,7 @@ public class ReporterService extends Service implements ProximityBeaconInterface
         Log.e(TAG, "onCreate");
         mContext = getApplicationContext();
         myDataManager = new DataManager();
-        myNearbyBeaconManager = new NearbyBeaconManager();
+        myNearbyBeaconManager = new NearbyBeaconManager(mContext);
         nearBeaconsTask = new UpdateNearBeaconsTask(myNearbyBeaconManager);
         initBeaconDetection();
 
