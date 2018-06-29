@@ -21,9 +21,11 @@ import java.util.Timer;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import edu.gatech.reporter.beacons.Database.AddBeaconZonesEvent;
 import edu.gatech.reporter.beacons.Database.BeaconDatabaseManager;
 import edu.gatech.reporter.beacons.Database.BeaconZone;
 import edu.gatech.reporter.beacons.Database.BeaconZonesEvent;
+import edu.gatech.reporter.beacons.Database.SelectBeaconZonesEvent;
 import edu.gatech.reporter.beacons.NearbyBeaconManager;
 import edu.gatech.reporter.beacons.ProximityBeaconImplementation;
 import edu.gatech.reporter.beacons.ProximityBeaconInterface;
@@ -105,7 +107,14 @@ public class ReporterService extends Service implements ProximityBeaconInterface
         initialTrackedBeacons = event.getBeaconZonesList();
         beaconObserver.addProximityZone(initialTrackedBeacons);
         beaconObserver.startBeaconObserver();
-        EventBus.getDefault().unregister(this);
+        //EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void newlySelectecBeaconZonessHandler(AddBeaconZonesEvent event) {
+
+        myNearbyBeaconManager.getNearbyBeacons().clear();
+        //EventBus.getDefault().unregister(this);
     }
 
     @Override

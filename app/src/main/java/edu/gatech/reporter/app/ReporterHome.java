@@ -168,6 +168,7 @@ public class ReporterHome extends AppCompatActivity {
 //            EventBus.getDefault().unregister(this);
             beaconObserver.stopBeaconObserver();
             beaconsInRange = new HashMap<>();
+            beaconRecyclerview.setAdapter(null);
             this.startActivityForResult(intent,1);
             return true;
         }

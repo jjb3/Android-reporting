@@ -26,6 +26,8 @@ import edu.gatech.reporter.beacons.Database.BeaconDatabase;
 import edu.gatech.reporter.beacons.Database.BeaconDatabaseManager;
 import edu.gatech.reporter.beacons.Database.BeaconZone;
 import edu.gatech.reporter.beacons.Database.BeaconZonesEvent;
+import edu.gatech.reporter.beacons.Database.SelectBeaconZoneEvent;
+import edu.gatech.reporter.beacons.Database.SelectBeaconZonesEvent;
 
 public class SelectBeaconCatActivity extends AppCompatActivity {
 
@@ -91,14 +93,14 @@ public class SelectBeaconCatActivity extends AppCompatActivity {
                 for (BeaconZone beaconZone : tempBeaconZone) {
                     institutionList.add(beaconZone);
                 }
-                EventBus.getDefault().post( new BeaconZonesEvent(tempBeaconZone));
+                EventBus.getDefault().post( new SelectBeaconZonesEvent(tempBeaconZone));
             }
         });
 
     }
 
     @Subscribe
-    public void onHandleDatabaseEvent(BeaconZonesEvent event){
+    public void onHandleDatabaseEvent(SelectBeaconZonesEvent event){
         initRecyclerview();
     }
 
@@ -127,13 +129,14 @@ public class SelectBeaconCatActivity extends AppCompatActivity {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                for(int i = 0 ; i < institutionList.size() ; i++){
+                for(int i = 0 ; i < institutionList.size() ; i++) {
                     BeaconZone tempBeaconZone = institutionList.get(i);
                     beaconDatabase.myBeaconZones().updateZone(tempBeaconZone);
-                    EventBus.getDefault().post(new AddBeaconZonesEvent(null));
                 }
+                EventBus.getDefault().post(new AddBeaconZonesEvent(null));
             }
         });
+
     }
 
 
