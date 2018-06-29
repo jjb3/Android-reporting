@@ -64,7 +64,7 @@ public class ProximityBeaconImplementation {
     public void initProximityObserver() {
         if(isNetworkAvailable()) {
             beaconObserver = new ProximityObserverBuilder(mContext.getApplicationContext(),
-                    new EstimoteCloudCredentials("androidreporter-lk7", "41674213f80c533d22ce5aed52865253"))
+                    new EstimoteCloudCredentials(mContext.getString(R.string.appId), mContext.getString(R.string.appToken)))
                     .withOnErrorAction(new Function1<Throwable, Unit>() {
                         @Override
                         public Unit invoke(Throwable throwable) {
@@ -78,10 +78,6 @@ public class ProximityBeaconImplementation {
         } else {
             Toast.makeText(mContext, "NO Internet Connection, Restart app once internet connection has been established", Toast.LENGTH_LONG).show();
         }
-    }
-
-    public void addProximityZone(ProximityZone zone) {
-        beaconObserver.addProximityZone(zone);
     }
 
     public void addProximityZone(List<BeaconZone> zones) {
