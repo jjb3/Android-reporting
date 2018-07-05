@@ -3,7 +3,7 @@ package edu.gatech.reporter.beacons;
 import android.content.Context;
 import android.text.format.DateFormat;
 
-import com.estimote.proximity_sdk.proximity.ProximityAttachment;
+import com.estimote.proximity_sdk.proximity.ProximityContext;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +18,7 @@ public class NearbyBeaconManager {
     BeaconServiceRequests myBeaconServiceRequest;
     Context mContext;
 
-    private HashMap<String, List<ProximityAttachment>> nearbyBeacons;
+    private HashMap<String, List<ProximityContext>> nearbyBeacons;
     private HashMap<String, String> nearbyBeaconZones;
 
 
@@ -34,15 +34,15 @@ public class NearbyBeaconManager {
         return nearbyBeaconZones;
     }
 
-    public HashMap<String, List<ProximityAttachment>> getNearbyBeacons() {
+    public HashMap<String, List<ProximityContext>> getNearbyBeacons() {
         return nearbyBeacons;
     }
 
 
-    public void updateNearbyBeaconList(List<? extends  ProximityAttachment> attachments) {
+    public void updateNearbyBeaconList(List<? extends  ProximityContext> attachments) {
         // remove to start fresh the zone.
-        String zoneToUpdate = attachments.get(0).getPayload().get(Const.BEACON_INSTITUTION_KEY);
-        nearbyBeacons.put(zoneToUpdate, (List<ProximityAttachment>) attachments);
+        String zoneToUpdate = attachments.get(0).getTag();
+        nearbyBeacons.put(zoneToUpdate, (List<ProximityContext>) attachments);
     }
 
     public void sendData() {

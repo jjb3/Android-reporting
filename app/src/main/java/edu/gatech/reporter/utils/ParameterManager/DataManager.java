@@ -3,7 +3,7 @@ package edu.gatech.reporter.utils.ParameterManager;
 import android.text.format.DateFormat;
 import android.util.Log;
 
-import com.estimote.proximity_sdk.proximity.ProximityAttachment;
+import com.estimote.proximity_sdk.proximity.ProximityContext;
 
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +37,7 @@ public class DataManager {
     private LightSensor myLightSensor;
     private PressureSensor myPressureSensor;
     private TemperatureSensor myTemperatureSensor;
-    private HashMap<String, ProximityAttachment> beaconsInRange = new HashMap<>();
+    private HashMap<String, ProximityContext> beaconsInRange = new HashMap<>();
 
     private static final String TAG = "DataManager";
     String versionName = BuildConfig.VERSION_NAME;
@@ -79,7 +79,7 @@ public class DataManager {
         Parameters.getInstance().heading = myGPSTracker.getHeading();
     }
 
-    private void updateNearbyBeacons(List<? extends ProximityAttachment> attachments){
+    private void updateNearbyBeacons(List<? extends ProximityContext> attachments){
 
 
     }

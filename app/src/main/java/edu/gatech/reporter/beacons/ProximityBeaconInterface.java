@@ -1,18 +1,16 @@
 package edu.gatech.reporter.beacons;
 
-import com.estimote.coresdk.common.internal.utils.L;
-import com.estimote.coresdk.observation.utils.Proximity;
-import com.estimote.proximity_sdk.proximity.ProximityAttachment;
-import com.estimote.proximity_sdk.proximity.ProximityZone;
+
+import com.estimote.proximity_sdk.proximity.ProximityContext;
 
 import java.util.List;
 
 public interface ProximityBeaconInterface {
 
-    void onEnterBeaconRegion(ProximityAttachment attachments);
+    void onEnterBeaconRegion(ProximityContext attachments);
 
-    void onExitBeaconRegion(ProximityAttachment attachments);
+    void onExitBeaconRegion(ProximityContext attachments);
 
-    void onChangeActionInRegion(List<? extends ProximityAttachment> attachments);
+    void onChangeActionInRegion(List<? extends ProximityContext> attachments);
 
 }

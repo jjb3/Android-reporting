@@ -1,20 +1,20 @@
 package edu.gatech.reporter.beacons.Database;
 
-import com.estimote.proximity_sdk.proximity.ProximityAttachment;
+import com.estimote.proximity_sdk.proximity.ProximityContext;
 
 public class UpdateBeaconZoneEvent {
 
-    ProximityAttachment proximityAttachment;
+    ProximityContext ProximityContext;
 
-    public UpdateBeaconZoneEvent(ProximityAttachment proximityAttachment) {
-        this.proximityAttachment = proximityAttachment;
+    public UpdateBeaconZoneEvent(ProximityContext ProximityContext) {
+        this.ProximityContext = ProximityContext;
     }
 
-    public ProximityAttachment getProximityAttachment() {
-        return proximityAttachment;
+    public ProximityContext getProximityContext() {
+        return ProximityContext;
     }
 
-    public void setProximityAttachment(ProximityAttachment proximityAttachment) {
-        this.proximityAttachment = proximityAttachment;
+    public void setProximityContext(ProximityContext ProximityContext) {
+        this.ProximityContext = ProximityContext;
     }
 }

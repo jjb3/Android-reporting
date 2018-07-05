@@ -1,7 +1,7 @@
 package edu.gatech.reporter.app;
 
 import com.estimote.analytics_plugin.dagger.ProximityAnalyticsReporterModule_ProvideTimerFactory;
-import com.estimote.proximity_sdk.proximity.ProximityAttachment;
+import com.estimote.proximity_sdk.proximity.ProximityContext;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -18,7 +18,7 @@ import edu.gatech.reporter.utils.Const;
 
 public class UpdateNearBeaconsTask extends TimerTask {
 
-    HashMap<String, List<ProximityAttachment>> nearbyBeacons;
+    HashMap<String, List<ProximityContext>> nearbyBeacons;
     HashMap<String, String> nearbyBeaconZones;
 
     private NearbyBeaconManager myNearbyBeaconManager;
@@ -27,7 +27,7 @@ public class UpdateNearBeaconsTask extends TimerTask {
         myNearbyBeaconManager = nearbyBeaconsManager;
     }
 
-    public UpdateNearBeaconsTask(HashMap<String, List<ProximityAttachment>> nearbyBeacons) {
+    public UpdateNearBeaconsTask(HashMap<String, List<ProximityContext>> nearbyBeacons) {
         this.nearbyBeacons = nearbyBeacons;
     }
 
@@ -35,11 +35,11 @@ public class UpdateNearBeaconsTask extends TimerTask {
         EventBus.getDefault().post(new UpdateBeaconZonesEvent(myNearbyBeaconManager.getNearbyBeacons()));
     }
 
-    public void updateNearbyBeaconList(HashMap<String, List<ProximityAttachment>> nearbyBeaconsList, HashMap<String, String> zones, List<? extends  ProximityAttachment> attachments) {
+    public void updateNearbyBeaconList(HashMap<String, List<ProximityContext>> nearbyBeaconsList, HashMap<String, String> zones, List<? extends  ProximityContext> attachments) {
         nearbyBeaconZones = zones;
 
         // remove to start fresh the zone.
-        String zoneToUpdate = attachments.get(0).getPayload().get(Const.BEACON_INSTITUTION_KEY);
-        myNearbyBeaconManager.getNearbyBeacons().put(zoneToUpdate, (List<ProximityAttachment>) attachments);
+        String zoneToUpdate = attachments.get(0).getAttachments().get(Const.BEACON_INSTITUTION_KEY);
+        myNearbyBeaconManager.getNearbyBeacons().put(zoneToUpdate, (List<ProximityContext>) attachments);
     }
 }

@@ -16,9 +16,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 
 
-import com.estimote.proximity_sdk.proximity.ProximityAttachment;
+import com.estimote.proximity_sdk.proximity.ProximityContext;
 
 
 import org.greenrobot.eventbus.EventBus;
@@ -52,12 +53,13 @@ public class ReporterHome extends AppCompatActivity {
 
     private static Button recordButton;
     @BindView(R.id.beacon_recyclerview) RecyclerView beaconRecyclerview;
+    @BindView(R.id.beacon_count) TextView beaconCount;
 
     private static AppCompatActivity self;
     int waitForPermissionCount = 0;
 
     private ProximityBeaconImplementation beaconObserver;
-    private HashMap<String, ProximityAttachment> beaconsInRange;
+    private HashMap<String, ProximityContext> beaconsInRange;
     BeaconServiceRequests beaconServiceRequests;
     public BeaconDatabase beaconDatabase;
     private BeaconHomeAdapter beaconHomeAdapter;
@@ -131,8 +133,8 @@ public class ReporterHome extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         ViewUpdater.init(this);
-        if (beaconObserver.getBeaconObserver() == null && beaconObserver.isNetworkAvailable())
-            getBeaconsToTrack();
+//        if (beaconObserver.getBeaconObserver() == null && beaconObserver.isNetworkAvailable())
+//            getBeaconsToTrack();
     }
 
     @Override
@@ -169,6 +171,7 @@ public class ReporterHome extends AppCompatActivity {
             beaconObserver.stopBeaconObserver();
             beaconsInRange = new HashMap<>();
             beaconRecyclerview.setAdapter(null);
+            beaconCount.setText("(0)");
             this.startActivityForResult(intent,1);
             return true;
         }
@@ -260,18 +263,19 @@ public class ReporterHome extends AppCompatActivity {
 
     }
 
-    public void initRecyclerview(HashMap<String, List<ProximityAttachment>> nearbyBeacons){
+    public void initRecyclerview(HashMap<String, List<ProximityContext>> nearbyBeacons){
 
-        List<ProximityAttachment> listOfAllBeaconZones = new ArrayList<>();
+        List<ProximityContext> listOfAllBeaconZones = new ArrayList<>();
 
-        for (Map.Entry<String, List<ProximityAttachment>> entry : nearbyBeacons.entrySet()) {
-            for (ProximityAttachment attachment : entry.getValue()){
+        for (Map.Entry<String, List<ProximityContext>> entry : nearbyBeacons.entrySet()) {
+            for (ProximityContext attachment : entry.getValue()){
                 listOfAllBeaconZones.add(attachment);
             }
         }
         beaconHomeAdapter = new BeaconHomeAdapter(listOfAllBeaconZones);
         beaconRecyclerview.setLayoutManager(new LinearLayoutManager(this));
         beaconRecyclerview.setAdapter(beaconHomeAdapter);
+        beaconCount.setText("(" + String.valueOf(beaconHomeAdapter.getItemCount()) + ")");
         beaconHomeAdapter.notifyDataSetChanged();
     }
 

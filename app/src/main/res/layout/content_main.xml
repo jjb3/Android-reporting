@@ -154,6 +154,17 @@
                 android:text="@string/nearby_beacon_header_text"
                 app:layout_constraintTop_toBottomOf="@id/motion_info" />
 
+            <TextView
+                android:id="@+id/beacon_count"
+                style="@style/InformationHeaders"
+                android:textColor="@color/colorPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                app:layout_constraintTop_toBottomOf="@id/motion_info"
+                app:layout_constraintLeft_toRightOf="@id/beacon_info_header"
+                tools:text="(3)" />
+
             <!--this will be a recyclerview later-->
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/beacon_recyclerview"
