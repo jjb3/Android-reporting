@@ -38,6 +38,7 @@ public class ProximityBeaconImplementation {
     //private static ConnectionReceiver connectionReceiver;
 
     private boolean isNetworkAvailable;
+    private boolean atLeastOneZoneSelected;
 
     private List<BeaconZone> mBeaconZones;
 
@@ -117,8 +118,10 @@ public class ProximityBeaconImplementation {
     public void addProximityZone(List<BeaconZone> zones) {
         mBeaconZones = zones;
         for(int i = 0 ; i < zones.size() ; i++){
-            if(zones.get(i).isSelected())
+            if(zones.get(i).isSelected()) {
                 addProximityZone(zones.get(i));
+                atLeastOneZoneSelected = true;
+            }
         }
     }
 
@@ -170,7 +173,7 @@ public class ProximityBeaconImplementation {
     }
 
     public void startBeaconObserver(){
-        if(beaconObserverHandler == null) {
+        if(beaconObserverHandler == null && atLeastOneZoneSelected) {
             beaconObserverHandler = beaconObserver.start();
             Log.d("datamanager","beacon scan started");
         }
@@ -182,6 +185,7 @@ public class ProximityBeaconImplementation {
             beaconObserverHandler.stop();
             beaconObserverHandler = null;
             beaconObserver = null;
+            atLeastOneZoneSelected = false;
         }
     }
 
