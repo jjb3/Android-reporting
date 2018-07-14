@@ -113,6 +113,9 @@
     <string name="beacon_device_id_text">Device ID: </string>
     <string name="beacon_institution_text">Institution: </string>
     <string name="beacon_bus_stop_text">Bus Stop: </string>
-
+    
+    <!--Permissions Rationales-->
+    <string name="permissions_rationale">All permissions (Location, Network and Phone State permissions are reuqired for the proper functionality of the app.</string>
+    <string name="permissions_rationale_title">Location, Network and Phone Permission</string>
 
 </resources>

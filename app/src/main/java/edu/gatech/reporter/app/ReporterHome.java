@@ -20,6 +20,14 @@ import android.widget.TextView;
 
 
 import com.estimote.proximity_sdk.proximity.ProximityContext;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.BaseMultiplePermissionsListener;
+import com.karumi.dexter.listener.multi.CompositeMultiplePermissionsListener;
+import com.karumi.dexter.listener.multi.DialogOnAnyDeniedMultiplePermissionsListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 
 import org.greenrobot.eventbus.EventBus;
@@ -56,7 +64,6 @@ public class ReporterHome extends AppCompatActivity {
     @BindView(R.id.beacon_count) TextView beaconCount;
 
     private static AppCompatActivity self;
-    int waitForPermissionCount = 0;
 
     private ProximityBeaconImplementation beaconObserver;
     private HashMap<String, ProximityContext> beaconsInRange;
@@ -84,11 +91,7 @@ public class ReporterHome extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-
         checkPermission();
-        if(waitForPermissionCount == 0){
-            startService();
-        }
 
         recordButton = (Button)findViewById(R.id.recordBtn);
         recordButton.setOnClickListener(new View.OnClickListener() {
@@ -180,34 +183,35 @@ public class ReporterHome extends AppCompatActivity {
     }
 
     private void checkPermission(){
-        if (ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            waitForPermissionCount++;
-            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
-        }
-        if (ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED) {
-            waitForPermissionCount++;
-            requestPermissions(new String[]{Manifest.permission.ACCESS_NETWORK_STATE}, 0);
-        }
+        MultiplePermissionsListener multiplePermissionsListenerDialogBuilder =
+                DialogOnAnyDeniedMultiplePermissionsListener.Builder
+                .withContext(this)
+                .withTitle(getString(R.string.permissions_rationale_title))
+                .withMessage(getString(R.string.permissions_rationale))
+                .withButtonText(android.R.string.ok)
+                .build();
 
-        if (ActivityCompat.checkSelfPermission(this,Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this,Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            waitForPermissionCount++;
-            requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
-        }
-    }
+        MultiplePermissionsListener multiplePermissionsListener = new MultiplePermissionsListener() {
+            @Override
+            public void onPermissionsChecked(MultiplePermissionsReport report) {
+                if(report.areAllPermissionsGranted())
+                    startService();
+            }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case Const.MY_PERMISSIONS_ACCESS_COARSE_LOCATION:
-            case Const.MY_PERMISSIONS_ACCESS_NETWORK_STATE:
-            case Const.MY_PERMISSIONS_ACCESS_READ_PHONE_STATE:
-                waitForPermissionCount--;
-        }
-        if(waitForPermissionCount == 0)
-            startService();
+            @Override
+            public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                token.continuePermissionRequest();
+            }
+        };
+
+        MultiplePermissionsListener compositePermissionListener = new CompositeMultiplePermissionsListener(multiplePermissionsListener, multiplePermissionsListenerDialogBuilder);
+
+        Dexter.withActivity(this)
+                .withPermissions(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_NETWORK_STATE,
+                        Manifest.permission.READ_PHONE_STATE
+                ).withListener(compositePermissionListener).check();
     }
 
     private void startService(){
