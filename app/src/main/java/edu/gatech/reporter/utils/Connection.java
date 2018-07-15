@@ -60,6 +60,7 @@ public class Connection {
             obj.put("heading", data.get("heading"));
             obj.put("accuracy", data.get("accuracy") );
             obj.put("timestamp", data.get("timestamp"));
+            obj.put("beacon_ids", data.get("beacons_id"));
         } catch (JSONException e){
             System.out.println("JSON passing error!: " + e.toString());
         }

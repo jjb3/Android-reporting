@@ -1,16 +1,24 @@
 package edu.gatech.reporter.utils.ParameterManager;
 
+import android.content.Context;
 import android.text.format.DateFormat;
 import android.util.Log;
 
 import com.estimote.proximity_sdk.proximity.ProximityContext;
+import com.google.gson.Gson;
 
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import edu.gatech.reporter.BuildConfig;
 import edu.gatech.reporter.ServiceRequests.BeaconServiceRequests;
 import edu.gatech.reporter.app.ReporterService;
+import edu.gatech.reporter.beacons.Database.UpdateBeaconZonesEvent;
+import edu.gatech.reporter.beacons.NearbyBeaconManager;
 import edu.gatech.reporter.utils.Connection;
 import edu.gatech.reporter.utils.Const;
 import edu.gatech.reporter.utils.ParameterTrackers.BatteryTracker;
@@ -28,7 +36,7 @@ import edu.gatech.reporter.utils.ParameterTrackers.TemperatureSensor;
 public class DataManager {
     private BatteryTracker myBatteryTracker;
     private Connection myConnection;
-    private BeaconServiceRequests myBeaconConnection;
+    private NearbyBeaconManager myNearbyBeaconManager;
     private HashMap<String, String> data = new HashMap();
     private NetworkManager myNetWorkManager;
     private GPSTracker myGPSTracker;
@@ -42,13 +50,13 @@ public class DataManager {
     private static final String TAG = "DataManager";
     String versionName = BuildConfig.VERSION_NAME;
 
-    public DataManager(){
+    public DataManager(Context context){
         myGPSTracker = new GPSTracker();
         myMotionSensor = new MotionSensor();
         myIDManager = new DeviceIDManager();
         myBatteryTracker = new BatteryTracker();
         myConnection = new Connection();
-        myBeaconConnection = BeaconServiceRequests.getInstance(ReporterService.getContext());
+        myNearbyBeaconManager = new NearbyBeaconManager(context);
         myNetWorkManager = new NetworkManager();
         myTemperatureSensor = new TemperatureSensor();
         myLightSensor = new LightSensor();
@@ -79,9 +87,21 @@ public class DataManager {
         Parameters.getInstance().heading = myGPSTracker.getHeading();
     }
 
-    private void updateNearbyBeacons(List<? extends ProximityContext> attachments){
+    private void updateBeaconData() {
 
+        List<ProximityContext> beacons = new ArrayList<>();
+        HashMap<String, List<ProximityContext>> nearbyBeacons  = myNearbyBeaconManager.getNearbyBeacons();
+        for (Map.Entry<String, List<ProximityContext>> entry : nearbyBeacons.entrySet()) {
+            beacons.addAll(entry.getValue());
+        }
+        List<String> beaconIds  = new ArrayList<>();
 
+        for(ProximityContext beacon : beacons)
+            beaconIds.add(beacon.getInfo().getDeviceId());
+
+        Gson gson = new Gson();
+        String beaconsList = gson.toJson(beaconIds);
+        data.put("beacons_id", beaconsList);
     }
 
     private void updateMapData(){
@@ -121,11 +141,15 @@ public class DataManager {
         data.put("timestamp", getCurrentTimestamp());
     }
 
-
     public void update(){
        // Log.e(TAG, "sent updated data");
         updateData();
         updateMapData();
+        updateBeaconData();
+    }
+
+    public NearbyBeaconManager getNearbyBeaconManager(){
+        return myNearbyBeaconManager;
     }
 
     private String getCurrentTimestamp(){

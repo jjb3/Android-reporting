@@ -12,15 +12,12 @@ import edu.gatech.reporter.utils.ParameterManager.Parameters;
 
 public class SendDataTask extends TimerTask {
     private DataManager myDataManager;
-    private NearbyBeaconManager myNearbyBeaconManager;
-    public SendDataTask(DataManager dataManager, NearbyBeaconManager nearbyBeaconManager){
+    public SendDataTask(DataManager dataManager){
         myDataManager = dataManager;
-        myNearbyBeaconManager = nearbyBeaconManager;
     }
     public void run() {
         if(Parameters.getInstance().isRecording) {
             myDataManager.sendData();
-            myNearbyBeaconManager.sendData();
         }
     }
 }
