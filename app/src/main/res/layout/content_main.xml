@@ -1,196 +1,276 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<android.support.constraint.ConstraintLayout
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="20dp"
+    android:layout_width="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".app.ReporterHome"
-    tools:showIn="@layout/activity_main"
-    android:fillViewport="true">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <RelativeLayout
+    <Button
+        android:id="@+id/recordBtn"
+        android:layout_width="600dp"
+        android:layout_height="100dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="#00cc66"
+        android:text="@string/start_recording"
+        android:textColor="#fff"
+        android:textSize="22sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:id="@+id/divider"
+        app:layout_constraintTop_toBottomOf="@id/recordBtn"
+        android:background="@android:color/darker_gray"/>
 
-        <Button
-            android:text="@string/press_arrive"
-            android:layout_width="600dp"
-            android:layout_height="100dp"
-            android:textSize="22sp"
-            android:textColor="#fff"
-            android:background ="#42a5f5"
-            android:id="@+id/stopBtn"
-            android:layout_marginTop="29dp"
-            android:layout_below="@+id/recordBtn"
-            android:layout_alignParentStart="true" />
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider"
+        tools:showIn="@layout/activity_main">
 
-        <Button
-            android:text="Press when the bus halts"
-            android:layout_width="600dp"
-            android:layout_height="100dp"
-            android:textSize="22sp"
-            android:textColor="#fff"
-            android:background ="#0033cc"
-            android:id="@+id/haltBtn"
-            android:layout_marginTop="29dp"
-            android:layout_below="@+id/stopBtn"
-            android:layout_alignParentStart="true" />
-
-        <View
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="22sp"
-            android:id="@+id/divider"
-            android:layout_below="@+id/haltBtn"
-            android:background="@android:color/darker_gray"/>
-
-        <TextView
-            android:id="@+id/tripText"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="22sp"
-            android:layout_marginTop="22sp"
-            android:layout_below = "@id/divider"
-            android:textColor="#798ca7"
-            android:text="@string/defual_string" />
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp">
 
-        <TextView
-            android:id="@+id/powerLevelText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="22sp"
-            android:layout_marginTop="22sp"
-            android:layout_below = "@id/tripText"
-            android:textColor="#798ca7"
-            android:text="@string/defual_string" />
+            <TextView
+                android:id="@+id/power_info_header"
+                style="@style/InformationHeaders"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/device_power"
+                tools:text="@string/device_power" />
 
-        <TextView
-            android:id="@+id/externalPower"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/powerLevelText"
-            android:textSize="22sp"
-            android:textColor="#798ca7"
-            android:text="@string/defual_string"
-            android:layout_marginTop="18dp"/>
+            <LinearLayout
+                android:id="@+id/power_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="@+id/power_info_header"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/power_info_header">
 
-        <TextView
-            android:id="@+id/gpsLocationText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="22sp"
-            android:text="@string/defual_string"
-            android:textColor="#798ca7"
-            android:layout_below="@+id/externalPower"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="18dp" />
+                <TextView
+                    android:id="@+id/powerLevelText"
+                    style="@style/Information"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/defual_string" />
 
-        <TextView
-            android:id="@+id/motionSensorText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="22sp"
-            android:text="@string/defual_string"
-            android:layout_below="@+id/gpsLocationText"
-            android:textColor="#798ca7"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="18dp" />
+                <TextView
+                    android:id="@+id/externalPower"
+                    style="@style/Information"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/powerLevelText"
+                    android:text="@string/defual_string"
+                    app:layout_constraintTop_toBottomOf="@id/powerLevelText" />
+            </LinearLayout>
 
-        <TextView
-            android:id="@+id/beaconText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="22sp"
-            android:text="@string/defual_string"
-            android:layout_below="@+id/motionSensorText"
-            android:textColor="#798ca7"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="18dp" />
+            <TextView
+                android:id="@+id/gps_info_header"
+                style="@style/InformationHeaders"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/gps_header_text"
+                app:layout_constraintTop_toBottomOf="@id/power_info" />
 
-        <TextView
-            android:id="@+id/temperatureText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="22sp"
-            android:text="@string/defual_string"
-            android:layout_below="@+id/beaconText"
-            android:textColor="#798ca7"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="18dp" />
+            <LinearLayout
+                android:id="@+id/gps_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="@+id/power_info_header"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/gps_info_header">
 
-        <TextView
-            android:id="@+id/pressureText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="22sp"
-            android:text="@string/defual_string"
-            android:layout_below="@+id/temperatureText"
-            android:textColor="#798ca7"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="18dp" />
+                <TextView
+                    android:id="@+id/gpsLocationText"
+                    style="@style/Information"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:text="@string/defual_string" />
+            </LinearLayout>
 
-        <TextView
-            android:id="@+id/illuminanceText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="22sp"
-            android:text="@string/defual_string"
-            android:layout_below="@+id/pressureText"
-            android:textColor="#798ca7"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="18dp" />
-
-        <TextView
-            android:id="@+id/imeiText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="22sp"
-            android:text="@string/defual_string"
-            android:layout_below="@+id/illuminanceText"
-            android:textColor="#798ca7"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="18dp" />
-
-        <TextView
-            android:id="@+id/androidIDText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="22sp"
-            android:text="@string/defual_string"
-            android:textColor="#798ca7"
-            android:layout_below="@+id/imeiText"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="18dp" />
+            <TextView
+                android:id="@+id/motion_info_header"
+                style="@style/InformationHeaders"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/motion_sensor_information_text"
+                app:layout_constraintTop_toBottomOf="@id/gps_info" />
 
 
-        <TextView
-            android:id="@+id/networkStatusText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="22sp"
-            android:text="@string/defual_string"
-            android:textColor="#798ca7"
-            android:layout_below="@+id/androidIDText"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="18dp" />
-
-        <Button
-            android:text="@string/start_recording"
-            android:layout_width="600dp"
-            android:layout_height="100dp"
-            android:textSize="22sp"
-            android:textColor="#fff"
-            android:background="#00cc66"
-            android:id="@+id/recordBtn"
-            android:layout_marginTop="27dp"
-            android:layout_alignParentStart="true" />
+            <LinearLayout
+                android:id="@+id/motion_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="@+id/power_info_header"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/motion_info_header">
 
 
-    </RelativeLayout>
-</ScrollView>
+                <TextView
+                    android:id="@+id/motionSensorText"
+                    style="@style/Information"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:text="@string/defual_string" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/beacon_info_header"
+                style="@style/InformationHeaders"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/nearby_beacon_header_text"
+                app:layout_constraintTop_toBottomOf="@id/motion_info" />
+
+            <TextView
+                android:id="@+id/beacon_count"
+                style="@style/InformationHeaders"
+                android:textColor="@color/colorPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                app:layout_constraintTop_toBottomOf="@id/motion_info"
+                app:layout_constraintLeft_toRightOf="@id/beacon_info_header"
+                tools:text="(3)" />
+
+            <!--this will be a recyclerview later-->
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/beacon_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/beacon_info_header">
+
+            </android.support.v7.widget.RecyclerView>
+
+            <TextView
+                android:id="@+id/outdoor_info_header"
+                style="@style/InformationHeaders"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/outdoor_condition_information_text"
+                app:layout_constraintTop_toBottomOf="@id/beacon_recyclerview" />
+
+            <LinearLayout
+                android:id="@+id/outdoor_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="@+id/power_info_header"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/outdoor_info_header">
+
+                <TextView
+                    android:id="@+id/temperatureText"
+                    style="@style/Information"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/defual_string" />
+
+                <TextView
+                    android:id="@+id/pressureText"
+                    style="@style/Information"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/temperatureText"
+                    android:text="@string/defual_string"
+                    app:layout_constraintTop_toBottomOf="@id/temperatureText" />
+
+                <TextView
+                    android:id="@+id/illuminanceText"
+                    style="@style/Information"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/pressureText"
+                    android:text="@string/defual_string"
+                    app:layout_constraintTop_toBottomOf="@id/pressureText" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/device_info_header"
+                style="@style/InformationHeaders"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/device_information_text"
+                app:layout_constraintTop_toBottomOf="@id/outdoor_info" />
+
+            <LinearLayout
+                android:id="@+id/device_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/power_info_header"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/device_info_header">
+
+                <TextView
+                    android:id="@+id/imeiText"
+                    style="@style/Information"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/defual_string" />
+
+                <TextView
+                    android:id="@+id/androidIDText"
+                    style="@style/Information"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/defual_string" />
+
+
+                <TextView
+                    android:id="@+id/networkStatusText"
+                    style="@style/Information"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/defual_string" />
+            </LinearLayout>
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+</android.support.constraint.ConstraintLayout>
+
+
+

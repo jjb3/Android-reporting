@@ -8,8 +8,6 @@ import edu.gatech.reporter.utils.Const;
 public class Parameters {
     public  double  batteryPct;
     public double[] sensorData = new double[4];
-    public double jostleIndex = 0.0;
-    public double distanceSumation = 0.0;
     public  Double[] location = new Double[2];
     public Double temperature = Const.NO_TEMPERATURE_SENSOR;
     public Double illuminance = Const.NO_TEMPERATURE_SENSOR;
@@ -17,15 +15,14 @@ public class Parameters {
     public int internetConnectionState = Const.NO_INTERNET_CONNECTION;
     public int externalPower = Const.NOT_CHARGE;
     public Double gpsSpeed;
+    public float gpsAccuracy;
+    public long gpsTime;
     public Double heading;
     public String macAddress = "";
     public String imei = "";
     public String secureID = "";
     public String nearestBeaconID = "";
-    public boolean atStop = false;
-    public boolean isHalted = false;
     public boolean isRecording = false;
-    public long tripID =  0;
     public String version = "1.0.1";
     public String lastUpdatedDate = "03/25/2017";
 

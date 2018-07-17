@@ -28,6 +28,7 @@ public class GPSTracker extends Service implements LocationListener {
     Location location; // location
     double latitude; // latitude
     double longitude; // longitude
+    long gpsTime; // gps time
 
     // The minimum distance to change Updates in meters
     private int min_update_distance = 0; // 0 meters
@@ -88,6 +89,7 @@ public class GPSTracker extends Service implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         this.location = location;
+        this.gpsTime = location.getTime();
     }
 
     @Override
@@ -161,6 +163,17 @@ public class GPSTracker extends Service implements LocationListener {
             return (double)location.getSpeed();
         }
         return null;
+    }
+
+    public float getGPSAccuracy(){
+        if(isGPSValid()) {
+            return location.getAccuracy();
+        } else
+            return 0;
+    }
+
+    public long getGpsTime(){
+        return gpsTime;
     }
 
     private boolean isGPSValid(){

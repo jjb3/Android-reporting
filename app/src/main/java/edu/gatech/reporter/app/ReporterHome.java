@@ -8,15 +8,50 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.TextView;
 
+
+import com.estimote.proximity_sdk.proximity.ProximityContext;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.BaseMultiplePermissionsListener;
+import com.karumi.dexter.listener.multi.CompositeMultiplePermissionsListener;
+import com.karumi.dexter.listener.multi.DialogOnAnyDeniedMultiplePermissionsListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import edu.gatech.reporter.R;
+import edu.gatech.reporter.ServiceRequests.BeaconServiceRequests;
+import edu.gatech.reporter.beacons.Database.BeaconDatabase;
+import edu.gatech.reporter.beacons.Database.BeaconDatabaseManager;
+import edu.gatech.reporter.beacons.Database.BeaconZone;
+import edu.gatech.reporter.beacons.Database.BeaconZonesEvent;
+import edu.gatech.reporter.beacons.Database.UpdateBeaconZonesEvent;
+import edu.gatech.reporter.beacons.ProximityBeaconImplementation;
+import edu.gatech.reporter.beacons.SelectBeaconCatActivity;
 import edu.gatech.reporter.utils.Const;
 import edu.gatech.reporter.utils.ParameterManager.ParameterOptions;
 import edu.gatech.reporter.utils.ParameterManager.Parameters;
@@ -24,11 +59,21 @@ import edu.gatech.reporter.utils.ViewUpdater;
 
 public class ReporterHome extends AppCompatActivity {
 
-    private static Button stopButton;
     private static Button recordButton;
-    private static Button haltButton;
+    @BindView(R.id.beacon_recyclerview) RecyclerView beaconRecyclerview;
+    @BindView(R.id.beacon_count) TextView beaconCount;
+
     private static AppCompatActivity self;
-    int waitForPermissionCount = 0;
+
+    private ProximityBeaconImplementation beaconObserver;
+    private HashMap<String, ProximityContext> beaconsInRange;
+    BeaconServiceRequests beaconServiceRequests;
+    public BeaconDatabase beaconDatabase;
+    private BeaconHomeAdapter beaconHomeAdapter;
+
+    private Executor executor = Executors.newSingleThreadExecutor();
+
+    private ArrayList<BeaconZone> trackedBeacons;
 
     public static AppCompatActivity getActivity(){
         return self;
@@ -36,49 +81,17 @@ public class ReporterHome extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        System.out.println("On Create");
         self = this;
         super.onCreate(savedInstanceState);
-
+        beaconDatabase = BeaconDatabaseManager.getInstance(this.getApplicationContext()).getBeaconDatabase();
+        beaconObserver = ProximityBeaconImplementation.getInstance(this);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         checkPermission();
-        if(waitForPermissionCount == 0){
-            startService();
-        }
-        stopButton = (Button)findViewById(R.id.stopBtn);
-        stopButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if(Parameters.getInstance().atStop){
-                    Parameters.getInstance().atStop = false;
-                    haltButton.setVisibility(View.VISIBLE);
-                    stopButton.setText("Press when you ARRIVE at the bus stop");
-
-                }else{
-                    Parameters.getInstance().atStop = true;
-                    haltButton.setVisibility(View.GONE);
-                    stopButton.setText("Press as you DEPART the bus stop");
-                }
-            }
-        });
-
-        haltButton = (Button)findViewById(R.id.haltBtn);
-        haltButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if(Parameters.getInstance().isHalted){
-                    Parameters.getInstance().isHalted = false;
-                    stopButton.setVisibility(View.VISIBLE);
-                    haltButton.setText("Press when the bus halts");
-                }else{
-                    Parameters.getInstance().isHalted = true;
-                    stopButton.setVisibility(View.GONE);
-                    haltButton.setText("Press when the bus goes");
-                }
-            }
-        });
 
         recordButton = (Button)findViewById(R.id.recordBtn);
         recordButton.setOnClickListener(new View.OnClickListener() {
@@ -86,7 +99,6 @@ public class ReporterHome extends AppCompatActivity {
                 if(Parameters.getInstance().isRecording){
 
                     Parameters.getInstance().isRecording = false;
-                    Parameters.getInstance().tripID = 0;
                     recordButton.setBackgroundColor(Const.GREEN_BUTTON_COLOR);
                     recordButton.setText("Press to start recording");
 
@@ -102,7 +114,6 @@ public class ReporterHome extends AppCompatActivity {
                                     recordButton.setBackgroundColor(Const.RED_BUTTON_COLOR);
                                     recordButton.setText("Stop recording");
 
-                                    Parameters.getInstance().tripID = System.currentTimeMillis();
                                 }})
                             .setNegativeButton(android.R.string.no, null).show();
                 }
@@ -115,25 +126,23 @@ public class ReporterHome extends AppCompatActivity {
             recordButton.setBackgroundColor(Const.RED_BUTTON_COLOR);
             recordButton.setText("Stop recording");
         }
-        if(Parameters.getInstance().isHalted == true){
-            Parameters.getInstance().isHalted = true;
-            stopButton.setVisibility(View.GONE);
-            haltButton.setText("Press when the bus goes");
-        }
-        if(Parameters.getInstance().atStop == true){
-            Parameters.getInstance().atStop = true;
-            haltButton.setVisibility(View.GONE);
-            stopButton.setText("Press as you DEPART the bus stop");
-        }
 
         ParameterOptions.getInstance().setActivity(this);
         ParameterOptions.getInstance().loadPreference();
+        EventBus.getDefault().register(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         ViewUpdater.init(this);
+//        if (beaconObserver.getBeaconObserver() == null && beaconObserver.isNetworkAvailable())
+//            getBeaconsToTrack();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
 
@@ -158,38 +167,51 @@ public class ReporterHome extends AppCompatActivity {
             startActivity(intent);
             return true;
         }
+        if(id == R.id.action_beacons){
+            Intent intent = new Intent(this, SelectBeaconCatActivity.class);
+            intent.putExtra("selectedbeacons",2);
+//            EventBus.getDefault().unregister(this);
+            beaconObserver.stopBeaconObserver();
+            beaconsInRange = new HashMap<>();
+            beaconRecyclerview.setAdapter(null);
+            beaconCount.setText("(0)");
+            this.startActivityForResult(intent,1);
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
     private void checkPermission(){
-        if (ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            waitForPermissionCount++;
-            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
-        }
-        if (ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED) {
-            waitForPermissionCount++;
-            requestPermissions(new String[]{Manifest.permission.ACCESS_NETWORK_STATE}, 0);
-        }
+        MultiplePermissionsListener multiplePermissionsListenerDialogBuilder =
+                DialogOnAnyDeniedMultiplePermissionsListener.Builder
+                .withContext(this)
+                .withTitle(getString(R.string.permissions_rationale_title))
+                .withMessage(getString(R.string.permissions_rationale))
+                .withButtonText(android.R.string.ok)
+                .build();
 
-        if (ActivityCompat.checkSelfPermission(this,Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this,Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            waitForPermissionCount++;
-            requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
-        }
-    }
+        MultiplePermissionsListener multiplePermissionsListener = new MultiplePermissionsListener() {
+            @Override
+            public void onPermissionsChecked(MultiplePermissionsReport report) {
+                if(report.areAllPermissionsGranted())
+                    startService();
+            }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case Const.MY_PERMISSIONS_ACCESS_COARSE_LOCATION:
-            case Const.MY_PERMISSIONS_ACCESS_NETWORK_STATE:
-            case Const.MY_PERMISSIONS_ACCESS_READ_PHONE_STATE:
-                waitForPermissionCount--;
-        }
-        if(waitForPermissionCount == 0)
-            startService();
+            @Override
+            public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                token.continuePermissionRequest();
+            }
+        };
+
+        MultiplePermissionsListener compositePermissionListener = new CompositeMultiplePermissionsListener(multiplePermissionsListener, multiplePermissionsListenerDialogBuilder);
+
+        Dexter.withActivity(this)
+                .withPermissions(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_NETWORK_STATE,
+                        Manifest.permission.READ_PHONE_STATE
+                ).withListener(compositePermissionListener).check();
     }
 
     private void startService(){
@@ -212,5 +234,73 @@ public class ReporterHome extends AppCompatActivity {
             }
         };
         updateView.start();
+    }
+
+    private void initBeaconProximityObserver(){
+        beaconsInRange = new HashMap<>();
+        beaconObserver.initProximityObserver();
+        beaconObserver.addProximityZone(trackedBeacons);
+        beaconObserver.startBeaconObserver();
+    }
+
+    private void updateBeaconZonesToTrack(List<BeaconZone> beaconZones){
+        trackedBeacons = new ArrayList<>();
+        for(BeaconZone beacon : beaconZones){
+            if(beacon.isSelected())
+                trackedBeacons.add(beacon);
+        }
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventHandleTest(BeaconZonesEvent event){
+        updateBeaconZonesToTrack(event.getBeaconZonesList());
+        initBeaconProximityObserver();
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onHandleUpdateRecyclerviewEvent(UpdateBeaconZonesEvent beaconZonesEvent){
+        // put recyclerview that will update the view of the beacons
+        if(beaconZonesEvent.getNearbyBeaconsMap() != null)
+            initRecyclerview(beaconZonesEvent.getNearbyBeaconsMap());
+
+    }
+
+    public void initRecyclerview(HashMap<String, List<ProximityContext>> nearbyBeacons){
+
+        List<ProximityContext> listOfAllBeaconZones = new ArrayList<>();
+
+        for (Map.Entry<String, List<ProximityContext>> entry : nearbyBeacons.entrySet()) {
+            for (ProximityContext attachment : entry.getValue()){
+                listOfAllBeaconZones.add(attachment);
+            }
+        }
+        beaconHomeAdapter = new BeaconHomeAdapter(listOfAllBeaconZones);
+        beaconRecyclerview.setLayoutManager(new LinearLayoutManager(this));
+        beaconRecyclerview.setAdapter(beaconHomeAdapter);
+        beaconCount.setText("(" + String.valueOf(beaconHomeAdapter.getItemCount()) + ")");
+        beaconHomeAdapter.notifyDataSetChanged();
+    }
+
+    public void getBeaconsToTrack(){
+//        EventBus.getDefault().register(this);
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                List<BeaconZone> tempBeaconZones = beaconDatabase.myBeaconZones().getBeaconZones();
+                EventBus.getDefault().post(new BeaconZonesEvent(tempBeaconZones));
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 1){
+            //intentionally left in blank
+            getBeaconsToTrack();
+        }
     }
 }

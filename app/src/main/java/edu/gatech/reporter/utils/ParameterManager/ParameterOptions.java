@@ -21,11 +21,11 @@ public class ParameterOptions {
     public boolean androidIDChk = true;
     public boolean macChk = true;
     public boolean netStatusCheck = true;
-    public boolean busStatusCheck = true;
     public int dataUpdateInterval = 500;
     public int reportInterval = 5000;
+    public int beaconUpdateViewInterval = 5000;
     public int minUpdateDistance = 0;
-    public String serverURL = "https://gt-tracker.herokuapp.com";
+    public String serverURL = "https://www.busgenius.com/api/v1/geolocations";
 
     private static ParameterOptions instance = null;
 

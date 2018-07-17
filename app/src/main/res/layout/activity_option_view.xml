@@ -119,24 +119,12 @@
             android:layout_below="@+id/macChk"
             android:layout_alignStart="@+id/powerLevelChk" />
 
-        <CheckBox
-            android:text="Bus status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#798ca7"
-            android:buttonTint="#42a5f5"
-            android:id="@+id/busStatusCheck"
-            android:layout_marginTop="20dp"
-            android:textSize="22sp"
-            android:layout_below="@+id/netStatusCheck"
-            android:layout_alignStart="@+id/powerLevelChk" />
-
         <TextView
             android:id="@+id/updateIntervalView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/netStatusCheck"
-            android:layout_below="@+id/busStatusCheck"
+            android:layout_below="@+id/netStatusCheck"
             android:textSize="22sp"
             android:layout_marginTop="22dp"
             android:textColor="#798ca7"

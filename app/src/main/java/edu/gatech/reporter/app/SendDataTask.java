@@ -2,6 +2,7 @@ package edu.gatech.reporter.app;
 
 import java.util.TimerTask;
 
+import edu.gatech.reporter.beacons.NearbyBeaconManager;
 import edu.gatech.reporter.utils.ParameterManager.DataManager;
 import edu.gatech.reporter.utils.ParameterManager.Parameters;
 
@@ -15,6 +16,8 @@ public class SendDataTask extends TimerTask {
         myDataManager = dataManager;
     }
     public void run() {
-        if(Parameters.getInstance().isRecording) myDataManager.sendData();
+        if(Parameters.getInstance().isRecording) {
+            myDataManager.sendData();
+        }
     }
 }

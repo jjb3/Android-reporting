@@ -21,7 +21,7 @@ public class DeviceIDManager {
     WifiManager wifiManager;
     public DeviceIDManager(){
         teleManager = (TelephonyManager) ReporterService.getContext().getSystemService(Context.TELEPHONY_SERVICE);
-        wifiManager  = (WifiManager)ReporterService.getContext().getSystemService(Context.WIFI_SERVICE);
+        wifiManager  = (WifiManager)ReporterService.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
     }
     public String getIMEI(){
 //        try{
@@ -37,13 +37,14 @@ public class DeviceIDManager {
 //        return Parameters.getInstance().imei;
         try{
             if(teleManager.getDeviceId() == null) {
-                return Const.NO_ID;
+                return Settings.Secure.getString(ReporterService.getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+            } else {
+                return teleManager.getDeviceId();
             }
         }catch(SecurityException e){
             Log.d("Permission Denied", "Permission Denied");
             return Const.NO_ID;
         }
-        return teleManager.getDeviceId();
     }
 
     public String getSecureID(){

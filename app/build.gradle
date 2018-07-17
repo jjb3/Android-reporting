@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
     useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
@@ -21,16 +21,33 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     // add the following line, and replace "0.11.1" with the latest version
     // of Estimote Android SDK; you'll find the latest version number on:
     //   https://github.com/Estimote/Android-SDK/releases
-    compile 'com.android.support:appcompat-v7:26.1.0'
-    compile 'com.android.support:design:26.1.0'
-    compile 'com.google.android.gms:play-services-location:11.8.0'
-    compile 'com.android.volley:volley:1.0.0'
-    compile 'com.estimote:sdk:0.11.1'
-    compile 'com.android.support:support-v4:26.1.0'
-    testCompile 'junit:junit:4.12'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.google.android.gms:play-services-location:15.0.1'
+    implementation 'com.android.volley:volley:1.0.0'
+    implementation 'com.android.support:support-v4:27.1.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
+
+    // Dev Niceties
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    implementation 'com.karumi:dexter:5.0.0'
+
+    //Room Persistence SQLite DB and background threads
+    implementation 'android.arch.persistence.room:runtime:1.1.0'
+    annotationProcessor 'android.arch.persistence.room:compiler:1.1.0'
+    implementation 'org.greenrobot:eventbus:3.1.1'
+
+    //estimote sdk
+    implementation 'com.estimote:proximity-sdk:0.6.0'
+    implementation 'com.estimote:sdk:1.4.1'
+    implementation 'com.estimote:mustard:0.2.1'
+
+    testImplementation 'junit:junit:4.12'
 }

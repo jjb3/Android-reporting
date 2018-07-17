@@ -2,6 +2,7 @@ package edu.gatech.reporter.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.format.DateFormat;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -16,9 +17,7 @@ public class ViewUpdater {
     private static TextView powerLevelText;
     private static TextView gpsLocationText;
     private static TextView motionSensorText;
-    private static TextView beaconText;
     private static TextView illuminanceText;
-    private static TextView tripIDText;
     private static TextView pressureText;
     private static TextView temperatureText;
     private static TextView imeiText;
@@ -29,7 +28,6 @@ public class ViewUpdater {
 
     public static void init(Activity context){
         myContext = context;
-        tripIDText = (TextView) context.findViewById(R.id.tripText);
         powerLevelText = (TextView) context.findViewById(R.id.powerLevelText);
         gpsLocationText = (TextView) context.findViewById(R.id.gpsLocationText);
         motionSensorText = (TextView) context.findViewById(R.id.motionSensorText);
@@ -40,13 +38,11 @@ public class ViewUpdater {
         androidIDText = (TextView) context.findViewById(R.id.androidIDText);
         networkStateText = (TextView) context.findViewById(R.id.networkStatusText);
         externalPowerText = (TextView) context.findViewById(R.id.externalPower);
-        beaconText = (TextView)context.findViewById(R.id.beaconText);
 
     }
 
     public static void update(){
         if(myContext != null){
-            tripIDText.setText(getTripIDString());
             powerLevelText.setText(getPowerStateString());
             gpsLocationText.setText(getGPSLocationString());
             motionSensorText.setText(getAccelerometerDataString());
@@ -57,7 +53,6 @@ public class ViewUpdater {
             androidIDText.setText(getAndroidIDString());
             imeiText.setText(getIMEIString());
             externalPowerText.setText(getExternalPowerString());
-            beaconText.setText(getNearestBeaconIDString());
         }
 
     }
@@ -65,16 +60,15 @@ public class ViewUpdater {
     private static String getAccelerometerDataString(){
         return "X: "+ String.valueOf(Parameters.getInstance().sensorData[0])
                 + " \nY: " + String.valueOf(Parameters.getInstance().sensorData[1])
-                + " \nZ: " + String.valueOf(Parameters.getInstance().sensorData[2])
-                +" \nJostle Index: " + String.valueOf(Parameters.getInstance().jostleIndex)
-                +" \nDistance Summation: " + String.valueOf(Parameters.getInstance().distanceSumation);
+                + " \nZ: " + String.valueOf(Parameters.getInstance().sensorData[2]);
     }
 
     private static String getGPSLocationString(){
         return "Latitude: " + String.valueOf(Parameters.getInstance().location[0])
                 + "\nLongitude: "+ String.valueOf(Parameters.getInstance().location[1])
                 +"\nHeading: "+ String.valueOf(Parameters.getInstance().heading)
-                +"\nGPSSpeed: " + String.valueOf(Parameters.getInstance().gpsSpeed);
+                +"\nGPSSpeed: " + String.valueOf(Parameters.getInstance().gpsSpeed)
+                +"\nGPSTime: " + DateFormat.format("yyyy-MM-dd'T'HH:mm:ssZ", Parameters.getInstance().gpsTime).toString();
     }
 
     private static String getPowerStateString(){
@@ -96,8 +90,6 @@ public class ViewUpdater {
     private static String getMacAddressString(){
         return "MAC Address:\n" + Parameters.getInstance().macAddress;
     }
-
-    private static String getTripIDString(){return (Parameters.getInstance().tripID != 0)?"Current Trip ID: " + Parameters.getInstance().tripID:"Current Trip ID: null";}
 
     private static String getIMEIString(){
         return "IMEI: " + Parameters.getInstance().imei;
@@ -136,9 +128,4 @@ public class ViewUpdater {
             return "Pressure:\nNo pressure sensor";
         return "Pressure:\n" + Parameters.getInstance().pressure;
     }
-
-    private static String getNearestBeaconIDString(){
-        return "Nearest beacon ID:\n" + Parameters.getInstance().nearestBeaconID;
-    }
-
 }

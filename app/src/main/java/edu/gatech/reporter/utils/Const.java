@@ -9,7 +9,7 @@ import static android.R.attr.factor;
  * Created by Wendi on 2016/8/31.
  */
 public class Const {
-    public static final int  PERCENTAGE_FACTOR = 100;
+    public static final int PERCENTAGE_FACTOR = 100;
     public static final double THRESHOLD = 0.001;
     public static final int NO_INTERNET_CONNECTION = 0;
     public static final int WIFI_CONNECTION = 1;
@@ -32,4 +32,12 @@ public class Const {
     public static final int BLUE_BUTTON_COLOR = Color.parseColor("#42a5f5");
     public static final int GRAY_TEXT_COLOR = Color.parseColor("#798ca7");
     public static final int DARK_BLUE = Color.parseColor("#0033cc");
+
+    //   Database for Beacons Constants
+    public static final String BEACON_DB_NAME = "beaconzone_db";
+    public static final String KEY_INSTITUTION = "Institution";
+
+    //    <!--Beacon Constants-->
+    public static final String BEACON_INSTITUTION_KEY = "Institution";
+    public static final String BEACON_BUS_STOP_KEY = "Bus Stop";
 }
