@@ -161,7 +161,7 @@
             android:layout_alignStart="@+id/netStatusCheck"
             android:textSize="22sp"
             android:textColor="#798ca7"
-            android:text="@string/defual_string"
+            android:text="@string/add_beacon_tags_message"
             />
 
         <Button

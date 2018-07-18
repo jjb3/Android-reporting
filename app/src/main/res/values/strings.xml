@@ -93,6 +93,7 @@
     <string name="press_arrive">Press when you ARRIVE at the bus stop</string>
     <string name="start_recording">Press to start recording</string>
     <string name="defual_string">Default!</string>
+    <string name="add_beacon_tags_message">Add Beacon Tags!</string>
     <string name="action_about">About</string>
     <string name="action_select_beacons">Select Beacons</string>
     <string name="title_activity_about_view">About</string>

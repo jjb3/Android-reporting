@@ -90,7 +90,7 @@ public class OptionView extends AppCompatActivity {
         updateIntervalView.setText("Data update interval: "+String.valueOf(ParameterOptions.getInstance().dataUpdateInterval) + " ms");
         reportIntervalView.setText(String.valueOf("Report interval: "+ParameterOptions.getInstance().reportInterval) + "ms");
         serverURLView.setText(String.valueOf("Server URL: \n"+ParameterOptions.getInstance().serverURL));
-        beaconTagsView.setText(ParameterOptions.getInstance().beaconTags);
+        beaconTagsView.setText("Beacon Tags: \n"+ParameterOptions.getInstance().beaconTags);
 
 
         powerLevelChk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
