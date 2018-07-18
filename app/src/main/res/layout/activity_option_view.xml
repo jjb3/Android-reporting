@@ -152,11 +152,23 @@
             android:textColor="#798ca7"
             android:text="@string/defual_string" />
 
+        <TextView
+            android:id="@+id/beacon_tags_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:layout_below="@+id/serverURLView"
+            android:layout_alignStart="@+id/netStatusCheck"
+            android:textSize="22sp"
+            android:textColor="#798ca7"
+            android:text="@string/defual_string"
+            />
+
         <Button
             android:text="Change update interval"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/serverURLView"
+            android:layout_below="@+id/beacon_tags_view"
             android:layout_alignStart="@+id/netStatusCheck"
             android:layout_marginTop="22dp"
             android:id="@+id/updateInterval" />
@@ -178,6 +190,15 @@
             android:layout_alignStart="@+id/netStatusCheck"
             android:layout_marginTop="6dp"
             android:id="@+id/serverURL" />
+
+        <Button
+            android:id="@+id/beacon_tags"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/serverURL"
+            android:layout_alignStart="@id/netStatusCheck"
+            android:layout_marginTop="6dp"
+            android:text="Set tags to recognize" />
 
     </RelativeLayout>
 </ScrollView>

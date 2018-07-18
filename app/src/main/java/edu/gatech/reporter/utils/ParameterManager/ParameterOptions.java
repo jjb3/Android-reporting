@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 
+import java.lang.reflect.Parameter;
+
 import edu.gatech.reporter.R;
 
 /**
@@ -26,6 +28,7 @@ public class ParameterOptions {
     public int beaconUpdateViewInterval = 5000;
     public int minUpdateDistance = 0;
     public String serverURL = "https://www.busgenius.com/api/v1/geolocations";
+    public String beaconTags = "";
 
     private static ParameterOptions instance = null;
 
@@ -56,6 +59,7 @@ public class ParameterOptions {
         ParameterOptions.getInstance().dataUpdateInterval = sharedPref.getInt(act.getString(R.string.changeDataUpdateInterval), 500);
         ParameterOptions.getInstance().reportInterval = sharedPref.getInt(act.getString(R.string.changeReportInterval), 5000);
         ParameterOptions.getInstance().serverURL = sharedPref.getString(act.getString(R.string.changeServerURL), serverURL);
+        ParameterOptions.getInstance().beaconTags = sharedPref.getString(act.getString(R.string.beacon_tags),"");
     }
 
     public void writePreference(){
@@ -73,6 +77,7 @@ public class ParameterOptions {
         editor.putInt(act.getString(R.string.changeDataUpdateInterval), ParameterOptions.getInstance().dataUpdateInterval);
         editor.putInt(act.getString(R.string.changeReportInterval), ParameterOptions.getInstance().reportInterval);
         editor.putString(act.getString(R.string.changeServerURL), ParameterOptions.getInstance().serverURL);
+        editor.putString(act.getString(R.string.beacon_tags), ParameterOptions.getInstance().beaconTags);
         editor.commit();
     }
 }

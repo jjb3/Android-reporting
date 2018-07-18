@@ -13,10 +13,14 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.Arrays;
+import java.util.List;
+
 import edu.gatech.reporter.R;
 import edu.gatech.reporter.utils.ParameterManager.ParameterOptions;
 import edu.gatech.reporter.utils.ParameterManager.Parameters;
 
+import static edu.gatech.reporter.R.id.all;
 import static edu.gatech.reporter.R.id.updateInterval;
 
 public class OptionView extends AppCompatActivity {
@@ -32,9 +36,11 @@ public class OptionView extends AppCompatActivity {
     private Button changeDataUpdateIntervalButton;
     private Button changeReportIntervalButton;
     private Button changeServerURLButton;
+    private Button changeBeaconTagsButton;
     private TextView updateIntervalView;
     private TextView reportIntervalView;
     private TextView serverURLView;
+    private TextView beaconTagsView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +64,7 @@ public class OptionView extends AppCompatActivity {
         updateIntervalView = (TextView)this.findViewById(R.id.updateIntervalView);
         reportIntervalView = (TextView)this.findViewById(R.id.reportIntervalView);
         serverURLView = (TextView)this.findViewById(R.id.serverURLView);
+        beaconTagsView = (TextView)this.findViewById(R.id.beacon_tags_view);
 
 
         powerLevelChk.setChecked(ParameterOptions.getInstance().powerLevelChk);
@@ -241,7 +248,45 @@ public class OptionView extends AppCompatActivity {
 
             }
         });
+
+        changeBeaconTagsButton = (Button) findViewById(R.id.beacon_tags);
+        changeBeaconTagsButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                final EditText input = new EditText(OptionView.this);
+                input.setText(ParameterOptions.getInstance().beaconTags);
+                new AlertDialog.Builder(OptionView.this)
+                        .setTitle("Set tags to recognize")
+                        .setView(input)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                ParameterOptions.getInstance().beaconTags = input.getText().toString();
+                                writePreferenceToFile();
+                                ReporterService.restartReportTask();
+                                beaconTagsView.setText("Beacon Tags: \n"+String.valueOf(ParameterOptions.getInstance().beaconTags));
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+
+            }
+        });
+
     }
+
+    private void parseBeaconTags() {
+
+        String allTags = String.valueOf(ParameterOptions.getInstance().beaconTags);
+        List<String> tags = Arrays.asList(allTags.split(","));
+
+
+
+    }
+
 
     private void writePreferenceToFile(){
         ParameterOptions.getInstance().writePreference();

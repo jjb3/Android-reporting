@@ -96,6 +96,7 @@
     <string name="action_about">About</string>
     <string name="action_select_beacons">Select Beacons</string>
     <string name="title_activity_about_view">About</string>
+    <string name="beacon_tags">BeaconTags</string>
 
 
     <!--Activity Main text-->
@@ -113,7 +114,7 @@
     <string name="beacon_device_id_text">Device ID: </string>
     <string name="beacon_institution_text">Institution: </string>
     <string name="beacon_bus_stop_text">Bus Stop: </string>
-    
+
     <!--Permissions Rationales-->
     <string name="permissions_rationale">All permissions (Location, Network and Phone State permissions are reuqired for the proper functionality of the app.</string>
     <string name="permissions_rationale_title">Location, Network and Phone Permission</string>
