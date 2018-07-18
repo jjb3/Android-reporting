@@ -4,7 +4,6 @@ import android.app.Notification;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -19,11 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.gatech.reporter.R;
-import edu.gatech.reporter.app.ConnectionReceiver;
-import edu.gatech.reporter.app.ReporterHome;
-import edu.gatech.reporter.app.ReporterService;
-import edu.gatech.reporter.beacons.Database.BeaconZone;
-import edu.gatech.reporter.utils.Const;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 
@@ -40,7 +34,7 @@ public class ProximityBeaconImplementation {
     private boolean isNetworkAvailable;
     private boolean atLeastOneZoneSelected;
 
-    private List<BeaconZone> mBeaconZones;
+    private List<String> mBeaconZones;
 
     private ProximityBeaconImplementation(Context context) {
         mContext = context;
@@ -90,7 +84,7 @@ public class ProximityBeaconImplementation {
         }
     }
 
-    public void initProximityObserver(List<BeaconZone> beaconZones) {
+    public void initProximityObserver(List<String> beaconZones) {
         if(isNetworkAvailable && beaconObserver == null) {
             beaconObserver = new ProximityObserverBuilder(mContext.getApplicationContext(),
                     new EstimoteCloudCredentials(mContext.getString(R.string.appId), mContext.getString(R.string.appToken)))
@@ -106,8 +100,7 @@ public class ProximityBeaconImplementation {
                     .build();
 
             for(int i = 0 ; i < beaconZones.size() ; i++){
-                if(beaconZones.get(i).isSelected())
-                    addProximityZone(beaconZones.get(i));
+                addProximityZone(beaconZones.get(i));
             }
             beaconObserver.start();
         } else {
@@ -115,19 +108,25 @@ public class ProximityBeaconImplementation {
         }
     }
 
-    public void addProximityZone(List<BeaconZone> zones) {
+    public void addProximityZone(List<String> zones) {
         mBeaconZones = zones;
-        for(int i = 0 ; i < zones.size() ; i++){
-            if(zones.get(i).isSelected()) {
-                addProximityZone(zones.get(i));
-                atLeastOneZoneSelected = true;
+        if(!zones.isEmpty()) {
+            if (zones.size() >= 1) {
+                if (zones.contains("")) {
+                    atLeastOneZoneSelected = false;
+                } else {
+                    atLeastOneZoneSelected = true;
+                    for (String zoneTag : zones){
+                        addProximityZone(zoneTag);
+                    }
+                }
             }
         }
     }
 
-    public void addProximityZone(BeaconZone beaconZone) {
+    public void addProximityZone(String beaconZone) {
         ProximityZone tempProxZone = beaconObserver.zoneBuilder()
-                .forTag(beaconZone.getZoneName())
+                .forTag(beaconZone)
                 .inFarRange()
                 .withOnEnterAction(new Function1<ProximityContext, Unit>() {
                     @Override

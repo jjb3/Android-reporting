@@ -4,9 +4,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,7 +22,6 @@ import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.multi.BaseMultiplePermissionsListener;
 import com.karumi.dexter.listener.multi.CompositeMultiplePermissionsListener;
 import com.karumi.dexter.listener.multi.DialogOnAnyDeniedMultiplePermissionsListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
@@ -38,20 +35,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import edu.gatech.reporter.R;
-import edu.gatech.reporter.ServiceRequests.BeaconServiceRequests;
-import edu.gatech.reporter.beacons.Database.BeaconDatabase;
-import edu.gatech.reporter.beacons.Database.BeaconDatabaseManager;
-import edu.gatech.reporter.beacons.Database.BeaconZone;
-import edu.gatech.reporter.beacons.Database.BeaconZonesEvent;
-import edu.gatech.reporter.beacons.Database.UpdateBeaconZonesEvent;
-import edu.gatech.reporter.beacons.ProximityBeaconImplementation;
-import edu.gatech.reporter.beacons.SelectBeaconCatActivity;
+import edu.gatech.reporter.beacons.BeaconEvents.ChangeTagsEvent;
+import edu.gatech.reporter.beacons.BeaconEvents.UpdateBeaconZonesEvent;
 import edu.gatech.reporter.utils.Const;
 import edu.gatech.reporter.utils.ParameterManager.ParameterOptions;
 import edu.gatech.reporter.utils.ParameterManager.Parameters;
@@ -64,16 +53,7 @@ public class ReporterHome extends AppCompatActivity {
     @BindView(R.id.beacon_count) TextView beaconCount;
 
     private static AppCompatActivity self;
-
-    private ProximityBeaconImplementation beaconObserver;
-    private HashMap<String, ProximityContext> beaconsInRange;
-    BeaconServiceRequests beaconServiceRequests;
-    public BeaconDatabase beaconDatabase;
     private BeaconHomeAdapter beaconHomeAdapter;
-
-    private Executor executor = Executors.newSingleThreadExecutor();
-
-    private ArrayList<BeaconZone> trackedBeacons;
 
     public static AppCompatActivity getActivity(){
         return self;
@@ -83,8 +63,6 @@ public class ReporterHome extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         self = this;
         super.onCreate(savedInstanceState);
-        beaconDatabase = BeaconDatabaseManager.getInstance(this.getApplicationContext()).getBeaconDatabase();
-        beaconObserver = ProximityBeaconImplementation.getInstance(this);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -167,17 +145,6 @@ public class ReporterHome extends AppCompatActivity {
             startActivity(intent);
             return true;
         }
-        if(id == R.id.action_beacons){
-            Intent intent = new Intent(this, SelectBeaconCatActivity.class);
-            intent.putExtra("selectedbeacons",2);
-//            EventBus.getDefault().unregister(this);
-            beaconObserver.stopBeaconObserver();
-            beaconsInRange = new HashMap<>();
-            beaconRecyclerview.setAdapter(null);
-            beaconCount.setText("(0)");
-            this.startActivityForResult(intent,1);
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -236,27 +203,10 @@ public class ReporterHome extends AppCompatActivity {
         updateView.start();
     }
 
-    private void initBeaconProximityObserver(){
-        beaconsInRange = new HashMap<>();
-        beaconObserver.initProximityObserver();
-        beaconObserver.addProximityZone(trackedBeacons);
-        beaconObserver.startBeaconObserver();
-    }
-
-    private void updateBeaconZonesToTrack(List<BeaconZone> beaconZones){
-        trackedBeacons = new ArrayList<>();
-        for(BeaconZone beacon : beaconZones){
-            if(beacon.isSelected())
-                trackedBeacons.add(beacon);
-        }
-    }
-
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventHandleTest(BeaconZonesEvent event){
-        updateBeaconZonesToTrack(event.getBeaconZonesList());
-        initBeaconProximityObserver();
-
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onSelectBeaconTagsClickedEvent(ChangeTagsEvent changeTagsEvent) {
+        beaconRecyclerview.setAdapter(null);
+        beaconCount.setText("(0)");
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -283,24 +233,4 @@ public class ReporterHome extends AppCompatActivity {
         beaconHomeAdapter.notifyDataSetChanged();
     }
 
-    public void getBeaconsToTrack(){
-//        EventBus.getDefault().register(this);
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                List<BeaconZone> tempBeaconZones = beaconDatabase.myBeaconZones().getBeaconZones();
-                EventBus.getDefault().post(new BeaconZonesEvent(tempBeaconZones));
-            }
-        });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode == 1){
-            //intentionally left in blank
-            getBeaconsToTrack();
-        }
-    }
 }

@@ -2,12 +2,9 @@ package edu.gatech.reporter.utils.ParameterManager;
 
 import android.content.Context;
 import android.text.format.DateFormat;
-import android.util.Log;
 
 import com.estimote.proximity_sdk.proximity.ProximityContext;
 import com.google.gson.Gson;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,9 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 import edu.gatech.reporter.BuildConfig;
-import edu.gatech.reporter.ServiceRequests.BeaconServiceRequests;
-import edu.gatech.reporter.app.ReporterService;
-import edu.gatech.reporter.beacons.Database.UpdateBeaconZonesEvent;
 import edu.gatech.reporter.beacons.NearbyBeaconManager;
 import edu.gatech.reporter.utils.Connection;
 import edu.gatech.reporter.utils.Const;

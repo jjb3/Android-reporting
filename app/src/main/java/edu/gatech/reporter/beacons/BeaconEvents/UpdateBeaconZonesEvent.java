@@ -1,4 +1,4 @@
-package edu.gatech.reporter.beacons.Database;
+package edu.gatech.reporter.beacons.BeaconEvents;
 
 import com.estimote.proximity_sdk.proximity.ProximityContext;
 

@@ -1,18 +1,15 @@
 package edu.gatech.reporter.app;
 
-import com.estimote.analytics_plugin.dagger.ProximityAnalyticsReporterModule_ProvideTimerFactory;
 import com.estimote.proximity_sdk.proximity.ProximityContext;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.TimerTask;
 
 
-import edu.gatech.reporter.beacons.Database.UpdateBeaconZonesEvent;
+import edu.gatech.reporter.beacons.BeaconEvents.UpdateBeaconZonesEvent;
 import edu.gatech.reporter.beacons.NearbyBeaconManager;
 import edu.gatech.reporter.utils.Const;
 

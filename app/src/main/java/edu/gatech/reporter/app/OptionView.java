@@ -13,14 +13,19 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import edu.gatech.reporter.R;
+import edu.gatech.reporter.beacons.BeaconEvents.RestartReportTaskEvent;
+import edu.gatech.reporter.beacons.BeaconEvents.ChangeTagsEvent;
+import edu.gatech.reporter.beacons.ProximityBeaconImplementation;
 import edu.gatech.reporter.utils.ParameterManager.ParameterOptions;
-import edu.gatech.reporter.utils.ParameterManager.Parameters;
 
-import static edu.gatech.reporter.R.id.all;
 import static edu.gatech.reporter.R.id.updateInterval;
 
 public class OptionView extends AppCompatActivity {
@@ -42,6 +47,11 @@ public class OptionView extends AppCompatActivity {
     private TextView serverURLView;
     private TextView beaconTagsView;
 
+
+    private Executor executor = Executors.newSingleThreadExecutor();
+    private ProximityBeaconImplementation beaconObserver;
+    List<String> beaconTags;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +59,7 @@ public class OptionView extends AppCompatActivity {
         SharedPreferences sharedPref = this.getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         setUpChkListener();
+        beaconObserver = ProximityBeaconImplementation.getInstance(this.getApplicationContext());
     }
 
     private void setUpChkListener(){
@@ -79,6 +90,7 @@ public class OptionView extends AppCompatActivity {
         updateIntervalView.setText("Data update interval: "+String.valueOf(ParameterOptions.getInstance().dataUpdateInterval) + " ms");
         reportIntervalView.setText(String.valueOf("Report interval: "+ParameterOptions.getInstance().reportInterval) + "ms");
         serverURLView.setText(String.valueOf("Server URL: \n"+ParameterOptions.getInstance().serverURL));
+        beaconTagsView.setText(ParameterOptions.getInstance().beaconTags);
 
 
         powerLevelChk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -161,7 +173,8 @@ public class OptionView extends AppCompatActivity {
                                     updateInterval = Integer.parseInt(input.getText().toString());
                                     ParameterOptions.getInstance().dataUpdateInterval = updateInterval;
                                     writePreferenceToFile();
-                                    ReporterService.restartReportTask();
+                                    //ReporterService.restartReportTask();
+                                    EventBus.getDefault().post(new RestartReportTaskEvent());
                                     updateIntervalView.setText("Data update interval: "+String.valueOf(ParameterOptions.getInstance().dataUpdateInterval) + " ms");
                                 } catch (NumberFormatException nf) {
                                     new AlertDialog.Builder(OptionView.this)
@@ -200,7 +213,8 @@ public class OptionView extends AppCompatActivity {
                                     ParameterOptions.getInstance().reportInterval = reportInterval;
                                     writePreferenceToFile();
                                     reportIntervalView.setText("Report interval: "+String.valueOf(ParameterOptions.getInstance().reportInterval) + " ms");
-                                    ReporterService.restartReportTask();
+//                                    ReporterService.restartReportTask();
+                                    EventBus.getDefault().post(new RestartReportTaskEvent());
                                 } catch (NumberFormatException nf) {
                                     new AlertDialog.Builder(OptionView.this)
                                             .setTitle("Error")
@@ -234,7 +248,8 @@ public class OptionView extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 ParameterOptions.getInstance().serverURL = input.getText().toString();
                                 writePreferenceToFile();
-                                ReporterService.restartReportTask();
+//                                ReporterService.restartReportTask();
+                                EventBus.getDefault().post(new RestartReportTaskEvent());
                                 serverURLView.setText("Server URL: \n"+String.valueOf(ParameterOptions.getInstance().serverURL));
                             }
                         })
@@ -254,6 +269,7 @@ public class OptionView extends AppCompatActivity {
             public void onClick(View v) {
                 final EditText input = new EditText(OptionView.this);
                 input.setText(ParameterOptions.getInstance().beaconTags);
+                EventBus.getDefault().post(new ChangeTagsEvent(null));
                 new AlertDialog.Builder(OptionView.this)
                         .setTitle("Set tags to recognize")
                         .setView(input)
@@ -261,7 +277,8 @@ public class OptionView extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 ParameterOptions.getInstance().beaconTags = input.getText().toString();
                                 writePreferenceToFile();
-                                ReporterService.restartReportTask();
+//                                ReporterService.restartReportTask();
+                                EventBus.getDefault().post(new RestartReportTaskEvent());
                                 beaconTagsView.setText("Beacon Tags: \n"+String.valueOf(ParameterOptions.getInstance().beaconTags));
                             }
                         })
@@ -279,12 +296,13 @@ public class OptionView extends AppCompatActivity {
     }
 
     private void parseBeaconTags() {
-
         String allTags = String.valueOf(ParameterOptions.getInstance().beaconTags);
-        List<String> tags = Arrays.asList(allTags.split(","));
+        beaconTags = Arrays.asList(allTags.split(","));
+    }
+    private void startNewBeaconZoneScan(){
 
-
-
+        beaconObserver.addProximityZone(beaconTags);
+        beaconObserver.startBeaconObserver();
     }
 
 
