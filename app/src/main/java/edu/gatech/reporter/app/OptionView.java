@@ -109,6 +109,7 @@ public class OptionView extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 ParameterOptions.getInstance().locationDataChk = isChecked;
+                myDataManager.updateSensorTrackerListener(Const.GPS_TRACKER_NAME, isChecked);
                 writePreferenceToFile();
             }
         });

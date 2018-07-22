@@ -156,6 +156,7 @@ public class DataManager {
     }
 
     private void initializeSensors() {
+        myGPSTracker.disableOrEnableSensor(ParameterOptions.getInstance().locationDataChk);
         myMotionSensor.disableOrEnableSensor(ParameterOptions.getInstance().accDataChk);
         myLightSensor.disableOrEnableSensor(ParameterOptions.getInstance().enviChk);
     }
@@ -164,8 +165,7 @@ public class DataManager {
 
         switch (sensorName){
             case Const.GPS_TRACKER_NAME:
-
-
+                myGPSTracker.disableOrEnableSensor(isEnabled);
                 break;
 
             case Const.LIGHT_SENSOR_NAME:
@@ -174,11 +174,9 @@ public class DataManager {
 
             case Const.MOTION_SENSOR_NAME:
                 myMotionSensor.disableOrEnableSensor(isEnabled);
+                break;
 
         }
-
-
-
     }
 
     public NearbyBeaconManager getNearbyBeaconManager(){
