@@ -136,7 +136,6 @@ public class DataManager {
     }
 
     public void update(){
-       // Log.e(TAG, "sent updated data");
         updateData();
         updateMapData();
         updateBeaconData();

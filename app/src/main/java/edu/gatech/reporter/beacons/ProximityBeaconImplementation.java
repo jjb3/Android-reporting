@@ -29,20 +29,12 @@ public class ProximityBeaconImplementation {
 
     private static ProximityBeaconImplementation instance;
     private static ProximityBeaconInterface proximityBeaconInterface;
-    //private static ConnectionReceiver connectionReceiver;
-
-    private boolean isNetworkAvailable;
     private boolean atLeastOneZoneSelected;
 
     private List<String> mBeaconZones;
 
     private ProximityBeaconImplementation(Context context) {
         mContext = context;
-//        connectionReceiver = new ConnectionReceiver();
-//        connectionReceiver.setmContext(mContext);
-//        connectionReceiver.setConnectionReceiverListener(this);
-        //initProximityObserver();
-
     }
 
     private Notification createNotification(){
@@ -85,7 +77,7 @@ public class ProximityBeaconImplementation {
     }
 
     public void initProximityObserver(List<String> beaconZones) {
-        if(isNetworkAvailable && beaconObserver == null) {
+        if(isNetworkAvailable() && beaconObserver == null) {
             beaconObserver = new ProximityObserverBuilder(mContext.getApplicationContext(),
                     new EstimoteCloudCredentials(mContext.getString(R.string.appId), mContext.getString(R.string.appToken)))
                     .withOnErrorAction(new Function1<Throwable, Unit>() {
@@ -198,13 +190,4 @@ public class ProximityBeaconImplementation {
 
         return connection;
     }
-
-//    @Override
-//    public void onNetworkConnectionChanged(boolean isConnected) {
-//
-//        if(!isNetworkAvailable()) {
-//            isNetworkAvailable = isConnected;
-//            initProximityObserver(mBeaconZones);
-//        }
-//    }
 }
