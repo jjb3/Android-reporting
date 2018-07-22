@@ -24,6 +24,8 @@ import edu.gatech.reporter.R;
 import edu.gatech.reporter.beacons.BeaconEvents.RestartReportTaskEvent;
 import edu.gatech.reporter.beacons.BeaconEvents.ChangeTagsEvent;
 import edu.gatech.reporter.beacons.ProximityBeaconImplementation;
+import edu.gatech.reporter.utils.Const;
+import edu.gatech.reporter.utils.ParameterManager.DataManager;
 import edu.gatech.reporter.utils.ParameterManager.ParameterOptions;
 
 import static edu.gatech.reporter.R.id.updateInterval;
@@ -52,6 +54,8 @@ public class OptionView extends AppCompatActivity {
     private ProximityBeaconImplementation beaconObserver;
     List<String> beaconTags;
 
+    private DataManager myDataManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +64,7 @@ public class OptionView extends AppCompatActivity {
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         setUpChkListener();
         beaconObserver = ProximityBeaconImplementation.getInstance(this.getApplicationContext());
+        myDataManager = DataManager.getInstance(this.getApplicationContext());
     }
 
     private void setUpChkListener(){
@@ -111,6 +116,7 @@ public class OptionView extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 ParameterOptions.getInstance().accDataChk = isChecked;
+                myDataManager.updateSensorTrackerListener(Const.MOTION_SENSOR_NAME, isChecked);
                 writePreferenceToFile();
             }
         });
@@ -125,6 +131,8 @@ public class OptionView extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 ParameterOptions.getInstance().enviChk = isChecked;
+                myDataManager.updateSensorTrackerListener(Const.LIGHT_SENSOR_NAME, isChecked);
+                writePreferenceToFile();
             }
         });
         imeiChk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

@@ -58,15 +58,15 @@ public class ReporterService extends Service implements ProximityBeaconInterface
     {
         super.onCreate();
         Log.e(TAG, "onCreate");
+        ParameterOptions.getInstance().loadPreference();
         mContext = getApplicationContext();
-        myDataManager = new DataManager(mContext);
+        myDataManager =DataManager.getInstance(mContext);
         initBeaconDetection();
 
         timer = new Timer();
         timer.schedule(new DataUpdateTask(myDataManager), 0, ParameterOptions.getInstance().dataUpdateInterval);
         timer.schedule(new SendDataTask(myDataManager), 0, ParameterOptions.getInstance().reportInterval);
         timer.schedule(new UpdateNearBeaconsTask(myDataManager.getNearbyBeaconManager()), 0, ParameterOptions.getInstance().beaconUpdateViewInterval);
-
         EventBus.getDefault().register(this);
     }
 

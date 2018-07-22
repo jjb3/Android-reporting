@@ -13,7 +13,7 @@ import edu.gatech.reporter.utils.PastAccelerometerDataList;
 /**
  * Created by Wendi on 2016/9/4.
  */
-public class MotionSensor implements SensorEventListener {
+public class MotionSensor implements SensorEventListener, StartStopSensorInterface {
 
     private final SensorManager mSensorManager;
     private final Sensor mSensor;
@@ -23,7 +23,6 @@ public class MotionSensor implements SensorEventListener {
     public MotionSensor() {
         mSensorManager = (SensorManager) ReporterService.getContext().getSystemService(ReporterService.getContext().SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
         sensorData = new double [3];
         pastAccData = new PastAccelerometerDataList();
     }
@@ -53,5 +52,17 @@ public class MotionSensor implements SensorEventListener {
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
 
+    }
+
+    @Override
+    public void disableOrEnableSensor(boolean isEnabled) {
+        if(isEnabled)
+            mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        else {
+            mSensorManager.unregisterListener(this);
+            sensorData[0] = 0;
+            sensorData[1] = 0;
+            sensorData[2] = 0;
+        }
     }
 }

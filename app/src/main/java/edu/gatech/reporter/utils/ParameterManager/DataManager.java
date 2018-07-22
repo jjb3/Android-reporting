@@ -1,6 +1,7 @@
 package edu.gatech.reporter.utils.ParameterManager;
 
 import android.content.Context;
+import android.provider.ContactsContract;
 import android.text.format.DateFormat;
 
 import com.estimote.proximity_sdk.proximity.ProximityContext;
@@ -41,10 +42,14 @@ public class DataManager {
     private TemperatureSensor myTemperatureSensor;
     private HashMap<String, ProximityContext> beaconsInRange = new HashMap<>();
 
+    private static DataManager instance;
+
+
+
     private static final String TAG = "DataManager";
     String versionName = BuildConfig.VERSION_NAME;
 
-    public DataManager(Context context){
+    private DataManager(Context context){
         myGPSTracker = new GPSTracker();
         myMotionSensor = new MotionSensor();
         myIDManager = new DeviceIDManager();
@@ -60,6 +65,15 @@ public class DataManager {
         Parameters.getInstance().secureID = myIDManager.getSecureID();
         Parameters.getInstance().macAddress = myIDManager.getMACAddress();
         data.put("data","1");
+
+        initializeSensors();
+    }
+
+    public static DataManager getInstance(Context mContext){
+        if(instance == null)
+            instance = new DataManager(mContext);
+
+        return instance;
     }
 
     public void sendData(){
@@ -139,6 +153,32 @@ public class DataManager {
         updateData();
         updateMapData();
         updateBeaconData();
+    }
+
+    private void initializeSensors() {
+        myMotionSensor.disableOrEnableSensor(ParameterOptions.getInstance().accDataChk);
+        myLightSensor.disableOrEnableSensor(ParameterOptions.getInstance().enviChk);
+    }
+
+    public void updateSensorTrackerListener(String sensorName, boolean isEnabled){
+
+        switch (sensorName){
+            case Const.GPS_TRACKER_NAME:
+
+
+                break;
+
+            case Const.LIGHT_SENSOR_NAME:
+                myLightSensor.disableOrEnableSensor(isEnabled);
+                break;
+
+            case Const.MOTION_SENSOR_NAME:
+                myMotionSensor.disableOrEnableSensor(isEnabled);
+
+        }
+
+
+
     }
 
     public NearbyBeaconManager getNearbyBeaconManager(){

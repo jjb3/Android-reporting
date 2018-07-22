@@ -40,4 +40,14 @@ public class Const {
     //    <!--Beacon Constants-->
     public static final String BEACON_INSTITUTION_KEY = "Institution";
     public static final String BEACON_BUS_STOP_KEY = "Bus Stop";
+
+//  Sensor Tracker Name Const
+    public static final String BATTERY_SENSOR_NAME = "LIGHT_SENSOR";
+    public static final String LIGHT_SENSOR_NAME = "LIGHT_SENSOR";
+    public static final String BEACON_TRACKER_NAME = "BEACON_SENSOR";
+    public static final String GPS_TRACKER_NAME = "GPS_SENSOR";
+    public static final String MOTION_SENSOR_NAME = "MOTION_SENSOR";
+    public static final String PRESSURE_SENSOR_NAME = "PRESSURE_SENSOR";
+    public static final String TEMPERATURE_SENSOR_NAME = "TEMPERATURE_SENSOR";
+
 }
