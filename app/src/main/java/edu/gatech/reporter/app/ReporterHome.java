@@ -203,7 +203,7 @@ public class ReporterHome extends AppCompatActivity {
         updateView.start();
     }
 
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSelectBeaconTagsClickedEvent(ChangeTagsEvent changeTagsEvent) {
         beaconRecyclerview.setAdapter(null);
         beaconCount.setText("(0)");

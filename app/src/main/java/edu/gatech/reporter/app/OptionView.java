@@ -173,7 +173,6 @@ public class OptionView extends AppCompatActivity {
                                     updateInterval = Integer.parseInt(input.getText().toString());
                                     ParameterOptions.getInstance().dataUpdateInterval = updateInterval;
                                     writePreferenceToFile();
-                                    //ReporterService.restartReportTask();
                                     EventBus.getDefault().post(new RestartReportTaskEvent());
                                     updateIntervalView.setText("Data update interval: "+String.valueOf(ParameterOptions.getInstance().dataUpdateInterval) + " ms");
                                 } catch (NumberFormatException nf) {
@@ -213,7 +212,6 @@ public class OptionView extends AppCompatActivity {
                                     ParameterOptions.getInstance().reportInterval = reportInterval;
                                     writePreferenceToFile();
                                     reportIntervalView.setText("Report interval: "+String.valueOf(ParameterOptions.getInstance().reportInterval) + " ms");
-//                                    ReporterService.restartReportTask();
                                     EventBus.getDefault().post(new RestartReportTaskEvent());
                                 } catch (NumberFormatException nf) {
                                     new AlertDialog.Builder(OptionView.this)
@@ -248,7 +246,6 @@ public class OptionView extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 ParameterOptions.getInstance().serverURL = input.getText().toString();
                                 writePreferenceToFile();
-//                                ReporterService.restartReportTask();
                                 EventBus.getDefault().post(new RestartReportTaskEvent());
                                 serverURLView.setText("Server URL: \n"+String.valueOf(ParameterOptions.getInstance().serverURL));
                             }
@@ -275,11 +272,11 @@ public class OptionView extends AppCompatActivity {
                         .setView(input)
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                ParameterOptions.getInstance().beaconTags = input.getText().toString();
+                                String tags = input.getText().toString();
+                                ParameterOptions.getInstance().beaconTags = tags;
+                                beaconTagsView.setText("Beacon Tags: \n"+ tags);
                                 writePreferenceToFile();
-//                                ReporterService.restartReportTask();
                                 EventBus.getDefault().post(new RestartReportTaskEvent());
-                                beaconTagsView.setText("Beacon Tags: \n"+String.valueOf(ParameterOptions.getInstance().beaconTags));
                             }
                         })
                         .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
