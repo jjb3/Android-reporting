@@ -1,5 +1,6 @@
 package edu.gatech.reporter.utils;
 
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -75,7 +76,7 @@ public class Connection {
                 @Override
                 public void onResponse(JSONObject response) {
                     if(response != null)
-                    System.out.println(response);
+                        Log.d("Connection", response.toString());
                     else
                         System.out.println("Empty response");
                 }

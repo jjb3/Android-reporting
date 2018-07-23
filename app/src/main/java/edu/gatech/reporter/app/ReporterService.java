@@ -1,11 +1,9 @@
 package edu.gatech.reporter.app;
 
-import android.app.IntentService;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.estimote.proximity_sdk.proximity.ProximityContext;
@@ -15,24 +13,19 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import edu.gatech.reporter.beacons.Database.AddBeaconZonesEvent;
-import edu.gatech.reporter.beacons.Database.BeaconDatabaseManager;
-import edu.gatech.reporter.beacons.Database.BeaconZone;
-import edu.gatech.reporter.beacons.Database.BeaconZonesEvent;
-import edu.gatech.reporter.beacons.Database.SelectBeaconZonesEvent;
-import edu.gatech.reporter.beacons.NearbyBeaconManager;
+import edu.gatech.reporter.beacons.BeaconEvents.RestartReportTaskEvent;
+import edu.gatech.reporter.beacons.BeaconEvents.ChangeTagsEvent;
 import edu.gatech.reporter.beacons.ProximityBeaconImplementation;
 import edu.gatech.reporter.beacons.ProximityBeaconInterface;
 import edu.gatech.reporter.utils.Const;
 import edu.gatech.reporter.utils.ParameterManager.DataManager;
 import edu.gatech.reporter.utils.ParameterManager.ParameterOptions;
-import edu.gatech.reporter.utils.ParameterManager.Parameters;
 
 public class ReporterService extends Service implements ProximityBeaconInterface
 {
@@ -40,11 +33,9 @@ public class ReporterService extends Service implements ProximityBeaconInterface
     private static final String TAG = "Tests";
     private static Timer timer;
     private static DataManager myDataManager;
-    private static BeaconDatabaseManager beaconDatabaseManager;
     public static ProximityBeaconImplementation beaconObserver;
 
-    private List<BeaconZone> initialTrackedBeacons;
-    private static UpdateNearBeaconsTask nearBeaconsTask;
+    private List<String> initialTrackedBeacons;
 
     private Executor executor = Executors.newSingleThreadExecutor();
 
@@ -69,13 +60,12 @@ public class ReporterService extends Service implements ProximityBeaconInterface
         Log.e(TAG, "onCreate");
         mContext = getApplicationContext();
         myDataManager = new DataManager(mContext);
-        nearBeaconsTask = new UpdateNearBeaconsTask(myDataManager.getNearbyBeaconManager());
         initBeaconDetection();
 
         timer = new Timer();
         timer.schedule(new DataUpdateTask(myDataManager), 0, ParameterOptions.getInstance().dataUpdateInterval);
         timer.schedule(new SendDataTask(myDataManager), 0, ParameterOptions.getInstance().reportInterval);
-        timer.schedule(nearBeaconsTask, 0, ParameterOptions.getInstance().beaconUpdateViewInterval);
+        timer.schedule(new UpdateNearBeaconsTask(myDataManager.getNearbyBeaconManager()), 0, ParameterOptions.getInstance().beaconUpdateViewInterval);
 
         EventBus.getDefault().register(this);
     }
@@ -84,30 +74,20 @@ public class ReporterService extends Service implements ProximityBeaconInterface
     private void initBeaconDetection(){
 
         // Required Initialization to star beacon scan.
-        beaconDatabaseManager = BeaconDatabaseManager.getInstance(mContext);
         beaconObserver = ProximityBeaconImplementation.getInstance(this);
         beaconObserver.initProximityObserver();
         beaconObserver.setServiceListener(this);
 
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                initialTrackedBeacons = beaconDatabaseManager.getBeaconDatabase().myBeaconZones().getBeaconZones();
-                EventBus.getDefault().post(new BeaconZonesEvent(initialTrackedBeacons));
-            }
-        });
-    }
-
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public void beaconZonesEventHandler(BeaconZonesEvent event) {
-
-        initialTrackedBeacons = event.getBeaconZonesList();
+        initialTrackedBeacons = Arrays.asList(String.valueOf(ParameterOptions.getInstance().beaconTags)
+                .split(","));
         beaconObserver.addProximityZone(initialTrackedBeacons);
         beaconObserver.startBeaconObserver();
+
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public void newlySelectecBeaconZonessHandler(AddBeaconZonesEvent event) {
+    public void newlySelectecBeaconZonessHandler(ChangeTagsEvent event) {
+        beaconObserver.stopBeaconObserver();
         myDataManager.getNearbyBeaconManager().getNearbyBeaconZones().clear();
         myDataManager.getNearbyBeaconManager().getNearbyBeacons().clear();
     }
@@ -124,13 +104,15 @@ public class ReporterService extends Service implements ProximityBeaconInterface
         return mContext;
     }
 
-    public static void restartReportTask(){
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void restartReportTask(RestartReportTaskEvent event){
         timer.cancel();
         timer.purge();
         timer = new Timer();
         timer.schedule(new DataUpdateTask(myDataManager), 0, ParameterOptions.getInstance().dataUpdateInterval);
         timer.schedule(new SendDataTask(myDataManager), 0, ParameterOptions.getInstance().reportInterval);
-        timer.schedule(nearBeaconsTask, 0, ParameterOptions.getInstance().beaconUpdateViewInterval);
+        timer.schedule(new UpdateNearBeaconsTask(myDataManager.getNearbyBeaconManager()), 0, ParameterOptions.getInstance().beaconUpdateViewInterval);
+        initBeaconDetection();
     }
 
 
