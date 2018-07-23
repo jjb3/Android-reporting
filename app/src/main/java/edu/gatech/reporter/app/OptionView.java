@@ -23,6 +23,7 @@ import java.util.concurrent.Executors;
 import edu.gatech.reporter.R;
 import edu.gatech.reporter.beacons.BeaconEvents.RestartReportTaskEvent;
 import edu.gatech.reporter.beacons.BeaconEvents.ChangeTagsEvent;
+import edu.gatech.reporter.beacons.BeaconEvents.StartBeaconScanEvent;
 import edu.gatech.reporter.beacons.ProximityBeaconImplementation;
 import edu.gatech.reporter.utils.Const;
 import edu.gatech.reporter.utils.ParameterManager.DataManager;
@@ -125,6 +126,11 @@ public class OptionView extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 ParameterOptions.getInstance().beaconChk = isChecked;
+                if(isChecked){
+                    EventBus.getDefault().post(new StartBeaconScanEvent());
+                } else {
+                    EventBus.getDefault().post(new ChangeTagsEvent(null));
+                }
                 writePreferenceToFile();
             }
         });
@@ -285,7 +291,7 @@ public class OptionView extends AppCompatActivity {
                                 ParameterOptions.getInstance().beaconTags = tags;
                                 beaconTagsView.setText("Beacon Tags: \n"+ tags);
                                 writePreferenceToFile();
-                                EventBus.getDefault().post(new RestartReportTaskEvent());
+                                EventBus.getDefault().post(new StartBeaconScanEvent());
                             }
                         })
                         .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
