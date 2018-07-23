@@ -72,7 +72,10 @@ public class ViewUpdater {
     }
 
     private static String getPowerStateString(){
-        return "Power Level: "+ String.valueOf((int)(Parameters.getInstance().batteryPct*Const.PERCENTAGE_FACTOR))+"%";
+        if(Parameters.getInstance().batteryPct != -1)
+            return "Power Level: "+ String.valueOf((int)(Parameters.getInstance().batteryPct*Const.PERCENTAGE_FACTOR))+"%";
+        else
+            return "null";
     }
 
     private static String getExternalPowerString(){
@@ -83,6 +86,8 @@ public class ViewUpdater {
                     return "External Power: AC";
                 case Const.USB_CHARGE:
                     return "External Power: USB";
+                case Const.CHARGE_NOT_CHARGE:
+                    return "null";
             }
             return "Error";
         }

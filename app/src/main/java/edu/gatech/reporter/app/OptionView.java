@@ -103,6 +103,7 @@ public class OptionView extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 ParameterOptions.getInstance().powerLevelChk = isChecked;
+                myDataManager.updateSensorTrackerListener(Const.BATTERY_SENSOR_NAME, isChecked);
                 writePreferenceToFile();
             }
         });

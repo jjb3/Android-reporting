@@ -159,6 +159,7 @@ public class DataManager {
         myGPSTracker.disableOrEnableSensor(ParameterOptions.getInstance().locationDataChk);
         myMotionSensor.disableOrEnableSensor(ParameterOptions.getInstance().accDataChk);
         myLightSensor.disableOrEnableSensor(ParameterOptions.getInstance().enviChk);
+        myBatteryTracker.disableOrEnableSensor(ParameterOptions.getInstance().powerLevelChk);
     }
 
     public void updateSensorTrackerListener(String sensorName, boolean isEnabled){
@@ -176,6 +177,9 @@ public class DataManager {
                 myMotionSensor.disableOrEnableSensor(isEnabled);
                 break;
 
+            case Const.BATTERY_SENSOR_NAME:
+                myBatteryTracker.disableOrEnableSensor(isEnabled);
+                break;
         }
     }
 

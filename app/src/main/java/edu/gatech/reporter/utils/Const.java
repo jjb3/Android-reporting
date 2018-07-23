@@ -17,6 +17,7 @@ public class Const {
     public static final int NOT_CHARGE = 0;
     public static final int USB_CHARGE = 1;
     public static final int AC_CHARGE = 2;
+    public static final int CHARGE_NOT_CHARGE = 3;
     public static final double NO_LIGHT_SENSOR = -1;
     public static final double NO_PRESSURE_SENSOR = -1;
     public static final double NO_TEMPERATURE_SENSOR = -1;
@@ -42,7 +43,7 @@ public class Const {
     public static final String BEACON_BUS_STOP_KEY = "Bus Stop";
 
 //  Sensor Tracker Name Const
-    public static final String BATTERY_SENSOR_NAME = "LIGHT_SENSOR";
+    public static final String BATTERY_SENSOR_NAME = "BATTERY_SENSOR";
     public static final String LIGHT_SENSOR_NAME = "LIGHT_SENSOR";
     public static final String BEACON_TRACKER_NAME = "BEACON_SENSOR";
     public static final String GPS_TRACKER_NAME = "GPS_SENSOR";
