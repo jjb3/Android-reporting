@@ -6,26 +6,42 @@ import android.os.BatteryManager;
 
 import edu.gatech.reporter.app.ReporterService;
 import edu.gatech.reporter.utils.Const;
+import edu.gatech.reporter.utils.ParameterManager.ParameterOptions;
 
 
 /**
  * Created on 2016/8/31.
  */
-public class BatteryTracker {
+public class BatteryTracker implements StartStopSensorInterface, BatteryTrackerBroadcastReceiver.BatteryChangeInterface {
 
     private IntentFilter ifilter;
+    private BatteryTrackerBroadcastReceiver mReceiver;
     private  Intent batteryStatus;
     private int level;
     private int scale;
     private float batteryPct;
 
     public BatteryTracker(){
+        mReceiver = new BatteryTrackerBroadcastReceiver();
+        mReceiver.setBatteryChangeStatusListener(this);
         ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-        batteryStatus = ReporterService.getContext().registerReceiver(null, ifilter);
     }
 
     public Float getPowerState(){
-        batteryStatus = ReporterService.getContext().registerReceiver(null, ifilter);
+        if(ParameterOptions.getInstance().powerLevelChk) {
+            level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+            scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+            batteryPct = level / (float) scale;
+            //Parameters.getInstance().batteryPct = batteryPct;
+            isUsingExternalPower();
+            return batteryPct;
+        } else
+            return (float) -1.0;
+    }
+
+    @Override
+    public Float onBatteryEventChanged(Intent intent) {
+        batteryStatus = intent;
         level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
         scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
         batteryPct = level / (float)scale;
@@ -59,13 +75,30 @@ public class BatteryTracker {
     }
 
     public int getChargeStatus(){
-        if(!isUsingExternalPower()){
-            return Const.NOT_CHARGE;
-        }else if(batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1) == BatteryManager.BATTERY_PLUGGED_USB){
-            return Const.AC_CHARGE;
-        }else{
-            return Const.USB_CHARGE;
+        if(ParameterOptions.getInstance().powerLevelChk) {
+            if (!isUsingExternalPower()) {
+                return Const.NOT_CHARGE;
+            } else if (batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1) == BatteryManager.BATTERY_PLUGGED_USB) {
+                return Const.AC_CHARGE;
+            } else {
+                return Const.USB_CHARGE;
+            }
+        } else return Const.CHARGE_NOT_CHARGE;
+    }
+
+    @Override
+    public void disableOrEnableSensor(boolean isEnabled) {
+        if(isEnabled) {
+            batteryStatus = ReporterService.getContext().registerReceiver(mReceiver, ifilter);
+            mReceiver.isRegistered = isEnabled;
+        }
+        else {
+            if(mReceiver.isRegistered) {
+                ReporterService.getContext().unregisterReceiver(mReceiver);
+                level = -1;
+            }
         }
     }
+
 
 }

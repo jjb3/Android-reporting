@@ -40,9 +40,9 @@ public class ProximityBeaconImplementation {
     private Notification createNotification(){
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext, "1")
                 .setSmallIcon(R.drawable.ic_notifications_black_24dp)
-                .setContentTitle("beacon Scanning")
-                .setContentText("Bluetooth Beacon scan is running, if no internet connection, scanning is not possible.")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setContentTitle("Beacon Scan")
+                .setContentText("Scan is running...")
+                .setPriority(NotificationCompat.PRIORITY_HIGH);
 
         return mBuilder.build();
     }
