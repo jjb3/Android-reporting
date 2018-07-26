@@ -15,7 +15,7 @@ import edu.gatech.reporter.utils.ParameterManager.ParameterOptions;
 /**
  * Code adopted from http://www.androidhive.info/2012/07/android-gps-location-manager-tutorial/. Modified on 2016/9/1.
  */
-public class GPSTracker extends Service implements LocationListener {
+public class GPSTracker extends Service implements LocationListener, StartStopSensorInterface {
 
     // flag for GPS status
     boolean isGPSEnabled = false;
@@ -42,7 +42,6 @@ public class GPSTracker extends Service implements LocationListener {
     public GPSTracker() {
         min_update_interval = ParameterOptions.getInstance().dataUpdateInterval;
         min_update_distance = ParameterOptions.getInstance().minUpdateDistance;
-        registerListener();
     }
 
     public boolean registerListener() {
@@ -179,5 +178,23 @@ public class GPSTracker extends Service implements LocationListener {
     private boolean isGPSValid(){
         return location != null && (getLatitude() != 0 && getLongitude() != 0) && locationManager
                 .isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+
+    @Override
+    public void disableOrEnableSensor(boolean isEnabled) {
+        if(isEnabled)
+            registerListener();
+        else {
+            if(locationManager != null)
+                locationManager.removeUpdates(this);
+
+            if(location != null) {
+                location.setLatitude(0);
+                location.setLongitude(0);
+            } else {
+                latitude = 0;
+                longitude = 0;
+            }
+        }
     }
 }

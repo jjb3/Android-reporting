@@ -13,7 +13,7 @@ import edu.gatech.reporter.utils.Const;
  * Created by Wendi on 2016/10/4.
  */
 
-public class LightSensor implements SensorEventListener {
+public class LightSensor implements SensorEventListener, StartStopSensorInterface {
     private SensorManager mSensorManager;
     private Sensor myLightSensor;
     double illuminance;
@@ -38,4 +38,14 @@ public class LightSensor implements SensorEventListener {
         return illuminance;
     }
 
+    @Override
+    public void disableOrEnableSensor(boolean isEnabled) {
+
+        if(isEnabled)
+            mSensorManager.registerListener(this, myLightSensor, SensorManager.SENSOR_DELAY_FASTEST);
+        else{
+            mSensorManager.unregisterListener(this);
+            illuminance = Const.NO_LIGHT_SENSOR;
+        }
+    }
 }

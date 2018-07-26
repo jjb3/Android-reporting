@@ -9,8 +9,8 @@ android {
         applicationId "edu.gatech.reporter"
         minSdkVersion 23
         targetSdkVersion 24
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.0.2"
     }
     buildTypes {
         release {
@@ -45,7 +45,7 @@ dependencies {
     implementation 'org.greenrobot:eventbus:3.1.1'
 
     //estimote sdk
-    implementation 'com.estimote:proximity-sdk:0.6.0'
+    implementation 'com.estimote:proximity-sdk:0.6.2'
     implementation 'com.estimote:sdk:1.4.1'
     implementation 'com.estimote:mustard:0.2.1'
 

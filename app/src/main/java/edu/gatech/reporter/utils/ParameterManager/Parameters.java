@@ -23,8 +23,8 @@ public class Parameters {
     public String secureID = "";
     public String nearestBeaconID = "";
     public boolean isRecording = false;
-    public String version = "1.0.1";
-    public String lastUpdatedDate = "03/25/2017";
+    public String version = "1.0.2";
+    public String lastUpdatedDate = "07/23/2018";
 
 
         private static Parameters instance = null;
