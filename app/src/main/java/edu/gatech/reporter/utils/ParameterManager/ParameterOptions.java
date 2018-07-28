@@ -25,7 +25,6 @@ public class ParameterOptions {
     public boolean netStatusCheck = true;
     public int dataUpdateInterval = 500;
     public int reportInterval = 5000;
-    public int beaconUpdateViewInterval = 5000;
     public int minUpdateDistance = 0;
     public String serverURL = "https://www.busgenius.com/api/v1/geolocations";
     public String beaconTags = "";
