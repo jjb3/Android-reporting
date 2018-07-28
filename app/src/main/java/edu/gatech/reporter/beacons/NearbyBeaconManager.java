@@ -44,16 +44,10 @@ public class NearbyBeaconManager {
 
     public void updateNearbyBeaconList(Set<? extends  ProximityZoneContext> attachments) {
         // remove to start fresh the zone.
-        ProximityZoneContext[] zonesToUpdateArray = (ProximityZoneContext[]) attachments.toArray();
+        ProximityZoneContext[] zonesToUpdateArray = attachments.toArray(new ProximityZoneContext[attachments.size()]);
         ProximityZoneContext zoneContext = zonesToUpdateArray[0];
         String zoneToUpdate = zoneContext.getTag();
         nearbyBeacons.put(zoneToUpdate, Arrays.asList(zonesToUpdateArray));
-    }
-
-    public void sendData() {
-
-        // harcoded for testing purposes currently.
-//        myBeaconServiceRequest.sendPostRequest("1001","8.974842", "-79.506358","3.0", "220", "1", getCurrentTimestamp());
     }
 
     private String getCurrentTimestamp(){
