@@ -4,7 +4,8 @@ import android.content.Context;
 import android.provider.ContactsContract;
 import android.text.format.DateFormat;
 
-import com.estimote.proximity_sdk.proximity.ProximityContext;
+
+import com.estimote.proximity_sdk.api.ProximityZoneContext;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class DataManager {
     private LightSensor myLightSensor;
     private PressureSensor myPressureSensor;
     private TemperatureSensor myTemperatureSensor;
-    private HashMap<String, ProximityContext> beaconsInRange = new HashMap<>();
+    private HashMap<String, ProximityZoneContext> beaconsInRange = new HashMap<>();
 
     private static DataManager instance;
 
@@ -97,15 +98,15 @@ public class DataManager {
 
     private void updateBeaconData() {
 
-        List<ProximityContext> beacons = new ArrayList<>();
-        HashMap<String, List<ProximityContext>> nearbyBeacons  = myNearbyBeaconManager.getNearbyBeacons();
-        for (Map.Entry<String, List<ProximityContext>> entry : nearbyBeacons.entrySet()) {
+        List<ProximityZoneContext> beacons = new ArrayList<>();
+        HashMap<String, List<ProximityZoneContext>> nearbyBeacons  = myNearbyBeaconManager.getNearbyBeacons();
+        for (Map.Entry<String, List<ProximityZoneContext>> entry : nearbyBeacons.entrySet()) {
             beacons.addAll(entry.getValue());
         }
         List<String> beaconIds  = new ArrayList<>();
 
-        for(ProximityContext beacon : beacons)
-            beaconIds.add(beacon.getInfo().getDeviceId());
+        for(ProximityZoneContext beacon : beacons)
+            beaconIds.add(beacon.getDeviceId());
 
         Gson gson = new Gson();
         String beaconsList = gson.toJson(beaconIds);

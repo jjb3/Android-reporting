@@ -6,7 +6,8 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.estimote.proximity_sdk.proximity.ProximityContext;
+
+import com.estimote.proximity_sdk.api.ProximityZoneContext;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -15,6 +16,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.Timer;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -123,18 +125,18 @@ public class ReporterService extends Service implements ProximityBeaconInterface
 
 
     @Override
-    public void onEnterBeaconRegion(ProximityContext attachments) {
+    public void onEnterBeaconRegion(ProximityZoneContext attachments) {
         Log.e(TAG, "onEnterBeaconRegion: " + "Beacon Institution Region Entered is:" + attachments.getAttachments().get(Const.BEACON_INSTITUTION_KEY));
         String zone = attachments.getTag();
         myDataManager.getNearbyBeaconManager().getNearbyBeaconZones().put(zone, zone);
-        List<ProximityContext> tempList = new ArrayList<>();
+        List<ProximityZoneContext> tempList = new ArrayList<>();
         tempList.add(attachments);
         myDataManager.getNearbyBeaconManager().getNearbyBeacons().put(zone, tempList);
         EventBus.getDefault().post(new UpdateBeaconZonesEvent(myDataManager.getNearbyBeaconManager().getNearbyBeacons()));
     }
 
     @Override
-    public void onExitBeaconRegion(ProximityContext attachments) {
+    public void onExitBeaconRegion(ProximityZoneContext attachments) {
         Log.e(TAG, "onExitBeaconRegion: " + "Beacon Institution Region Entered is:" + attachments.getAttachments().get(Const.BEACON_INSTITUTION_KEY));
         String zone = attachments.getTag();
         myDataManager.getNearbyBeaconManager().getNearbyBeacons().remove(zone);
@@ -144,9 +146,9 @@ public class ReporterService extends Service implements ProximityBeaconInterface
     }
 
     @Override
-    public void onChangeActionInRegion(List<? extends ProximityContext> attachments) {
+    public void onChangeActionInRegion(Set<? extends ProximityZoneContext> attachments) {
         List<String> busStops = new ArrayList<>();
-        for (ProximityContext attachment : attachments) {
+        for (ProximityZoneContext attachment : attachments) {
             busStops.add(attachment.getAttachments().get(Const.BEACON_BUS_STOP_KEY));
         }
         Log.e(TAG, "onChangeBeaconRegion: " + "Beacons Nearby: " +  busStops);

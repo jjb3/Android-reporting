@@ -1,16 +1,19 @@
 package edu.gatech.reporter.beacons;
 
+import android.app.Service;
 import android.content.Context;
 import android.text.format.DateFormat;
 
-import com.estimote.proximity_sdk.proximity.ProximityContext;
 
+import com.estimote.proximity_sdk.api.ProximityZone;
+import com.estimote.proximity_sdk.api.ProximityZoneContext;
+
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import edu.gatech.reporter.ServiceRequests.BeaconServiceRequests;
-import edu.gatech.reporter.app.ReporterService;
-import edu.gatech.reporter.utils.Const;
 
 public class NearbyBeaconManager {
 
@@ -18,7 +21,7 @@ public class NearbyBeaconManager {
     BeaconServiceRequests myBeaconServiceRequest;
     Context mContext;
 
-    private HashMap<String, List<ProximityContext>> nearbyBeacons;
+    private HashMap<String, List<ProximityZoneContext>> nearbyBeacons;
     private HashMap<String, String> nearbyBeaconZones;
 
 
@@ -34,15 +37,17 @@ public class NearbyBeaconManager {
         return nearbyBeaconZones;
     }
 
-    public HashMap<String, List<ProximityContext>> getNearbyBeacons() {
+    public HashMap<String, List<ProximityZoneContext>> getNearbyBeacons() {
         return nearbyBeacons;
     }
 
 
-    public void updateNearbyBeaconList(List<? extends  ProximityContext> attachments) {
+    public void updateNearbyBeaconList(Set<? extends  ProximityZoneContext> attachments) {
         // remove to start fresh the zone.
-        String zoneToUpdate = attachments.get(0).getTag();
-        nearbyBeacons.put(zoneToUpdate, (List<ProximityContext>) attachments);
+        ProximityZoneContext[] zonesToUpdateArray = (ProximityZoneContext[]) attachments.toArray();
+        ProximityZoneContext zoneContext = zonesToUpdateArray[0];
+        String zoneToUpdate = zoneContext.getTag();
+        nearbyBeacons.put(zoneToUpdate, Arrays.asList(zonesToUpdateArray));
     }
 
     public void sendData() {
