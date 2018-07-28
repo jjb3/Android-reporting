@@ -54,6 +54,7 @@ public class ReporterService extends Service implements ProximityBeaconInterface
     {
         Log.e(TAG, "onStartCommand");
         super.onStartCommand(intent, flags, startId);
+        EventBus.getDefault().post(new UpdateBeaconZonesEvent(myDataManager.getNearbyBeaconManager().getNearbyBeacons()));
         return START_STICKY;
     }
 
@@ -107,6 +108,7 @@ public class ReporterService extends Service implements ProximityBeaconInterface
     {
         Log.e(TAG, "onDestroy");
         EventBus.getDefault().unregister(this);
+        stopSelf();
         super.onDestroy();
     }
 
