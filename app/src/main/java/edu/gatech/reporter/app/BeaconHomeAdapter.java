@@ -6,8 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import com.estimote.proximity_sdk.proximity.ProximityContext;
 
+
+import com.estimote.proximity_sdk.api.ProximityZoneContext;
 
 import java.util.List;
 import java.util.Map;
@@ -20,9 +21,9 @@ import edu.gatech.reporter.utils.Const;
 
 public class BeaconHomeAdapter extends RecyclerView.Adapter<BeaconHomeAdapter.MyViewHolder> {
 
-    private List<? extends ProximityContext> nearbyBeacons;
+    private List<? extends ProximityZoneContext> nearbyBeacons;
 
-    public BeaconHomeAdapter( List<ProximityContext> listOfNearbyBeacons) {
+    public BeaconHomeAdapter( List<ProximityZoneContext> listOfNearbyBeacons) {
         this.nearbyBeacons = listOfNearbyBeacons;
     }
 
@@ -37,7 +38,7 @@ public class BeaconHomeAdapter extends RecyclerView.Adapter<BeaconHomeAdapter.My
 
     @Override
     public void onBindViewHolder(@NonNull final BeaconHomeAdapter.MyViewHolder holder, final int position) {
-        final String deviceId = nearbyBeacons.get(position).getInfo().getDeviceId();
+        final String deviceId = nearbyBeacons.get(position).getDeviceId();
         Map<String, String> attch  = nearbyBeacons.get(position).getAttachments();
         final String institution = attch.get(Const.BEACON_INSTITUTION_KEY);
         final String busStop = attch.get(Const.BEACON_BUS_STOP_KEY);
