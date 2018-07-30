@@ -17,7 +17,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 
-import com.estimote.proximity_sdk.proximity.ProximityContext;
+import com.estimote.proximity_sdk.api.ProximityZoneContext;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -217,12 +217,12 @@ public class ReporterHome extends AppCompatActivity {
 
     }
 
-    public void initRecyclerview(HashMap<String, List<ProximityContext>> nearbyBeacons){
+    public void initRecyclerview(HashMap<String, List<ProximityZoneContext>> nearbyBeacons){
 
-        List<ProximityContext> listOfAllBeaconZones = new ArrayList<>();
+        List<ProximityZoneContext> listOfAllBeaconZones = new ArrayList<>();
 
-        for (Map.Entry<String, List<ProximityContext>> entry : nearbyBeacons.entrySet()) {
-            for (ProximityContext attachment : entry.getValue()){
+        for (Map.Entry<String, List<ProximityZoneContext>> entry : nearbyBeacons.entrySet()) {
+            for (ProximityZoneContext attachment : entry.getValue()){
                 listOfAllBeaconZones.add(attachment);
             }
         }

@@ -8,14 +8,16 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.estimote.proximity_sdk.proximity.EstimoteCloudCredentials;
-import com.estimote.proximity_sdk.proximity.ProximityContext;
-import com.estimote.proximity_sdk.proximity.ProximityObserver;
-import com.estimote.proximity_sdk.proximity.ProximityObserverBuilder;
-import com.estimote.proximity_sdk.proximity.ProximityZone;
+import com.estimote.proximity_sdk.api.EstimoteCloudCredentials;
+import com.estimote.proximity_sdk.api.ProximityObserver;
+import com.estimote.proximity_sdk.api.ProximityObserverBuilder;
+import com.estimote.proximity_sdk.api.ProximityZone;
+import com.estimote.proximity_sdk.api.ProximityZoneBuilder;
+import com.estimote.proximity_sdk.api.ProximityZoneContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import edu.gatech.reporter.R;
 import kotlin.Unit;
@@ -31,7 +33,7 @@ public class ProximityBeaconImplementation {
     private static ProximityBeaconInterface proximityBeaconInterface;
     private boolean atLeastOneZoneSelected;
 
-    private List<String> mBeaconZones;
+    private List<ProximityZone> mBeaconZones;
 
     private ProximityBeaconImplementation(Context context) {
         mContext = context;
@@ -61,7 +63,7 @@ public class ProximityBeaconImplementation {
             EstimoteCloudCredentials estimoteCloudCredentials = new EstimoteCloudCredentials(mContext.getString(R.string.appId), mContext.getString(R.string.appToken));
 
                 beaconObserver = new ProximityObserverBuilder(mContext.getApplicationContext(), estimoteCloudCredentials)
-                .withOnErrorAction(new Function1<Throwable, Unit>() {
+                .onError(new Function1<Throwable, Unit>() {
                     @Override
                     public Unit invoke(Throwable throwable) {
                         Log.e("app", "proximity observer error: " + throwable);
@@ -80,28 +82,28 @@ public class ProximityBeaconImplementation {
         if(isNetworkAvailable() && beaconObserver == null) {
             beaconObserver = new ProximityObserverBuilder(mContext.getApplicationContext(),
                     new EstimoteCloudCredentials(mContext.getString(R.string.appId), mContext.getString(R.string.appToken)))
-                    .withOnErrorAction(new Function1<Throwable, Unit>() {
+                    .onError(new Function1<Throwable, Unit>() {
                         @Override
                         public Unit invoke(Throwable throwable) {
                             Log.e("app", "proximity observer error: " + throwable);
                             return null;
                         }
                     })
-                    .withLowLatencyPowerMode()
+                    .withBalancedPowerMode()
                     .withScannerInForegroundService(createNotification())
                     .build();
 
             for(int i = 0 ; i < beaconZones.size() ; i++){
                 addProximityZone(beaconZones.get(i));
             }
-            beaconObserver.start();
+            beaconObserver.startObserving();
         } else {
             Toast.makeText(mContext, "NO Internet Connection, Restart app once internet connection has been established", Toast.LENGTH_LONG).show();
         }
     }
 
     public void addProximityZone(List<String> zones) {
-        mBeaconZones = zones;
+        mBeaconZones = new ArrayList<>(zones.size());
         if(!zones.isEmpty()) {
             if (zones.size() >= 1) {
                 if (zones.contains("")) {
@@ -109,50 +111,48 @@ public class ProximityBeaconImplementation {
                 } else {
                     atLeastOneZoneSelected = true;
                     for (String zoneTag : zones){
-                        addProximityZone(zoneTag);
+                        mBeaconZones.add(addProximityZone(zoneTag));
                     }
                 }
             }
         }
     }
 
-    public void addProximityZone(String beaconZone) {
-        ProximityZone tempProxZone = beaconObserver.zoneBuilder()
+    public ProximityZone addProximityZone(String beaconZone) {
+        ProximityZone tempProxZone = new ProximityZoneBuilder()
                 .forTag(beaconZone)
                 .inFarRange()
-                .withOnEnterAction(new Function1<ProximityContext, Unit>() {
+                .onEnter(new Function1<ProximityZoneContext, Unit>() {
                     @Override
-                    public Unit invoke(ProximityContext attachment) {
+                    public Unit invoke(ProximityZoneContext attachment) {
                         Log.e("DataManager", "Institution " + attachment.getAttachments().get("Institution") + " - Bus Stop:  "+attachment.getAttachments().get("Bus Stop") + "A rrived");
                         if(proximityBeaconInterface instanceof ProximityBeaconInterface)
                             proximityBeaconInterface.onEnterBeaconRegion(attachment);
                         return null;
                     }
                 })
-                .withOnExitAction(new Function1<ProximityContext, Unit>() {
+                .onExit(new Function1<ProximityZoneContext, Unit>() {
                     @Override
-                    public Unit invoke(ProximityContext attachment) {
+                    public Unit invoke(ProximityZoneContext attachment) {
                         Log.e("DataManager", "Bye bye," + attachment.getAttachments().get("Institution") + " - Bus Stop:  "+attachment.getAttachments().get("Bus Stop") + " left");
                         if(proximityBeaconInterface instanceof ProximityBeaconInterface)
                             proximityBeaconInterface.onExitBeaconRegion(attachment);
                         return null;
                     }
                 })
-                .withOnChangeAction(new Function1<List<? extends ProximityContext>, Unit>() {
+                .onContextChange(new Function1<Set<? extends ProximityZoneContext>, Unit>() {
                     @Override
-                    public Unit invoke(List<? extends ProximityContext> attachments) {
+                    public Unit invoke(Set<? extends ProximityZoneContext> proximityZoneContexts) {
                         List<String> busStops = new ArrayList<>();
-                        for (ProximityContext attachment : attachments) {
+                        for (ProximityZoneContext attachment : proximityZoneContexts) {
                             busStops.add(attachment.getAttachments().get("Bus Stop"));
-                            if(proximityBeaconInterface instanceof ProximityBeaconInterface)
-                                proximityBeaconInterface.onChangeActionInRegion(attachments);
+                            if (proximityBeaconInterface instanceof ProximityBeaconInterface)
+                                proximityBeaconInterface.onChangeActionInRegion(proximityZoneContexts);
                         }
                         Log.e("DataManager", "On Change Called: " + busStops);
                         return null;
-                    }
-                }).create();
-        beaconObserver.addProximityZones(tempProxZone);
-
+                    }}).build();
+        return  tempProxZone;
     }
 
     public ProximityObserver getBeaconObserver() {
@@ -165,7 +165,7 @@ public class ProximityBeaconImplementation {
 
     public void startBeaconObserver(){
         if(beaconObserverHandler == null && atLeastOneZoneSelected) {
-            beaconObserverHandler = beaconObserver.start();
+            beaconObserverHandler = beaconObserver.startObserving(mBeaconZones);
             Log.d("datamanager","beacon scan started");
         }
 
