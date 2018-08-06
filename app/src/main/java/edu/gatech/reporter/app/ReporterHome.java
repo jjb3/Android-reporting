@@ -63,6 +63,7 @@ public class ReporterHome extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         self = this;
         super.onCreate(savedInstanceState);
+
         ParameterOptions.getInstance().setActivity(this);
         ParameterOptions.getInstance().loadPreference();
 
@@ -108,8 +109,6 @@ public class ReporterHome extends AppCompatActivity {
             recordButton.setText("Stop recording");
         }
 
-        ParameterOptions.getInstance().setActivity(this);
-        ParameterOptions.getInstance().loadPreference();
         EventBus.getDefault().register(this);
     }
 
@@ -117,8 +116,6 @@ public class ReporterHome extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         ViewUpdater.init(this);
-//        if (beaconObserver.getBeaconObserver() == null && beaconObserver.isNetworkAvailable())
-//            getBeaconsToTrack();
     }
 
     @Override
