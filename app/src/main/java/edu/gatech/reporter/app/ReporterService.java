@@ -1,11 +1,9 @@
 package edu.gatech.reporter.app;
 
-import android.app.Notification;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 
@@ -23,7 +21,6 @@ import java.util.Timer;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import edu.gatech.reporter.R;
 import edu.gatech.reporter.beacons.BeaconEvents.RestartReportTaskEvent;
 import edu.gatech.reporter.beacons.BeaconEvents.ChangeTagsEvent;
 import edu.gatech.reporter.beacons.BeaconEvents.StartBeaconScanEvent;
@@ -58,8 +55,6 @@ public class ReporterService extends Service implements ProximityBeaconInterface
         Log.e(TAG, "onStartCommand");
         super.onStartCommand(intent, flags, startId);
         EventBus.getDefault().post(new UpdateBeaconZonesEvent(myDataManager.getNearbyBeaconManager().getNearbyBeacons()));
-        initBeaconDetection();
-        startForeground(1,createNotification());
         return START_STICKY;
     }
 
@@ -71,7 +66,7 @@ public class ReporterService extends Service implements ProximityBeaconInterface
         ParameterOptions.getInstance().loadPreference();
         mContext = getApplicationContext();
         myDataManager =DataManager.getInstance(mContext);
-//        initBeaconDetection();
+        initBeaconDetection();
 
         timer = new Timer();
         timer.schedule(new DataUpdateTask(myDataManager), 0, ParameterOptions.getInstance().dataUpdateInterval);
@@ -94,16 +89,6 @@ public class ReporterService extends Service implements ProximityBeaconInterface
             beaconObserver.startBeaconObserver();
         }
 
-    }
-
-    private Notification createNotification(){
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext, "1")
-                .setSmallIcon(R.drawable.ic_notifications_black_24dp)
-                .setContentTitle("Background Service Running")
-                .setContentText("GPS and beacon data being colledted...")
-                .setPriority(NotificationCompat.PRIORITY_HIGH);
-
-        return mBuilder.build();
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)

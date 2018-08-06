@@ -63,9 +63,6 @@ public class ReporterHome extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         self = this;
         super.onCreate(savedInstanceState);
-        ParameterOptions.getInstance().setActivity(this);
-        ParameterOptions.getInstance().loadPreference();
-
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
