@@ -64,7 +64,7 @@ public class ReporterHome extends AppCompatActivity {
         self = this;
         super.onCreate(savedInstanceState);
       
-        ParameterOptions.getInstance().setActivity(this);
+        ParameterOptions.getInstance().setContext(getApplicationContext());
         ParameterOptions.getInstance().loadPreference();
 
         setContentView(R.layout.activity_main);
