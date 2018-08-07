@@ -143,17 +143,16 @@ public class ProximityBeaconImplementation {
         if(beaconObserverHandler == null && atLeastOneZoneSelected) {
             beaconObserverHandler = beaconObserver.startObserving(mBeaconZones);
             Log.d("datamanager","beacon scan started");
-        } else {
-            stopBeaconObserver();
-            if(atLeastOneZoneSelected)
-                startBeaconObserver();
         }
+
     }
 
     public void stopBeaconObserver(){
         if (beaconObserverHandler != null ) {
             beaconObserverHandler.stop();
             beaconObserverHandler = null;
+            beaconObserver = null;
+            atLeastOneZoneSelected = false;
         }
     }
 

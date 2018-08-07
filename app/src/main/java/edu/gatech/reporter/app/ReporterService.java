@@ -71,7 +71,7 @@ public class ReporterService extends Service implements ProximityBeaconInterface
         ParameterOptions.getInstance().loadPreference();
         mContext = getApplicationContext();
         myDataManager =DataManager.getInstance(mContext);
-
+        
         timer = new Timer();
         timer.schedule(new DataUpdateTask(myDataManager), 0, ParameterOptions.getInstance().dataUpdateInterval);
         timer.schedule(new SendDataTask(myDataManager), 0, ParameterOptions.getInstance().reportInterval);
@@ -94,7 +94,7 @@ public class ReporterService extends Service implements ProximityBeaconInterface
         }
 
     }
-
+    
     private Notification createNotification(){
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext, "1")
                 .setSmallIcon(R.drawable.ic_notifications_black_24dp)

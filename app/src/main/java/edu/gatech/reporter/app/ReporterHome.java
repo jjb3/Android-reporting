@@ -63,7 +63,7 @@ public class ReporterHome extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         self = this;
         super.onCreate(savedInstanceState);
-
+      
         ParameterOptions.getInstance().setActivity(this);
         ParameterOptions.getInstance().loadPreference();
 
