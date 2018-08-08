@@ -31,6 +31,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,7 +65,7 @@ public class ReporterHome extends AppCompatActivity {
         self = this;
         super.onCreate(savedInstanceState);
       
-        ParameterOptions.getInstance().setActivity(this);
+        ParameterOptions.getInstance().setContext(getApplicationContext());
         ParameterOptions.getInstance().loadPreference();
 
         setContentView(R.layout.activity_main);
@@ -78,9 +79,10 @@ public class ReporterHome extends AppCompatActivity {
         recordButton = (Button)findViewById(R.id.recordBtn);
         recordButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(Parameters.getInstance().isRecording){
+                if(ParameterOptions.getInstance().isAppRecording){
 
-                    Parameters.getInstance().isRecording = false;
+                    ParameterOptions.getInstance().isAppRecording = false;
+                    ParameterOptions.getInstance().writeIsRecordingPreference();
                     recordButton.setBackgroundColor(Const.GREEN_BUTTON_COLOR);
                     recordButton.setText("Press to start recording");
 
@@ -92,19 +94,20 @@ public class ReporterHome extends AppCompatActivity {
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                                 public void onClick(DialogInterface dialog, int whichButton) {
-                                    Parameters.getInstance().isRecording = true;
+                                    ParameterOptions.getInstance().isAppRecording = true;
                                     recordButton.setBackgroundColor(Const.RED_BUTTON_COLOR);
                                     recordButton.setText("Stop recording");
-
+                                    ParameterOptions.getInstance().writeIsRecordingPreference();
                                 }})
                             .setNegativeButton(android.R.string.no, null).show();
                 }
             }
         });
+        recordButton.setSelected(ParameterOptions.getInstance().isAppRecording);
 
         //Fix orientation change problem
-        if(Parameters.getInstance().isRecording == true){
-            Parameters.getInstance().isRecording = true;
+        if(ParameterOptions.getInstance().isAppRecording == true){
+            ParameterOptions.getInstance().isAppRecording = true;
             recordButton.setBackgroundColor(Const.RED_BUTTON_COLOR);
             recordButton.setText("Stop recording");
         }

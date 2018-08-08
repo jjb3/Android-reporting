@@ -87,6 +87,7 @@
     <string name="androidIDChk">androidIDChk</string>
     <string name="macChk">macChk</string>
     <string name="netStatusCheck">netStatusCheck</string>
+    <string name="isRecordingButtonPressed">isAppRecordingPressed</string>
     <string name="changeDataUpdateInterval">changeDataUpdateInterval</string>
     <string name="changeReportInterval">changeReportInterval</string>
     <string name="changeServerURL">changeServerURL</string>
