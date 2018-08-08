@@ -21,6 +21,7 @@ public class ParameterOptions {
     public boolean androidIDChk = true;
     public boolean macChk = true;
     public boolean netStatusCheck = true;
+    public boolean isAppRecording = false;
     public int dataUpdateInterval = 500;
     public int reportInterval = 5000;
     public int minUpdateDistance = 0;
@@ -57,6 +58,7 @@ public class ParameterOptions {
         ParameterOptions.getInstance().reportInterval = sharedPref.getInt(mApplicationContext.getString(R.string.changeReportInterval), 5000);
         ParameterOptions.getInstance().serverURL = sharedPref.getString(mApplicationContext.getString(R.string.changeServerURL), serverURL);
         ParameterOptions.getInstance().beaconTags = sharedPref.getString(mApplicationContext.getString(R.string.beacon_tags),"");
+        ParameterOptions.getInstance().isAppRecording = sharedPref.getBoolean(mApplicationContext.getString(R.string.isRecordingButtonPressed),false);
     }
 
     public void writePreference(){
@@ -75,6 +77,13 @@ public class ParameterOptions {
         editor.putInt(mApplicationContext.getString(R.string.changeReportInterval), ParameterOptions.getInstance().reportInterval);
         editor.putString(mApplicationContext.getString(R.string.changeServerURL), ParameterOptions.getInstance().serverURL);
         editor.putString(mApplicationContext.getString(R.string.beacon_tags), ParameterOptions.getInstance().beaconTags);
+        editor.commit();
+    }
+
+    public void writeIsRecordingPreference(){
+        SharedPreferences sharedPref = mApplicationContext.getSharedPreferences(ReporterHome.class.getSimpleName(), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(mApplicationContext.getString(R.string.isRecordingButtonPressed), ParameterOptions.getInstance().isAppRecording);
         editor.commit();
     }
 }
