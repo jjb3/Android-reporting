@@ -22,7 +22,7 @@ public class MotionSensor implements SensorEventListener, StartStopSensorInterfa
 
     public MotionSensor() {
         mSensorManager = (SensorManager) ReporterService.getContext().getSystemService(ReporterService.getContext().SENSOR_SERVICE);
-        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorData = new double [3];
         pastAccData = new PastAccelerometerDataList();
     }
