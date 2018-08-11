@@ -45,10 +45,12 @@ public class OptionView extends AppCompatActivity {
     private Button changeReportIntervalButton;
     private Button changeServerURLButton;
     private Button changeBeaconTagsButton;
+    private Button changeAuthKeyButton;
     private TextView updateIntervalView;
     private TextView reportIntervalView;
     private TextView serverURLView;
     private TextView beaconTagsView;
+    private TextView authKeyView;
 
 
     private Executor executor = Executors.newSingleThreadExecutor();
@@ -82,6 +84,7 @@ public class OptionView extends AppCompatActivity {
         reportIntervalView = (TextView)this.findViewById(R.id.reportIntervalView);
         serverURLView = (TextView)this.findViewById(R.id.serverURLView);
         beaconTagsView = (TextView)this.findViewById(R.id.beacon_tags_view);
+        authKeyView = (TextView)this.findViewById(R.id.auth_key_view);
 
 
         powerLevelChk.setChecked(ParameterOptions.getInstance().powerLevelChk);
@@ -303,6 +306,34 @@ public class OptionView extends AppCompatActivity {
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .show();
 
+            }
+        });
+
+        changeAuthKeyButton = (Button) findViewById(R.id.auth_key);
+        changeAuthKeyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final EditText input = new EditText(OptionView.this);
+                input.setText(ParameterOptions.getInstance().authKey);
+                EventBus.getDefault().post(new ChangeTagsEvent(null));
+                new AlertDialog.Builder(OptionView.this)
+                        .setTitle("Set Auth Key to Report Data to Server")
+                        .setView(input)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                String authKey = input.getText().toString();
+                                ParameterOptions.getInstance().beaconTags = authKey;
+                                authKeyView.setText("Authentication Key: \n"+ authKey);
+                                writePreferenceToFile();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
             }
         });
 

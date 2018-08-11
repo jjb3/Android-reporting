@@ -28,6 +28,7 @@ public class ParameterOptions {
     public int minUpdateDistance = 0;
     public String serverURL = "https://www.busgenius.com/api/v1/geolocations";
     public String beaconTags = "";
+    public String authKey = "";
 
     private static ParameterOptions instance = null;
 
@@ -59,6 +60,7 @@ public class ParameterOptions {
         ParameterOptions.getInstance().reportInterval = sharedPref.getInt(act.getString(R.string.changeReportInterval), 5000);
         ParameterOptions.getInstance().serverURL = sharedPref.getString(act.getString(R.string.changeServerURL), serverURL);
         ParameterOptions.getInstance().beaconTags = sharedPref.getString(act.getString(R.string.beacon_tags),"");
+        ParameterOptions.getInstance().authKey = sharedPref.getString(act.getString(R.string.auth_key),"");
     }
 
     public void writePreference(){
@@ -77,6 +79,7 @@ public class ParameterOptions {
         editor.putInt(act.getString(R.string.changeReportInterval), ParameterOptions.getInstance().reportInterval);
         editor.putString(act.getString(R.string.changeServerURL), ParameterOptions.getInstance().serverURL);
         editor.putString(act.getString(R.string.beacon_tags), ParameterOptions.getInstance().beaconTags);
+        editor.putString(act.getString(R.string.auth_key), ParameterOptions.getInstance().authKey);
         editor.commit();
     }
 }

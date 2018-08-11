@@ -164,11 +164,23 @@
             android:text="@string/add_beacon_tags_message"
             />
 
+        <TextView
+            android:id="@+id/auth_key_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:layout_below="@+id/beacon_tags_view"
+            android:layout_alignStart="@+id/netStatusCheck"
+            android:textSize="22sp"
+            android:textColor="#798ca7"
+            android:text="@string/auth_key_input_message"
+            />
+
         <Button
             android:text="Change update interval"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/beacon_tags_view"
+            android:layout_below="@+id/auth_key_view"
             android:layout_alignStart="@+id/netStatusCheck"
             android:layout_marginTop="22dp"
             android:id="@+id/updateInterval" />
@@ -199,6 +211,15 @@
             android:layout_alignStart="@id/netStatusCheck"
             android:layout_marginTop="6dp"
             android:text="Set tags to recognize" />
+
+        <Button
+            android:id="@+id/auth_key"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/beacon_tags"
+            android:layout_alignStart="@id/netStatusCheck"
+            android:layout_marginTop="6dp"
+            android:text="Set Auth Key to report" />
 
     </RelativeLayout>
 </ScrollView>
