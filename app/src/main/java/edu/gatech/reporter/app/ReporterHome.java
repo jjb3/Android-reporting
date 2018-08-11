@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -79,19 +80,21 @@ public class ReporterHome extends AppCompatActivity {
         recordButton = (Button)findViewById(R.id.recordBtn);
         recordButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(ParameterOptions.getInstance().isAppRecording){
+
+                if (!ParameterOptions.getInstance().authKey.isEmpty()) {
+                    if (Parameters.getInstance().isRecording) {
 
                     ParameterOptions.getInstance().isAppRecording = false;
                     ParameterOptions.getInstance().writeIsRecordingPreference();
                     recordButton.setBackgroundColor(Const.GREEN_BUTTON_COLOR);
                     recordButton.setText("Press to start recording");
 
-                }else{
-                    new AlertDialog.Builder(self)
-                            .setTitle("Start Recording")
-                            .setMessage("Do you really want to start recording?")
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    } else {
+                        new AlertDialog.Builder(self)
+                                .setTitle("Start Recording")
+                                .setMessage("Do you really want to start recording?")
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                                 public void onClick(DialogInterface dialog, int whichButton) {
                                     ParameterOptions.getInstance().isAppRecording = true;
@@ -100,6 +103,17 @@ public class ReporterHome extends AppCompatActivity {
                                     ParameterOptions.getInstance().writeIsRecordingPreference();
                                 }})
                             .setNegativeButton(android.R.string.no, null).show();
+                }
+                } else {
+                    Snackbar.make(recordButton.getRootView(), "Set Auth Key before Recording Data", Snackbar.LENGTH_LONG)
+                            .setAction("CLOSE", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                }
+                            })
+                            .setActionTextColor(getResources().getColor(android.R.color.holo_red_light, getTheme()))
+                            .show();
                 }
             }
         });
