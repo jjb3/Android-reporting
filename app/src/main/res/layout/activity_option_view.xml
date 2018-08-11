@@ -207,9 +207,10 @@
             android:id="@+id/beacon_tags"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/serverURL"
-            android:layout_alignStart="@id/netStatusCheck"
-            android:layout_marginTop="6dp"
+            android:layout_below="@id/auth_key_view"
+            android:layout_toEndOf="@id/reportInterval"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="22dp"
             android:text="Set tags to recognize" />
 
         <Button
@@ -217,7 +218,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/beacon_tags"
-            android:layout_alignStart="@id/netStatusCheck"
+            android:layout_alignStart="@id/beacon_tags"
             android:layout_marginTop="6dp"
             android:text="Set Auth Key to report" />
 

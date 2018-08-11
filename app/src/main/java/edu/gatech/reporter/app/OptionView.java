@@ -100,6 +100,7 @@ public class OptionView extends AppCompatActivity {
         reportIntervalView.setText(String.valueOf("Report interval: "+ParameterOptions.getInstance().reportInterval) + "ms");
         serverURLView.setText(String.valueOf("Server URL: \n"+ParameterOptions.getInstance().serverURL));
         beaconTagsView.setText("Beacon Tags: \n"+ParameterOptions.getInstance().beaconTags);
+        authKeyView.setText("Authentication Key: \n" + ParameterOptions.getInstance().authKey);
 
 
         powerLevelChk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -322,7 +323,7 @@ public class OptionView extends AppCompatActivity {
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 String authKey = input.getText().toString();
-                                ParameterOptions.getInstance().beaconTags = authKey;
+                                ParameterOptions.getInstance().authKey = authKey;
                                 authKeyView.setText("Authentication Key: \n"+ authKey);
                                 writePreferenceToFile();
                             }

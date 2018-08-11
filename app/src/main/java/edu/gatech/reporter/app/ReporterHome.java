@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -78,26 +79,40 @@ public class ReporterHome extends AppCompatActivity {
         recordButton = (Button)findViewById(R.id.recordBtn);
         recordButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(Parameters.getInstance().isRecording){
 
-                    Parameters.getInstance().isRecording = false;
-                    recordButton.setBackgroundColor(Const.GREEN_BUTTON_COLOR);
-                    recordButton.setText("Press to start recording");
+                if (!ParameterOptions.getInstance().authKey.isEmpty()) {
+                    if (Parameters.getInstance().isRecording) {
 
-                }else{
-                    new AlertDialog.Builder(self)
-                            .setTitle("Start Recording")
-                            .setMessage("Do you really want to start recording?")
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        Parameters.getInstance().isRecording = false;
+                        recordButton.setBackgroundColor(Const.GREEN_BUTTON_COLOR);
+                        recordButton.setText("Press to start recording");
 
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    Parameters.getInstance().isRecording = true;
-                                    recordButton.setBackgroundColor(Const.RED_BUTTON_COLOR);
-                                    recordButton.setText("Stop recording");
+                    } else {
+                        new AlertDialog.Builder(self)
+                                .setTitle("Start Recording")
+                                .setMessage("Do you really want to start recording?")
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
-                                }})
-                            .setNegativeButton(android.R.string.no, null).show();
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        Parameters.getInstance().isRecording = true;
+                                        recordButton.setBackgroundColor(Const.RED_BUTTON_COLOR);
+                                        recordButton.setText("Stop recording");
+
+                                    }
+                                })
+                                .setNegativeButton(android.R.string.no, null).show();
+                    }
+                } else {
+                    Snackbar.make(recordButton.getRootView(), "Set Auth Key before Recording Data", Snackbar.LENGTH_LONG)
+                            .setAction("CLOSE", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                }
+                            })
+                            .setActionTextColor(getResources().getColor(android.R.color.holo_red_light, getTheme()))
+                            .show();
                 }
             }
         });
