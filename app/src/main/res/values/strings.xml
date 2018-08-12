@@ -91,6 +91,7 @@
     <string name="changeDataUpdateInterval">changeDataUpdateInterval</string>
     <string name="changeReportInterval">changeReportInterval</string>
     <string name="changeServerURL">changeServerURL</string>
+    <string name="auth_key_input_message">Input Auth_Key to report to server</string>
     <string name="press_arrive">Press when you ARRIVE at the bus stop</string>
     <string name="start_recording">Press to start recording</string>
     <string name="defual_string">Default!</string>
@@ -99,6 +100,7 @@
     <string name="action_select_beacons">Select Beacons</string>
     <string name="title_activity_about_view">About</string>
     <string name="beacon_tags">BeaconTags</string>
+    <string name="auth_key">AuthKey</string>
 
 
     <!--Activity Main text-->

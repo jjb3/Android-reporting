@@ -21,6 +21,7 @@ import java.util.Map;
 import edu.gatech.reporter.R;
 import edu.gatech.reporter.app.ReporterHome;
 import edu.gatech.reporter.app.ReporterService;
+import edu.gatech.reporter.utils.ParameterManager.ParameterOptions;
 
 /**
  * Created by Wendi on 2016/9/24.
@@ -94,7 +95,7 @@ public class Connection {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put("auth_token",ReporterService.getContext().getString(R.string.auth_token));
+                params.put("auth_token", ParameterOptions.getInstance().authKey);
                 params.put("Content-Type", "application/json");
                 params.put("Accept", "application/json");
                 params.put("Accept-Encoding", "utf-8");
