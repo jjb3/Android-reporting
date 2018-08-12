@@ -82,7 +82,7 @@ public class ReporterHome extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (!ParameterOptions.getInstance().authKey.isEmpty()) {
-                    if (Parameters.getInstance().isRecording) {
+                    if (ParameterOptions.getInstance().isAppRecording) {
 
                     ParameterOptions.getInstance().isAppRecording = false;
                     ParameterOptions.getInstance().writeIsRecordingPreference();
