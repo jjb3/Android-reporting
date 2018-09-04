@@ -78,30 +78,6 @@ public class ProximityBeaconImplementation {
         }
     }
 
-    public void initProximityObserver(List<String> beaconZones) {
-        if(isNetworkAvailable() && beaconObserver == null) {
-            beaconObserver = new ProximityObserverBuilder(mContext.getApplicationContext(),
-                    new EstimoteCloudCredentials(mContext.getString(R.string.appId), mContext.getString(R.string.appToken)))
-                    .onError(new Function1<Throwable, Unit>() {
-                        @Override
-                        public Unit invoke(Throwable throwable) {
-                            Log.e("app", "proximity observer error: " + throwable);
-                            return null;
-                        }
-                    })
-                    .withBalancedPowerMode()
-                    .withScannerInForegroundService(createNotification())
-                    .build();
-
-            for(int i = 0 ; i < beaconZones.size() ; i++){
-                addProximityZone(beaconZones.get(i));
-            }
-            beaconObserver.startObserving();
-        } else {
-            Toast.makeText(mContext, "NO Internet Connection, Restart app once internet connection has been established", Toast.LENGTH_LONG).show();
-        }
-    }
-
     public void addProximityZone(List<String> zones) {
         mBeaconZones = new ArrayList<>(zones.size());
         if(!zones.isEmpty()) {

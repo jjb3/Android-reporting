@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,6 +32,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,6 +65,10 @@ public class ReporterHome extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         self = this;
         super.onCreate(savedInstanceState);
+      
+        ParameterOptions.getInstance().setContext(getApplicationContext());
+        ParameterOptions.getInstance().loadPreference();
+
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -74,39 +80,52 @@ public class ReporterHome extends AppCompatActivity {
         recordButton = (Button)findViewById(R.id.recordBtn);
         recordButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(Parameters.getInstance().isRecording){
 
-                    Parameters.getInstance().isRecording = false;
+                if (!ParameterOptions.getInstance().authKey.isEmpty()) {
+                    if (ParameterOptions.getInstance().isAppRecording) {
+
+                    ParameterOptions.getInstance().isAppRecording = false;
+                    ParameterOptions.getInstance().writeIsRecordingPreference();
                     recordButton.setBackgroundColor(Const.GREEN_BUTTON_COLOR);
                     recordButton.setText("Press to start recording");
 
-                }else{
-                    new AlertDialog.Builder(self)
-                            .setTitle("Start Recording")
-                            .setMessage("Do you really want to start recording?")
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    } else {
+                        new AlertDialog.Builder(self)
+                                .setTitle("Start Recording")
+                                .setMessage("Do you really want to start recording?")
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                                 public void onClick(DialogInterface dialog, int whichButton) {
-                                    Parameters.getInstance().isRecording = true;
+                                    ParameterOptions.getInstance().isAppRecording = true;
                                     recordButton.setBackgroundColor(Const.RED_BUTTON_COLOR);
                                     recordButton.setText("Stop recording");
-
+                                    ParameterOptions.getInstance().writeIsRecordingPreference();
                                 }})
                             .setNegativeButton(android.R.string.no, null).show();
                 }
+                } else {
+                    Snackbar.make(recordButton.getRootView(), "Set Auth Key before Recording Data", Snackbar.LENGTH_LONG)
+                            .setAction("CLOSE", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                }
+                            })
+                            .setActionTextColor(getResources().getColor(android.R.color.holo_red_light, getTheme()))
+                            .show();
+                }
             }
         });
+        recordButton.setSelected(ParameterOptions.getInstance().isAppRecording);
 
         //Fix orientation change problem
-        if(Parameters.getInstance().isRecording == true){
-            Parameters.getInstance().isRecording = true;
+        if(ParameterOptions.getInstance().isAppRecording == true){
+            ParameterOptions.getInstance().isAppRecording = true;
             recordButton.setBackgroundColor(Const.RED_BUTTON_COLOR);
             recordButton.setText("Stop recording");
         }
 
-        ParameterOptions.getInstance().setActivity(this);
-        ParameterOptions.getInstance().loadPreference();
         EventBus.getDefault().register(this);
     }
 
@@ -114,8 +133,6 @@ public class ReporterHome extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         ViewUpdater.init(this);
-//        if (beaconObserver.getBeaconObserver() == null && beaconObserver.isNetworkAvailable())
-//            getBeaconsToTrack();
     }
 
     @Override
