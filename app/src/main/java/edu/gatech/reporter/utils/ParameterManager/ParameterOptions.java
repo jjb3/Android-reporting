@@ -25,7 +25,7 @@ public class ParameterOptions {
     public int dataUpdateInterval = 500;
     public int reportInterval = 5000;
     public int minUpdateDistance = 0;
-    public String serverURL = "https://www.busgenius.com/api/v1/geolocations";
+    public String serverURL = "https://gt_tracker.herokuapp.com";
     public String beaconTags = "";
     public String authKey = "";
 

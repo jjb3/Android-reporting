@@ -66,7 +66,7 @@ public class BeaconServiceRequests {
 
         }
 
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, "https://www.busgenius.com/api/v1/geolocations", requestObject ,
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, "https://gt_tracker.herokuapp.com", requestObject ,
             new Response.Listener<JSONObject>() {
 
                 @Override
